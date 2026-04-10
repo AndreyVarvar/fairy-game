@@ -30,12 +30,12 @@ class InputControlPanel():
         self.keys_pressed = pg.key.get_pressed()
         self.keys_just_pressed = pg.key.get_pressed()
 
-        self.mouse_pressed: tuple[bool, bool, bool] = [False, False, False]
-        self.mouse_just_pressed: tuple[bool, bool, bool] = [False, False, False]
-        self.mouse_just_released: tuple[bool, bool, bool] = [False, False, False]
-        self.mouse_click_pos: list[int, int] = [0, 0]
-        self.mouse_release_pos: list[int, int] = [0, 0]
-        self.mouse_pos: list[int, int] = [0, 0]
+        self.mouse_pressed: list[bool] = [False, False, False]
+        self.mouse_just_pressed: list[bool] = [False, False, False]
+        self.mouse_just_released: list[bool] = [False, False, False]
+        self.mouse_click_pos: list[int] = [0, 0]
+        self.mouse_release_pos: list[int] = [0, 0]
+        self.mouse_pos: list[int] = [0, 0]
 
         self.cursor_queue = []
 
