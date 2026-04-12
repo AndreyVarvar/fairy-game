@@ -1,28 +1,39 @@
 from .panels import MasterControlPanel
-from .element import ElementGroup
+from .entity import EntityGroup
 import pygame as pg
 
 
 class Scene():
     def __init__(self):
-        self.elements: ElementGroup = ElementGroup()
+        self.groups: dict[str, EntityGroup] = {
+            "ui": EntityGroup(),
+            "entities": EntityGroup()
+        }
 
         self.change_scenes = False
-        self.next_scene: str | None = None
+        self.next_scene: str
     
     def queue_next_scene(self, next_scene_name):
         self.change_scenes = True
         self.next_scene = next_scene_name
     
+    def load(self):
+        pass
+
     def unload(self):
         pass
 
     def update(self, master_panel: MasterControlPanel):
-        for elem in self.elements:
-            elem.update(master_panel, self.elements)
+        for ui_entity in self.groups["ui"]:
+            ui_entity.update(master_panel)
 
-        master_panel.sound_panel.play_sound_queue()
+        for entity in self.groups["entities"]:
+            entity.update(master_panel)
 
     def draw(self, surface: pg.Surface, master_panel: MasterControlPanel):
-        for elem in self.elements:
-            elem.draw(surface, master_panel)
+        for ui_entity in self.groups["ui"]:
+            ui_entity.draw(surface, master_panel)
+
+        for entity in self.groups["entities"]:
+            entity.draw(surface, master_panel)
+

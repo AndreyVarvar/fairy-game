@@ -20,10 +20,11 @@ class Entity(Element):
     def rect(self) -> pg.FRect:
         return pg.FRect(*self.pos, *self.size)
 
-    def update(self, *args, **kwargs):
+    def update(self):
+        # for all input, sound, or music related stuff (+dt and game_running_time) use "InputControlPanel", "SoundControlPanel", and "MusicControlPanel"
         pass
 
-    def blit(self):
+    def queue_draw(self):
         self.element_tree["Renderer"].blit(self.z, self.target, self.image, self.pos)
 
 
@@ -34,7 +35,7 @@ class EntityGroup(Element):
 
     def blit(self) -> None:
         for entity in self.entities:
-            entity.blit()
+            entity.queue_draw()
 
     def __iter__(self):
         for entity in self.entities:

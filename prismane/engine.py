@@ -23,7 +23,7 @@ class Engine():
         self.master_panel = MasterControlPanel()
 
         self.scenes = {}
-        self.current_scene: Scene = None
+        self.current_scene: Scene
     
     def populate_scenes(self, scenes: dict[str, type[Scene]], initial_scene_name: str):
         self.scenes = scenes
@@ -34,11 +34,14 @@ class Engine():
         self.master_panel.update(dt, self.events)
 
         self.current_scene.update(self.master_panel)
+        self.master_panel.sound_panel.play_sound_queue()  # play all queued sounds
 
         if self.current_scene.change_scenes:
             new_scene: str = self.current_scene.next_scene
             self.master_panel.music_panel.stop_music()
+            self.current_scene.unload()
             self.current_scene = self.scenes[new_scene]()
+            self.current_scene.load()
 
     def check_events(self):
         self.events = pg.event.get()

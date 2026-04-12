@@ -1,8 +1,10 @@
 import pygame as pg
+from .element import Element
 
 
-class MasterControlPanel():
+class MasterControlPanel(Element):  # used to update all the panels in one place
     def __init__(self):
+        super().__init__(singleton=True)
         self.game_panel = GameControlPanel()
         self.input_panel = InputControlPanel()
         self.sound_panel = SoundControlPanel()
@@ -15,8 +17,9 @@ class MasterControlPanel():
         self.music_panel.update(dt)
 
 
-class GameControlPanel():
+class GameControlPanel(Element):
     def __init__(self):
+        super().__init__(singleton=True)
         self.run_time = 0
         self.dt: float
 
@@ -25,17 +28,18 @@ class GameControlPanel():
         self.run_time += dt
 
 
-class InputControlPanel():
+class InputControlPanel(Element):
     def __init__(self):
+        super().__init__(singleton=True)
         self.keys_pressed = pg.key.get_pressed()
         self.keys_just_pressed = pg.key.get_pressed()
 
         self.mouse_pressed: list[bool] = [False, False, False]
         self.mouse_just_pressed: list[bool] = [False, False, False]
         self.mouse_just_released: list[bool] = [False, False, False]
-        self.mouse_click_pos: list[int] = [0, 0]
-        self.mouse_release_pos: list[int] = [0, 0]
-        self.mouse_pos: list[int] = [0, 0]
+        self.mouse_click_pos: tuple[int, int] = (0, 0)
+        self.mouse_release_pos: tuple[int, int] = (0, 0)
+        self.mouse_pos: tuple[int, int] = (0, 0)
 
         self.cursor_queue = []
 
@@ -77,8 +81,9 @@ class InputControlPanel():
         self.mouse_just_pressed = [False, False, False]
         
 
-class SoundControlPanel():
+class SoundControlPanel(Element):
     def __init__(self):
+        super().__init__(singleton=True)
         self.sound_queue = []
         self.channel_count = pg.mixer.get_num_channels()
 
@@ -88,13 +93,13 @@ class SoundControlPanel():
     def update(self):
         self.mute = (self.volume == 0)
 
-    def queue_sound(self, sound: pg.Sound, channel_id:int=0, volume:float=1.0, polite:bool=False, loops:int=0):
+    def queue_sound(self, sound: pg.Sound, channel_id: int = 0, volume: float = 1.0, polite: bool = False, loops: int = 0):
         """Queues a sound to be played next frame.
 
         Args:
             sound (pygame.Sound): pygame.Sound instance to be played.
             channel_id (int, optional): ID of the channel the sound should be played in. Defaults to 0.
-            volume (float, optional): Sound volume. Ranges from 0.0 to 1.0. Defaults to 1.0.
+            volume (float, optional): Sound volume. Defaults to 1.0.
             polite (bool, optional): Polite sounds will not interupt currently playing sounds. Defaults to False.
             loops (int, optional): How many additional loops to play. Value of -1 indicates the sound is played continuesly. Defaults to 0.
 
@@ -111,14 +116,13 @@ class SoundControlPanel():
     def stop_channel(self, channel_id):
         pg.mixer.Channel(channel_id).stop()
 
-    def play_sound_queue(self) -> pg.Sound:
-        for _ in range(len(self.sound_queue)):
-            sound, channel, volume, polite, loops = self.sound_queue.pop(0)
+    def play_sound_queue(self):
+        while len(self.sound_queue) > 0:
+            sound, channel, volume, polite, loops = self.sound_queue.pop(0)  # FIFO
             sound.set_volume(volume * self.volume)
 
-            if polite:
-                if pg.mixer.Channel(channel).get_busy():
-                    continue
+            if polite and pg.mixer.Channel(channel).get_busy():
+                continue
             
             pg.mixer.Channel(channel).play(sound, loops=loops)
 
@@ -126,8 +130,9 @@ class SoundControlPanel():
         self.sound_queue.clear()
         
 
-class MusicControlPanel():
+class MusicControlPanel(Element):
     def __init__(self):
+        super().__init__(singleton=True)
         self.music_running = False
 
         self.fadeout_volume = 1
