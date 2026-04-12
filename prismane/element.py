@@ -10,9 +10,6 @@ class Element():
         self.element_tree = element_tree
         self.element_tree.register_element(self)
 
-    def update(self, master_panel: MasterControlPanel):
-        pass
-
 class ElementTree():
     def __init__(self):
         self.objects = {

@@ -1,7 +1,6 @@
 import pygame as pg
 import pathlib, json
 
-from .common import ASSETS_DIRECTORY
 from .settings import *
 
 
@@ -25,8 +24,6 @@ def clip_img(surf, x: int, y: int, width: int, height: int):
     return img_copy.subsurface(img_copy.get_clip())
 
 def load_images_from_dir(path: pathlib.Path):
-    images = {}
-
     path.iterdir()
     image_paths = [i for i in path.iterdir() if i.is_file()]
 
@@ -77,13 +74,4 @@ def load_spritesheet_from_dir(path: pathlib.Path):
 
     data["spritesheets"].update({spritesheet_data["id"]: spritesheet_data})
     images["spritesheets"].update({spritesheet_data["id"]: spritesheet})
-
-def load_assets():
-    load_spritesheet_from_dir(ASSETS_DIRECTORY / "props")
-    load_spritesheet_from_dir(ASSETS_DIRECTORY / "spawns")
-    load_tileset_from_dir(ASSETS_DIRECTORY / "tilesets" / "grass")
-    load_tileset_from_dir(ASSETS_DIRECTORY / "tilesets" / "default")
-    load_image(ASSETS_DIRECTORY / "cursor" / "cursor.png")
-    load_image(ASSETS_DIRECTORY / "fonts" / "smol_font.png")
-    load_images_from_dir(ASSETS_DIRECTORY / "buttons")
 
