@@ -23,17 +23,17 @@ class Scene():
     def unload(self):
         pass
 
-    def update(self, master_panel: MasterControlPanel):
+    def update(self):
         for ui_entity in self.groups["ui"]:
-            ui_entity.update(master_panel)
+            ui_entity.update()
 
         for entity in self.groups["entities"]:
-            entity.update(master_panel)
+            entity.update()
 
-    def draw(self, surface: pg.Surface, master_panel: MasterControlPanel):
+    def draw(self):
         for ui_entity in self.groups["ui"]:
-            ui_entity.draw(surface, master_panel)
+            ui_entity.queue_draw()
 
         for entity in self.groups["entities"]:
-            entity.draw(surface, master_panel)
+            entity.queue_draw()
 

@@ -33,7 +33,7 @@ class Engine():
         dt = self.clock.tick(self.FPS) / 1000  # divide by 1000 to get seconds since last call
         self.master_panel.update(dt, self.events)
 
-        self.current_scene.update(self.master_panel)
+        self.current_scene.update()
         self.master_panel.sound_panel.play_sound_queue()  # play all queued sounds
 
         if self.current_scene.change_scenes:
@@ -53,7 +53,7 @@ class Engine():
     def draw(self):
         self.display.fill((255, 255, 255))
 
-        self.current_scene.draw(self.display, self.master_panel)
+        self.current_scene.draw()
 
         pg.display.update()
 
