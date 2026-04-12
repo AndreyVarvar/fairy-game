@@ -2,7 +2,8 @@ import pygame as pg
 
 from .settings import *
 from .display import Display
-from prismane import Element
+from .element import Element
+from .panels import InputControlPanel
 # use MasterControlPanel from prismane for the mouse thingy
 
 def ease_in_quart(x) -> float:
@@ -40,7 +41,7 @@ class Camera(Element):
         else:
             self.target_pos = (self.display.image.width//2, self.display.image.height//2)
 
-    def follow_target(self, dt: float) -> None:
+    def follow_target(self) -> None:
         self.view_rect.center = self.target
         self.bound_rect.center = self.view_rect.center
         self.scroll.x += (self.bound_rect.x - self.scroll.x)
@@ -48,6 +49,7 @@ class Camera(Element):
 
     @property
     def mouse_pos_in_world(self) -> tuple[float, float]:
-        mouse_display_pos = self.element_tree["Mouse"].display_pos
+        input_panel: InputControlPanel = self.element_tree["InputControlPanel"]
+        mouse_display_pos = input_panel.mouse_pos
         return mouse_display_pos[0] + self.bound_rect.x, mouse_display_pos[1] + self.bound_rect.y
 

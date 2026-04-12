@@ -1,20 +1,21 @@
 import pygame as pg
 
-from .renderer import Renderer
 from .entity import Entity
-
+from .panels import InputControlPanel, GameControlPanel
 
 class Mover(Entity):
     def __init__(self, x: int, y: int) -> None:
         super().__init__()
         self.pos.update(x, y)
 
-    def move(self, dt: float) -> None:
-        keys_pressed = pg.key.get_pressed()
-        self.pos.y -= keys_pressed[pg.K_UP] * 500 * dt
-        self.pos.y += keys_pressed[pg.K_DOWN] * 500 * dt
-        self.pos.x += keys_pressed[pg.K_RIGHT] * 500 * dt
-        self.pos.x -= keys_pressed[pg.K_LEFT] * 500 * dt
+    def move(self) -> None:
+        input_panel: InputControlPanel = self.element_tree["InputControlPanel"]
+        game_panel: GameControlPanel = self.element_tree["GameControlPanel"]
+        dt = game_panel.dt
+        self.pos.y -= input_panel.keys_pressed[pg.K_UP] * 500 * dt
+        self.pos.y += input_panel.keys_pressed[pg.K_DOWN] * 500 * dt
+        self.pos.x += input_panel.keys_pressed[pg.K_RIGHT] * 500 * dt
+        self.pos.x -= input_panel.keys_pressed[pg.K_LEFT] * 500 * dt
 
 
 class Display(Entity):
@@ -34,5 +35,5 @@ class Display(Entity):
         self.pos.x, self.pos.y = (self.window.get_width() - self.frame.get_width()) // 2, (self.window.get_height() - self.frame.get_height()) // 2
 
     def blit(self) -> None:
-        self.objects["Renderer"].blit(self.z, self.target, self.frame, self.pos)
+        self.element_tree["Renderer"].blit(self.z, self.target, self.frame, self.pos)
 
