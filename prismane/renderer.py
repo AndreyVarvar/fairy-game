@@ -4,18 +4,23 @@ from prismane import Element
 
 # I swear this wasn't stolen
 class Renderer(Element):
-    def __init__(self, targets: list[str]) -> None:
+    def __init__(self) -> None:
         super().__init__(singleton=True)
-        self.targets = targets + ["window"]
-        self.queue: dict[str, list] = {target_name: [] for target_name in self.targets}
+        self.queue: dict[str, list] = {
+            "window": []
+        }
+
         self.order: int = 0
 
     def clear(self):
         self.order = 0
-        for target_name in self.targets:
+        for target_name in self.queue.keys():
             self.queue[target_name] = []
 
     def queue_draw(self, surface: pg.Surface, z: int, target: str, pos):
+        if target not in self.queue:
+            self.queue[target] = []
+
         self.queue[target].append([z, self.order, surface, pos])
         self.order += 1
 
