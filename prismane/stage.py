@@ -30,6 +30,7 @@ class Stage(Element):
                 entity.update()
 
     def draw(self):
+        self.element_tree["Renderer"].clear()
         for group in self.groups:
             for entity in self.groups[group]:
                 entity.queue_draw()

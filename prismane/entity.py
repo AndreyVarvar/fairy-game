@@ -25,7 +25,7 @@ class Entity(Element):
         pass
 
     def queue_draw(self):
-        self.element_tree["Renderer"].queue_draw(self.z, self.target, self.image, self.pos)
+        self.element_tree["Renderer"].queue_draw(self.image, self.z, self.target, self.pos)
 
 
 class EntityGroup(Element):

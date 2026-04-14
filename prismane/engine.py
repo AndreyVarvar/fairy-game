@@ -6,13 +6,13 @@ from .renderer import Renderer
 import asyncio
 
 class Engine():
-    def __init__(self, screen_size: tuple[int, int], title: str, fps: int=60):
+    def __init__(self, screen_size: tuple[int, int], title: str, fps: int=60, flags=0):
         pg.mixer.pre_init(buffer=2048)
         pg.init()
         
         self.screen_size = self.screen_width, self.screen_height = screen_size
         # TODO: make self.window  for the shenanigans with resizing or whatever
-        self.display = pg.display.set_mode(screen_size)
+        self.display = pg.display.set_mode(screen_size, flags=flags)
         pg.display.set_caption(title)
 
         # internal variables
@@ -28,7 +28,7 @@ class Engine():
 
         self.scenes = {}
         self.current_scene: Stage
-    
+
     def populate_scenes(self, scenes: dict[str, type[Stage]], initial_scene_name: str):
         self.scenes = scenes
         self.current_scene = self.scenes[initial_scene_name]()

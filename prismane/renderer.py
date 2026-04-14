@@ -39,4 +39,3 @@ class Renderer(Element):
                 self.queue[target_name].sort(key = lambda x:x[0])
                 for sprite in self.queue[target_name]:
                     target.blit(sprite[2], sprite[3])
-
