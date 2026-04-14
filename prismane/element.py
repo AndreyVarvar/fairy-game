@@ -1,6 +1,4 @@
 from __future__ import annotations  # needed to make Object and ObjectGroup callses be able to reference each other
-from .panels import MasterControlPanel
-import pygame as pg
 
 
 class Element():

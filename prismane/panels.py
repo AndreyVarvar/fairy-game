@@ -74,7 +74,10 @@ class InputControlPanel(Element):
             pg.mouse.set_cursor(self.cursor_queue[0])
             self.cursor_queue.clear()
     
-    def queue_cursor(self, cursor: pg.Cursor):
+    def queue_cursor(self, cursor: int):
+        """
+        cursor: int. Example: pygame.SYSTEM_CURSOR_ARROW
+        """
         self.cursor_queue.append(cursor)
 
     def consume_mouse_click(self):

@@ -1,6 +1,6 @@
 import pygame as pg
 
-from prismane import Element
+from .element import Element
 
 
 class Entity(Element):
@@ -21,7 +21,7 @@ class Entity(Element):
         return pg.FRect(*self.pos, *self.size)
 
     def update(self):
-        # for all input, sound, or music related stuff (+dt and game_running_time) use "InputControlPanel", "SoundControlPanel", and "MusicControlPanel"
+        # for all input, sound, or music related stuff (+dt and game_running_time) use "InputControlPanel", "SoundControlPanel", and "MusicControlPanel" (+"GameControlPanel")
         pass
 
     def queue_draw(self):

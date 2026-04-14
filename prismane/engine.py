@@ -1,6 +1,7 @@
 import pygame as pg
 from .panels import MasterControlPanel
-from .scene import Scene
+from .stage import Stage
+from .renderer import Renderer
 
 import asyncio
 
@@ -10,6 +11,7 @@ class Engine():
         pg.init()
         
         self.screen_size = self.screen_width, self.screen_height = screen_size
+        # TODO: make self.window  for the shenanigans with resizing or whatever
         self.display = pg.display.set_mode(screen_size)
         pg.display.set_caption(title)
 
@@ -22,10 +24,12 @@ class Engine():
 
         self.master_panel = MasterControlPanel()
 
+        self.renderer = Renderer()
+
         self.scenes = {}
-        self.current_scene: Scene
+        self.current_scene: Stage
     
-    def populate_scenes(self, scenes: dict[str, type[Scene]], initial_scene_name: str):
+    def populate_scenes(self, scenes: dict[str, type[Stage]], initial_scene_name: str):
         self.scenes = scenes
         self.current_scene = self.scenes[initial_scene_name]()
 
@@ -43,6 +47,7 @@ class Engine():
             self.current_scene = self.scenes[new_scene]()
             self.current_scene.load()
 
+
     def check_events(self):
         self.events = pg.event.get()
         for event in self.events:
@@ -53,7 +58,8 @@ class Engine():
     def draw(self):
         self.display.fill((255, 255, 255))
 
-        self.current_scene.draw()
+        self.current_scene.draw() 
+        self.renderer.draw({"window": self.display})
 
         pg.display.update()
 

@@ -1,7 +1,7 @@
 from .engine import Engine
-from .scene import Scene
+from .stage import Stage
 from .element import Element, ElementTree
-from .panels import MasterControlPanel
+from .panels import MasterControlPanel, InputControlPanel, SoundControlPanel, MusicControlPanel, GameControlPanel
 from .camera import Camera
 from .display import Display
 from .entity import Entity, EntityGroup

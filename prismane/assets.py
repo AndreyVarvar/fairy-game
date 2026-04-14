@@ -4,7 +4,7 @@ import pathlib, json
 from .settings import *
 
 
-images: dict[dict[str, dict[str, pg.Surface]] | str, pg.Surface] = {
+images = {
     "spritesheets": {},
     "tilesets": {}
 }
@@ -12,6 +12,12 @@ data = {
     "spritesheets": {},
     "tilesets": {}
 }
+
+
+def get_image(path: pathlib.Path):
+    load_image(path)
+    return images[path.stem]
+
 
 def load_image(path: pathlib.Path):
     if path.name not in images:
