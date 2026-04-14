@@ -14,7 +14,8 @@ data = {
 }
 
 
-def get_image(path: pathlib.Path):
+# TODO: somehow make this incorporate the "from dir" thing
+def get_image(path: pathlib.Path) -> pg.Surface:
     load_image(path)
     return images[path.stem]
 

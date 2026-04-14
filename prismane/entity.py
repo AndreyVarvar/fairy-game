@@ -25,7 +25,7 @@ class Entity(Element):
         pass
 
     def queue_draw(self):
-        self.element_tree["Renderer"].blit(self.z, self.target, self.image, self.pos)
+        self.element_tree["Renderer"].queue_draw(self.z, self.target, self.image, self.pos)
 
 
 class EntityGroup(Element):
@@ -33,7 +33,7 @@ class EntityGroup(Element):
         super().__init__()
         self.entities: list[Entity] = list(entities)
 
-    def blit(self) -> None:
+    def queue_draw(self) -> None:
         for entity in self.entities:
             entity.queue_draw()
 
