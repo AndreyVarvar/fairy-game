@@ -2,14 +2,16 @@ from .entity import Entity
 from .panels import InputControlPanel
 
 import pygame as pg
+from collections.abc import Callable
 
 
 class Button(Entity):
-    def __init__(self, rect: pg.Rect, z=1):
+    def __init__(self, rect: pg.Rect, z=1, func: Callable = lambda: None):
         super().__init__()
         self.z = z
         self.pos = pg.Vector2(rect.topleft)
         self.size = rect.size
+        self.func = func
         self.pressed = False
         self.was_pressed_on_self = False
         self.was_released_on_self = False
@@ -44,4 +46,5 @@ class Button(Entity):
             self.was_released_on_self = False
 
             self.pressed = True
+            self.func()
 

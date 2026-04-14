@@ -1,12 +1,15 @@
 from prismane import Stage
-from .ui import StartButton
+from prismane.ui import Button
 
 
 
 class MainMenuStage(Stage):
     def __init__(self):
         super().__init__()
-        self.populate_group("ui", StartButton(z=1))
+        self.populate_group("ui", Button(pg.Rect(100, 100, 100, 100), 1, lambda: self.queue_next_scene("game")))
 
 
-
+class GameStage(Stage):
+    def __init__(self):
+        super().__init__()
+        pass
