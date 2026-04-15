@@ -15,7 +15,7 @@ class Engine(Element):
         
         self.screen_size = self.screen_width, self.screen_height = screen_size
         # TODO: make self.window for the shenanigans with resizing or whatever
-        self.display = pg.display.set_mode(screen_size, flags=flags)
+        self.window = pg.display.set_mode(screen_size, flags=flags)
         pg.display.set_caption(title)
 
         # internal variables
@@ -60,10 +60,10 @@ class Engine(Element):
 
 
     def draw(self):
-        self.display.fill((255, 255, 255))
+        self.window.fill((255, 255, 255))
 
         self.current_scene.draw() 
-        self.renderer.draw({"window": self.display})
+        self.renderer.draw({"window": self.window})
 
         pg.display.update()
 

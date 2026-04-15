@@ -1,4 +1,5 @@
 import pygame as pg
+from collections.abc import Callable
 from .element import Element
 
 
@@ -22,10 +23,19 @@ class GameControlPanel(Element):
         super().__init__(singleton=True)
         self.run_time = 0
         self.dt: float
+        self.timed_events = []
 
     def update(self, dt):
         self.dt = dt
         self.run_time += dt
+
+        for timed_event in self.timed_events:
+            timed_event[0] -= dt
+            if timed_event[0] <= 0:
+                timed_event[1]()
+
+    def register_timed_event(self, time_til, func: Callable):
+        self.timed_events.append([time_til, func])
 
 
 class InputControlPanel(Element):
