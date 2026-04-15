@@ -3,8 +3,12 @@ from .element import Element
 
 
 class Stage(Element):
+    """
+    Stages are my implementation of states for a game. A given stage oversees all objects currently loaded.
+    Each scene can also implement custom behaviour for certain elements (e.g. if the player reaches 0 health, change the scene)
+    """
     def __init__(self):
-        super().__init__(singleton=True)  # each stage should be a singleton
+        super().__init__(singleton=True, name="CurrentStage")  # each stage should be a singleton
 
         self.groups: dict[str, EntityGroup] = {}
 

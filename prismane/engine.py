@@ -2,16 +2,19 @@ import pygame as pg
 from .panels import MasterControlPanel
 from .stage import Stage
 from .renderer import Renderer
+from .element import Element
 
 import asyncio
 
-class Engine():
+class Engine(Element):
     def __init__(self, screen_size: tuple[int, int], title: str, fps: int=60, flags=0):
+        super().__init__(singleton=True)
+
         pg.mixer.pre_init(buffer=2048)
         pg.init()
         
         self.screen_size = self.screen_width, self.screen_height = screen_size
-        # TODO: make self.window  for the shenanigans with resizing or whatever
+        # TODO: make self.window for the shenanigans with resizing or whatever
         self.display = pg.display.set_mode(screen_size, flags=flags)
         pg.display.set_caption(title)
 
@@ -43,7 +46,8 @@ class Engine():
         if self.current_scene.change_scenes:
             new_scene: str = self.current_scene.next_scene
             self.master_panel.music_panel.stop_music()
-            self.current_scene.unload()
+            self.current_scene.unload()  # custom defined function
+            self.current_scene.destroy()  # function to remove self from the element tree. Always here
             self.current_scene = self.scenes[new_scene]()
             self.current_scene.load()
 

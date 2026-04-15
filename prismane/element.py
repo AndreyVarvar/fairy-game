@@ -8,6 +8,9 @@ class Element():
         self.element_tree = element_tree
         self.element_tree.register_element(self)
 
+    def destroy(self):
+        self.element_tree.delete_element(self)
+
 class ElementTree():
     def __init__(self):
         self.objects = {
@@ -25,9 +28,11 @@ class ElementTree():
 
     def delete_element(self, elem: Element):
         if elem._singleton and elem.name in self.objects["singletons"]:
-            self.objects["singletons"].pop(elem.name)
+            del self.objects["singletons"]
         elif elem.name in self.objects["groups"]:
             self.objects["groups"][elem.name].remove(elem)
+            if len(self.objects["groups"][elem.name]) == 0:
+                del self.objects["groups"][elem.name]
 
     # only for singletons
     def __getitem__(self, key):
