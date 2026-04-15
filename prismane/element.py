@@ -28,7 +28,7 @@ class ElementTree():
 
     def delete_element(self, elem: Element):
         if elem._singleton and elem.name in self.objects["singletons"]:
-            del self.objects["singletons"]
+            del self.objects["singletons"][elem.name]
         elif elem.name in self.objects["groups"]:
             self.objects["groups"][elem.name].remove(elem)
             if len(self.objects["groups"][elem.name]) == 0:

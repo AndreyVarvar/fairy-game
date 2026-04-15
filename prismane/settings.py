@@ -1,3 +1,4 @@
+# TODO: currently this window size and the one in the engine are not related
 WINDOW_SIZE = WINDOW_WIDTH, WINDOW_HEIGHT = (960, 480)
 DISPLAY_SIZE = DISPLAY_WIDTH, DISPLAY_HEIGHT = (512, 384)
 FULL_SCREEN = False

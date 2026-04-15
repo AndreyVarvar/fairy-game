@@ -5,23 +5,45 @@ from .element import Element
 class MasterControlPanel(Element):  # used to update all the panels in one place
     def __init__(self):
         super().__init__(singleton=True)
-        self.game_panel = GameControlPanel()
+        self.time_panel = TimeControlPanel()
         self.input_panel = InputControlPanel()
         self.sound_panel = SoundControlPanel()
         self.music_panel = MusicControlPanel()
 
     def update(self, dt: float, events):
-        self.game_panel.update(dt)
+        self.time_panel.update(dt)
         self.input_panel.update(events)
         self.sound_panel.update()
         self.music_panel.update(dt)
 
 
-class GameControlPanel(Element):
+class TimeControlPanel(Element):
     def __init__(self):
         super().__init__(singleton=True)
         self.run_time = 0
         self.dt: float
+
+        self.timers: dict[int, float] = {}
+        self.timer_id = 0
+
+    def queue_timer(self, duration: float | int) -> int:
+        self.timer_id += 1
+        self.timers[self.timer_id] = self.run_time + duration
+        return self.timer_id  # return the timer id so that the object that queued the timer can access the timer later
+
+    def check_timer(self, timer_id: int) -> float:
+        """
+        timer_id: int. The ID of the timer given when the timer was initialized.
+        Returns the remaining time till the end of the timer
+        """
+        if timer_id not in self.timers:
+            return 0.0
+        
+        time_remaining = self.timers[timer_id] - self.run_time
+        if time_remaining <= 0.0:
+            del self.timers[timer_id]
+            return 0.0
+        return time_remaining
 
     def update(self, dt):
         self.dt = dt

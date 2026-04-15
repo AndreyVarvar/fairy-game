@@ -1,7 +1,7 @@
 import pygame as pg
 
 from .entity import Entity
-from .panels import InputControlPanel, GameControlPanel
+from .panels import InputControlPanel, TimeControlPanel
 
 class Mover(Entity):
     def __init__(self, x: int, y: int) -> None:
@@ -10,7 +10,7 @@ class Mover(Entity):
 
     def move(self) -> None:
         input_panel: InputControlPanel = self.element_tree["InputControlPanel"]
-        game_panel: GameControlPanel = self.element_tree["GameControlPanel"]
+        game_panel: TimeControlPanel = self.element_tree["TimeControlPanel"]
         dt = game_panel.dt
         self.pos.y -= input_panel.keys_pressed[pg.K_UP] * 500 * dt
         self.pos.y += input_panel.keys_pressed[pg.K_DOWN] * 500 * dt
