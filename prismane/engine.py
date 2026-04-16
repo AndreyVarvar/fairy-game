@@ -3,6 +3,7 @@ from .panels import MasterControlPanel
 from .stage import Stage
 from .renderer import Renderer
 from .element import Element
+from .settings import WINDOW_SIZE
 
 import asyncio
 
@@ -12,6 +13,8 @@ class Engine(Element):
 
         pg.mixer.pre_init(buffer=2048)
         pg.init()
+
+        WINDOW_SIZE = screen_size
 
         self.screen_size = self.screen_width, self.screen_height = screen_size
         # TODO: make self.window for the shenanigans with resizing or whatever

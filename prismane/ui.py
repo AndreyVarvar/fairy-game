@@ -2,7 +2,6 @@ from .entity import Entity
 from .panels import InputControlPanel
 
 import pygame as pg
-from collections.abc import Callable
 
 
 class Button(Entity):
@@ -10,19 +9,15 @@ class Button(Entity):
         self, 
         rect: pg.Rect, 
         z=1, 
-        on_press: Callable = lambda: None,
-        image: pg.Surface | None = None
     ):
         super().__init__()
         self.z = z
         self.pos = pg.Vector2(rect.topleft)
         self.size = rect.size
-        self._on_press_func = on_press
         self.pressed = False
         self.was_pressed_on_self = False
         self.was_released_on_self = False
         self.hovering = False
-        self.image = image
 
     def update(self):
         # this implementation assumes that all UI elements are updated based on the z-index
@@ -52,6 +47,5 @@ class Button(Entity):
             self.was_pressed_on_self = False
             self.was_released_on_self = False
 
-            self.pressed = True
-            self._on_press_func()
+            self.pressed = True  # will be True until next update
 

@@ -22,7 +22,7 @@ class Camera(Element):
         self.scroll: pg.Vector2 = pg.Vector2()
 
     @property
-    def target(self) -> pg.typing.Point:
+    def target(self) -> tuple[int, int]:
         if self.target_sprite:
             return self.target_sprite.center
         elif self.target_pos:

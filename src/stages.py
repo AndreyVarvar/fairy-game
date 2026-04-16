@@ -1,51 +1,21 @@
 from prismane import Stage
-<<<<<<< HEAD
-from prismane import Entity
-=======
-from prismane.panels import TimeControlPanel
->>>>>>> poc_inheritance
-from prismane.ui import Button
 from prismane.assets import get_image
-from prismane.settings import DISPLAY_SIZE
-
-import pygame as pg
 from pathlib import Path
+from prismane.settings import WINDOW_WIDTH
 
+from .ui import FButton
 
-# for special effects if you want
-def ease_in_quart(x) -> float:
-    return pg.math.clamp(x * x * x * x, 0, 1)
-
-
-class FadeOut(Entity):
-    def __init__(self, time) -> None:
-        super().__init__(singleton=False)
-        self.image = pg.Surface(self.element_tree["Engine"].screen_size)
-        self.image.fill((0, 255, 0, 255))
-        self.end_time = time * 1000 # Time in seconds
-        self.start_time = pg.time.get_ticks()
-        self.opacity = 0
-        self.z = 10000000000
-
-    def update(self):
-        self.image.set_alpha(self.opacity)
-        self.opacity = int(pg.math.remap(0, self.end_time, 0, 255, min(pg.time.get_ticks() - self.start_time, self.end_time)))
 
 
 class MainMenuStage(Stage):
     def __init__(self):
         super().__init__()
-<<<<<<< HEAD
-        self.populate_group("ui",
-                            Button(
-                                pg.Rect(100, 100, 100, 100),
-                                z=1,
-                                on_press=lambda: (
-                                    self.groups["ui"].add(FadeOut(4)),
-                                    self.element_tree["GameControlPanel"].register_timed_event(4, lambda: self.queue_next_scene("game"))
-                                                  ),
-                                image=get_image(Path("assets/ui/start_button.png"))
-                                   )
+
+        start_button = FButton(pos=(WINDOW_WIDTH//2, 200), image=get_image(Path("assets/ui/start_button.png")), z=1)
+
+
+        self.populate_group("ui", 
+                            start_button
         )
 
     def draw(self):
@@ -53,38 +23,6 @@ class MainMenuStage(Stage):
         window = self.element_tree["Engine"].window
         window.fill("white")
         self.element_tree["Renderer"].draw({"window": window})
-=======
-
-        self.transition_timer_id = None
-        self.transition_effect = pg.Surface(self.element_tree["Engine"].screen_size, pg.SRCALPHA)
-        self.transition_time = 1  # second
-
-        self.time_panel: TimeControlPanel = self.element_tree["TimeControlPanel"]
-
-        self.populate_group("ui", 
-                            Button(
-                                pg.Rect(100, 100, 100, 100), 
-                                z=1, 
-                                on_press=lambda: self.__setattr__("transition_timer_id", self.time_panel.queue_timer(self.transition_time)), 
-                                image=get_image(Path("assets/ui/start_button.png"))
-                            )
-        )
-
-    def update(self):
-        super().update()
-
-
-        if self.transition_timer_id is not None:
-            remaining_time = self.time_panel.check_timer(self.transition_timer_id)
-            if remaining_time == 0.0:
-                self.queue_next_stage("game")
-            else:
-                self.transition_effect.fill((0, 0, 0, int(255 - 255 * remaining_time // self.transition_time)))
-
-    def draw(self):
-        super().draw()
-        self.element_tree["Renderer"].queue_draw(self.transition_effect, 1, "window", (0, 0))
->>>>>>> poc_inheritance
 
 class GameStage(Stage):
     def __init__(self):
@@ -93,10 +31,5 @@ class GameStage(Stage):
 
     def draw(self):
         super().draw()
-<<<<<<< HEAD
         window = self.element_tree["Engine"].window
         window.fill("blue")
-=======
-
-
->>>>>>> poc_inheritance

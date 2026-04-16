@@ -23,7 +23,7 @@ def convert_pos_to(level_data, convert):
 
 
 class Level(Entity):
-    def __init__(self, file_path: pg.typing.FileLike, camera: Camera) -> None:
+    def __init__(self, file_path: str, camera: Camera) -> None:
         super().__init__()
         self.file = str(file_path)
         self.camera = camera

@@ -23,7 +23,6 @@ class TimeControlPanel(Element):
         super().__init__(singleton=True)
         self.run_time = 0
         self.dt: float
-        self.timed_events = []
 
         self.timers: dict[int, float] = {}
         self.timer_id = 0
@@ -50,14 +49,6 @@ class TimeControlPanel(Element):
     def update(self, dt):
         self.dt = dt
         self.run_time += dt
-
-        for timed_event in self.timed_events:
-            timed_event[0] -= dt
-            if timed_event[0] <= 0:
-                timed_event[1]()
-
-    def register_timed_event(self, time_til, func: Callable):
-        self.timed_events.append([time_til, func])
 
 
 class InputControlPanel(Element):
@@ -108,7 +99,7 @@ class InputControlPanel(Element):
     
     def queue_cursor(self, cursor: int):
         """
-        cursor: int. Example: pygame.SYSTEM_CURSOR_ARROW
+        cursor: int. An instance of a pygame system cursor. Example: pygame.SYSTEM_CURSOR_ARROW
         """
         self.cursor_queue.append(cursor)
 
@@ -126,9 +117,10 @@ class SoundControlPanel(Element):
         self.mute = False
 
     def update(self):
+        self.volume = min(1, max(0, self.volume))
         self.mute = (self.volume == 0)
 
-    def queue_sound(self, sound: pg.Sound, channel_id: int = 0, volume: float = 1.0, polite: bool = False, loops: int = 0):
+    def queue_sound(self, sound: pg.mixer.Sound, channel_id: int = 0, volume: float = 1.0, polite: bool = False, loops: int = 0):
         """Queues a sound to be played next frame.
 
         Args:

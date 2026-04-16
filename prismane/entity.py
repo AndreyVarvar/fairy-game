@@ -7,13 +7,13 @@ class Entity(Element):
     def __init__(self, singleton: bool = False) -> None:
         super().__init__(singleton)
         self.pos: pg.Vector2 = pg.Vector2()
-        self.size: pg.typing.Point = [0, 0]
+        self.size: list[int] = [0, 0]
         self.image: pg.Surface
         self.target: str = "window"
         self.z: int = 0
 
     @property
-    def center(self) -> pg.typing.Point:
+    def center(self) -> tuple[float, float]:
         return self.rect.center
 
     @property
