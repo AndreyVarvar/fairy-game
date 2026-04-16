@@ -23,8 +23,14 @@ class Stage(Element):
     def populate_group(self, group: str, *entities: Entity):
         self.groups[group] = EntityGroup(*entities)
 
+    def add_to_group(self, group: str, entity: Entity):
+        self.groups[group].add(entity)
+
     def populate_events(self, *events: Event):
         self.events = [*events]
+
+    def add_event(self, event: Event):
+        self.events.append(event)
 
     def queue_next_stage(self, next_scene_name):
         self.change_stages = True

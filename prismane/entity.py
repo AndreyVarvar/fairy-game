@@ -6,7 +6,7 @@ from .element import Element
 class Entity(Element):
     def __init__(self, singleton: bool = False) -> None:
         super().__init__(singleton)
-        self.pos: pg.Vector2 = pg.Vector2()
+        self.pos: pg.Vector2 = pg.Vector2(0, 0)
         self.size: list[int] = [0, 0]
         self.image: pg.Surface
         self.target: str = "window"
@@ -49,10 +49,17 @@ class EntityGroup(Element):
 
         for entity in self.queue:
             self.entities.append(entity)
+        self.queue.clear()
 
     def __iter__(self):
         for entity in self.entities:
             yield entity
+
+    def __repr__(self):
+        return str(self.entities)
+
+    def __str__(self):
+        return str(self.entities)
 
     def __getitem__(self, index):
         return self.entities[index]

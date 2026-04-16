@@ -43,7 +43,6 @@ class ElementTree():
             return self.objects["groups"][group]
         return []
 
-
 element_tree: ElementTree = ElementTree()
 
 # Hey what's this doing here?

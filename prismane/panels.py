@@ -24,12 +24,12 @@ class TimeControlPanel(Element):
         self.run_time = 0
         self.dt: float
 
-        self.timers: dict[int, float] = {}
+        self.timers: dict[int, tuple[float | int, float | int]] = {}  # tuples of (duration, run_time + duration)
         self.timer_id = 0
 
     def queue_timer(self, duration: float | int) -> int:
         self.timer_id += 1
-        self.timers[self.timer_id] = self.run_time + duration
+        self.timers[self.timer_id] = (duration, self.run_time + duration)
         return self.timer_id  # return the timer id so that the object that queued the timer can access the timer later
 
     def check_timer(self, timer_id: int) -> float:
@@ -40,15 +40,29 @@ class TimeControlPanel(Element):
         if timer_id not in self.timers:
             return 0.0
         
-        time_remaining = self.timers[timer_id] - self.run_time
-        if time_remaining <= 0.0:
-            del self.timers[timer_id]
-            return 0.0
-        return time_remaining
+        return pg.math.clamp(self.timers[timer_id][1] - self.run_time, 0, self.timers[timer_id][0])
+
+    def check_timer_completion(self, timer_id: int) -> float:
+        """
+        timer_id: int. The ID of the timer given when the timer was initialized.
+        Returns the completion percentage of the timer.
+        """
+        remaining_time = self.check_timer(timer_id)
+        if remaining_time == 0.0:
+            return 1.0
+        
+        return 1.0 - remaining_time/self.timers[timer_id][0]
 
     def update(self, dt):
         self.dt = dt
         self.run_time += dt
+
+        completed_timers_id = []
+        for timer_id in self.timers.keys():
+            if self.timers[timer_id][1] - self.run_time <= 0:
+                completed_timers_id.append(timer_id)
+        for id in completed_timers_id:
+            del self.timers[id]
 
 
 class InputControlPanel(Element):
