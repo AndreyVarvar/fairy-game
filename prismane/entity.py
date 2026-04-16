@@ -32,11 +32,27 @@ class EntityGroup(Element):
     def __init__(self, *entities: Entity) -> None:
         super().__init__()
         self.entities: list[Entity] = list(entities)
+        self.queue = []
+
+    def add(self, *entities: Entity):
+        for entity in entities:
+            self.queue.append(entity)
 
     def queue_draw(self) -> None:
         for entity in self.entities:
             entity.queue_draw()
 
+    def update(self) -> None:
+        # NOTE: we should make this work with chunks
+        for entity in self.entities:
+            entity.update()
+
+        for entity in self.queue:
+            self.entities.append(entity)
+
     def __iter__(self):
         for entity in self.entities:
             yield entity
+
+    def __getitem__(self, index):
+        return self.entities[index]

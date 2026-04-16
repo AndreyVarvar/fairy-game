@@ -34,6 +34,6 @@ class Display(Entity):
         self.size = self.frame.size
         self.pos.x, self.pos.y = (self.window.get_width() - self.frame.get_width()) // 2, (self.window.get_height() - self.frame.get_height()) // 2
 
-    def blit(self) -> None:
-        self.element_tree["Renderer"].blit(self.z, self.target, self.frame, self.pos)
+    def queue_draw(self) -> None:
+        self.element_tree["Renderer"].queue_draw(self.frame, self.z, self.target, self.pos)
 

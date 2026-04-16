@@ -11,6 +11,8 @@ class Stage(Element):
         super().__init__(singleton=True, name="CurrentStage")  # each stage should be a singleton
 
         self.groups: dict[str, EntityGroup] = {}
+        self.queue: list[EntityGroup] = []
+        self.locked = True
 
         self.change_scenes = False
         self.next_scene: str
@@ -29,13 +31,11 @@ class Stage(Element):
         pass
 
     def update(self):
-        for group in self.groups:
-            for entity in self.groups[group]:
-                entity.update()
+        for group in self.groups.values():
+            group.update()
 
     def draw(self):
         self.element_tree["Renderer"].clear()
-        for group in self.groups:
-            for entity in self.groups[group]:
-                entity.queue_draw()
+        for group in self.groups.values():
+            group.queue_draw()
 

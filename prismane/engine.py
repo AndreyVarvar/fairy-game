@@ -12,7 +12,7 @@ class Engine(Element):
 
         pg.mixer.pre_init(buffer=2048)
         pg.init()
-        
+
         self.screen_size = self.screen_width, self.screen_height = screen_size
         # TODO: make self.window for the shenanigans with resizing or whatever
         self.window = pg.display.set_mode(screen_size, flags=flags)
@@ -51,19 +51,16 @@ class Engine(Element):
             self.current_scene = self.scenes[new_scene]()
             self.current_scene.load()
 
-
     def check_events(self):
         self.events = pg.event.get()
         for event in self.events:
             if event.type == pg.QUIT:
                 self.running = False
 
-
     def draw(self):
-        self.window.fill((255, 255, 255))
+        self.window.fill((0, 0, 0))
 
         self.current_scene.draw() 
-        self.renderer.draw({"window": self.window})
 
         pg.display.update()
 
