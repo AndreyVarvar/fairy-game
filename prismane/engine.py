@@ -29,27 +29,34 @@ class Engine(Element):
 
         self.renderer = Renderer()
 
-        self.scenes = {}
-        self.current_scene: Stage
+        self.stages = {}
+        self.current_stage: Stage
 
-    def populate_scenes(self, scenes: dict[str, type[Stage]], initial_scene_name: str):
-        self.scenes = scenes
-        self.current_scene = self.scenes[initial_scene_name]()
+    def populate_stages(self, stages: dict[str, type[Stage]], initial_stage_name: str):
+        self.stages = stages
+        self.current_stage = self.stages[initial_stage_name]()
 
     def update(self):
         dt = self.clock.tick(self.FPS) / 1000  # divide by 1000 to get seconds since last call
         self.master_panel.update(dt, self.events)
 
-        self.current_scene.update()
+        self.current_stage.update()
         self.master_panel.sound_panel.play_sound_queue()  # play all queued sounds
 
-        if self.current_scene.change_scenes:
-            new_scene: str = self.current_scene.next_scene
-            self.master_panel.music_panel.stop_music()
-            self.current_scene.unload()  # custom defined function
-            self.current_scene.destroy()  # function to remove self from the element tree. Always here
-            self.current_scene = self.scenes[new_scene]()
-            self.current_scene.load()
+        if self.current_stage.change_stages:
+            self.change_stage()
+
+    def change_stage(self):
+        new_stage: str = self.current_stage.next_stage
+        self.master_panel.music_panel.stop_music()
+
+        # delete old information
+        self.current_stage.unload()  # custom defined function
+        self.current_stage.destroy()  # function to remove self from the element tree. Always here
+        
+        # load new information
+        self.current_stage = self.stages[new_stage]()
+        self.current_stage.load()
 
     def check_events(self):
         self.events = pg.event.get()
@@ -60,7 +67,7 @@ class Engine(Element):
     def draw(self):
         self.window.fill((0, 0, 0))
 
-        self.current_scene.draw() 
+        self.current_stage.draw() 
 
         pg.display.update()
 
@@ -74,7 +81,7 @@ class Engine(Element):
             await asyncio.sleep(0)
 
     def start(self):
-        if self.current_scene is None:
-            raise Exception("No initial scene was defined.")
+        if self.current_stage is None:
+            raise Exception("No initial stage was defined.")
 
         asyncio.run(self.run())

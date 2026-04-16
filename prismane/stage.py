@@ -14,15 +14,15 @@ class Stage(Element):
         self.queue: list[EntityGroup] = []
         self.locked = True
 
-        self.change_scenes = False
-        self.next_scene: str
+        self.change_stages = False
+        self.next_stage: str
 
     def populate_group(self, group: str, *entities: Entity):
         self.groups[group] = EntityGroup(*entities)
 
-    def queue_next_scene(self, next_scene_name):
-        self.change_scenes = True
-        self.next_scene = next_scene_name
+    def queue_next_stage(self, next_scene_name):
+        self.change_stages = True
+        self.next_stage = next_scene_name
     
     def load(self):
         pass
