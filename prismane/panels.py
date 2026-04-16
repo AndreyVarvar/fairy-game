@@ -78,6 +78,8 @@ class InputControlPanel(Element):
         self.mouse_release_pos: tuple[int, int] = (0, 0)
         self.mouse_pos: tuple[int, int] = (0, 0)
 
+        self.scroll: tuple[int, int] = (0, 0)
+
         self.cursor_queue = []
 
     def update(self, events: list[pg.Event]):
@@ -90,14 +92,19 @@ class InputControlPanel(Element):
         self.mouse_pos = pg.mouse.get_pos()
 
         for event in events:
-            if event.type == pg.MOUSEBUTTONDOWN:
-                self.mouse_pressed[event.button-1] = True
-                self.mouse_just_pressed[event.button-1] = True
-            elif event.type == pg.MOUSEBUTTONUP:
-                self.mouse_pressed[event.button-1] = False
-                self.mouse_just_released[event.button-1] = True
-            elif event.type == pg.KEYDOWN:
-                self.keys_just_pressed.append(event.key)
+            match event.type:
+                case pg.MOUSEWHEEL:
+                    self.scroll = (event.x, event.y)
+                case pg.MOUSEBUTTONDOWN:
+                    if event.button <= 3:
+                        self.mouse_pressed[event.button-1] = True
+                        self.mouse_just_pressed[event.button-1] = True
+                case pg.MOUSEBUTTONUP:
+                    if event.button <= 3:
+                        self.mouse_pressed[event.button-1] = False
+                        self.mouse_just_released[event.button-1] = True
+                case pg.KEYDOWN:
+                    self.keys_just_pressed.append(event.key)
 
         if self.mouse_just_pressed[0]:
             self.mouse_click_pos = pg.mouse.get_pos()

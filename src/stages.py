@@ -17,10 +17,11 @@ class MainMenuStage(Stage):
         super().__init__()
 
         start_button = FButton(pos=(WINDOW_WIDTH//2, 200), image=get_image(Path("assets/ui/start_button.png")), z=1)
-        
+        rules_button = FButton(pos=(WINDOW_WIDTH//2, 500), image=get_image(Path("assets/ui/rules_button.png")), z=1)
 
         self.populate_group("ui", 
                             start_button,
+                            rules_button,
                             Background(get_image(Path("assets/backgrounds/title.png")))
                             )
 
