@@ -209,3 +209,4 @@ __marimo__/
 
 # Other 
 *.prof
+.DS_Store
