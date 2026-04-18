@@ -23,7 +23,7 @@ class Background(Entity):
         self.z = 0  # push it back
 
         if self.mode == "stretch":
-            self.image = pg.transform.scale(self.reference, WINDOW_SIZE)
+            pg.transform.scale(self.reference, WINDOW_SIZE, self.image)
         
         self.prev_offset = offset
 
