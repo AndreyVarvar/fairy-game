@@ -8,8 +8,7 @@ game = Engine()
 
 game.create_window(
     title="prototype",
-    size=WINDOW_SIZE,
-    fullscreen_desktop=True
+    size=WINDOW_SIZE
 )
 game.populate_stages({"main menu": MainMenuStage, "game": GameStage}, "main menu")
 

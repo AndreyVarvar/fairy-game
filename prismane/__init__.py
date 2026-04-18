@@ -7,6 +7,6 @@ from .display import Display
 from .camera import Camera
 from .entity import Entity, EntityGroup
 from .level import Level
-from .renderer import Renderer
+from .renderer_manager import RendererManager
 from .event import Event
 

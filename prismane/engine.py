@@ -1,8 +1,10 @@
-import pygame as pg
 from .panels import MasterControlPanel
 from .stage import Stage
-from .renderer import Renderer
 from .element import Element
+from .renderer_manager import RendererManager
+
+import pygame as pg
+import pygame._sdl2 as sdl2
 
 import asyncio
 
@@ -22,11 +24,12 @@ class Engine(Element):
         self.events: list
 
         self.clock = pg.time.Clock()
+        # TODO: implement some sort of SETTINGS control to store all these things such as fps, screen resolution, etc.
         self.FPS = fps
 
         self.master_panel = MasterControlPanel()
 
-        self.renderer = Renderer()
+        self.renderer_manager: RendererManager = RendererManager()
 
         self.stages = {}
         self.current_stage: Stage = None
@@ -84,6 +87,7 @@ class Engine(Element):
 
         if self.window is None:
             self.window = window
+            self.renderer = sdl2.Renderer(self.window)
         else:
             # TODO: support for multiple windows
             print("Newly created window was ignored. No implementation for handling multiple windows has been implemented.")
@@ -136,7 +140,6 @@ class Engine(Element):
         if self.starting_stage is None:
             raise Exception("No initial stage was defined.")
 
-        self.display = self.window.get_surface()
         self.current_stage = self.stages[self.starting_stage]()
 
         asyncio.run(self.run())

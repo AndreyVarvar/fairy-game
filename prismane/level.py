@@ -4,9 +4,10 @@ import json
 from .settings import *
 from .assets import images, data
 from .common import *
-from .renderer import Renderer
+from .renderer_manager import RendererManager
 from .entity import Entity
 from .camera import Camera
+from .settings import TILE_SIZE, CHUNK_SIZE
 
 def tuple_to_json_pos(coord: tuple[int, int]) -> str:
     return f"{coord[0]};{coord[1]}"
@@ -211,5 +212,5 @@ class Level(Entity):
             for chunk_id in layer:
                 for tile_pos, tile in self.level_data["layers"][layer_id]["chunks"][chunk_id].items():
                     image = images["tilesets"][tile["spritesheet_id"]][tile["id"]]
-                    self.objects["Renderer"].blit(int(layer_id), self.target, image, (tile_pos[0] * tile_size[0] - self.camera.scroll[0], tile_pos[1] * tile_size[1] - self.camera.scroll[1]))
+                    self.element_tree["Renderer"].blit(int(layer_id), self.target, image, (tile_pos[0] * tile_size[0] - self.camera.scroll[0], tile_pos[1] * tile_size[1] - self.camera.scroll[1]))
 
