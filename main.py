@@ -4,7 +4,7 @@ import pygame as pg
 from prismane.settings import WINDOW_SIZE
 
 # setup
-game = Engine(WINDOW_SIZE, title="prototype", flags=pg.FULLSCREEN)
+game = Engine(WINDOW_SIZE, title="prototype", flags=pg.FULLSCREEN|pg.SCALED)
 
 game.populate_stages({"main menu": MainMenuStage, "game": GameStage}, "main menu")
 

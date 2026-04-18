@@ -18,7 +18,7 @@ class Background(Entity):
         self.mode = mode
 
         self.reference = image
-        self.image = pg.Surface(WINDOW_SIZE, pg.SRCALPHA)
+        self.image = pg.Surface(WINDOW_SIZE, pg.SRCALPHA).convert_alpha()
         
         self.z = 0  # push it back
 

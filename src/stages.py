@@ -29,11 +29,16 @@ class MainMenuStage(Stage):
             Event(action=lambda: self.transition(), condition=lambda: start_button.pressed, activations_limit=1)
         )
 
+    def update(self):
+        super().update()
+
+        pg.display.set_caption(str(self.element_tree["TimeControlPanel"].fps()))
+
     def transition(self):
         fadeout_image = pg.Surface(WINDOW_SIZE, pg.SRCALPHA)
         fadeout_image.fill((0, 0, 0))
 
-        fadeout = Fade(2, fadeout_image, f=lambda x: x*x)
+        fadeout = Fade(2, fadeout_image, f=lambda x: 1 - (1-x)**2)
         fadeout.z = 2
 
         self.add_to_group("ui", fadeout)
@@ -41,6 +46,8 @@ class MainMenuStage(Stage):
 
     def draw(self):
         super().draw()
+
+
 
         window = self.element_tree["Engine"].window
         window.fill("black")

@@ -53,6 +53,9 @@ class TimeControlPanel(Element):
         
         return 1.0 - remaining_time/self.timers[timer_id][0]
 
+    def fps(self):
+        return 1/self.dt
+
     def update(self, dt):
         self.dt = dt
         self.run_time += dt

@@ -37,5 +37,4 @@ class Renderer(Element):
         for target_name, target in targets.items():
             if target_name in self.queue:
                 self.queue[target_name].sort(key = lambda x:x[0])
-                for sprite in self.queue[target_name]:
-                    target.blit(sprite[2], sprite[3])
+                target.blits([(sprite[2], sprite[3]) for sprite in self.queue[target_name]])
