@@ -42,10 +42,10 @@ class MainMenuStage(Stage):
     def draw(self):
         super().draw()
 
-        display = self.element_tree["Engine"].display
-        display.fill("black")
+        window = self.element_tree["Engine"].window
+        window.fill("black")
 
-        self.element_tree["Renderer"].draw({"display": display})
+        self.element_tree["Renderer"].draw({"window": window})
 
 class GameStage(Stage):
     def __init__(self):
@@ -54,5 +54,5 @@ class GameStage(Stage):
 
     def draw(self):
         super().draw()
-        display = self.element_tree["Engine"].display
-        display.fill("blue")
+        window = self.element_tree["Engine"].window
+        window.fill("blue")
