@@ -7,6 +7,7 @@ from prismane.effects import Fade
 from prismane.misc import Background
 
 from .ui import FButton
+from .player import Player
 
 import pygame as pg
 
@@ -47,19 +48,20 @@ class MainMenuStage(Stage):
     def draw(self):
         super().draw()
 
-
-
         window = self.element_tree["Engine"].window
-        window.fill("black")
-
         self.element_tree["Renderer"].draw({"window": window})
+
 
 class GameStage(Stage):
     def __init__(self):
         super().__init__()
-        pass
+
+        self.populate_group("entities",
+                            Player(pg.Vector2(100, 100))
+                            )
 
     def draw(self):
         super().draw()
         window = self.element_tree["Engine"].window
-        window.fill("blue")
+        window.fill("black")
+        self.element_tree["Renderer"].draw({"window": window})
