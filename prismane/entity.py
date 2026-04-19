@@ -1,3 +1,4 @@
+from __future__ import annotations
 import pygame as pg
 
 from .element import Element
@@ -7,10 +8,10 @@ class Entity(Element):
     def __init__(self, singleton: bool = False) -> None:
         super().__init__(singleton)
         self.pos: pg.Vector2 = pg.Vector2(0, 0)
-        self.size: list[int] = [0, 0]
+        self.size: pg.Vector2 = pg.Vector2(0, 0)
         self.image: pg.Surface
         self.target: str = "window"
-        self.z: int = 0
+        self.z: int = 1
 
     @property
     def center(self) -> tuple[float, float]:
@@ -18,11 +19,14 @@ class Entity(Element):
 
     @property
     def rect(self) -> pg.FRect:
-        return pg.FRect(*self.pos, *self.size)
+        return pg.FRect(self.pos, self.size)
 
     def update(self):
         # for all input, sound, or music related stuff (+dt and game_running_time) use "InputControlPanel", "SoundControlPanel", and "MusicControlPanel" (+"GameControlPanel")
         pass
+
+    def collides_with(self, entity: Entity):
+        return self.rect.colliderect(entity.rect)
 
     def queue_draw(self):
         self.element_tree["Renderer"].queue_draw(self.image, self.z, self.target, self.pos)

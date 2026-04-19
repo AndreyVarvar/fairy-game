@@ -8,6 +8,7 @@ from prismane.misc import Background
 
 from .ui import FButton
 from .player import Player
+from .level import Level
 
 import pygame as pg
 
@@ -57,8 +58,11 @@ class GameStage(Stage):
         super().__init__()
 
         self.populate_group("entities",
-                            Player(pg.Vector2(100, 100))
+                            Player(pg.Vector2(100, 100)),
+                            Background(get_image(Path("assets/backgrounds/pink.png")))
                             )
+
+        self.populate_group("level", Level())
 
     def draw(self):
         super().draw()
