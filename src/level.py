@@ -20,6 +20,7 @@ class Level(Entity):
         super().__init__()
         
         self.entities: EntityGroup = EntityGroup(
+            Tile(pg.Vector2(0, 800)),
             Tile(pg.Vector2(0, 1000)),
             Tile(pg.Vector2(200, 1000)),
             Tile(pg.Vector2(400, 1000)),
