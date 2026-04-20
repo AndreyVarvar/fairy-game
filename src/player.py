@@ -1,6 +1,7 @@
 from prismane import Entity
 from prismane import TimeControlPanel, InputControlPanel
 from prismane.assets import get_image
+from prismane.settings import WINDOW_HEIGHT, WINDOW_WIDTH
 
 from .level import Level
 
@@ -23,7 +24,7 @@ class Player(Entity):
 
         self.on_ground = False
 
-    def input(self):
+    def process_input(self):
         input_panel: InputControlPanel = self.element_tree["InputControlPanel"]
 
         input_acceleration = pg.Vector2(0, 0)
@@ -45,9 +46,7 @@ class Player(Entity):
         self.acceleration = pg.Vector2(0, 0)
         self.acceleration += self.gravity
         
-        self.input()
-
-
+        self.process_input()
 
         dt = self.element_tree["TimeControlPanel"].dt
         self.velocity += self.acceleration * dt  # acceleration
@@ -55,29 +54,32 @@ class Player(Entity):
             self.velocity.x /= 5**dt
 
         level: Level = self.element_tree["CurrentStage"].groups["level"][0]
-
         
         self.pos.x += self.velocity.x * dt
         entity = level.get_collision_with(self)
         if entity is not None:
-            self.velocity.x = 0
-            self.acceleration.x = 0
             if self.velocity.x > 0:
                 self.pos.x = entity.rect.left - self.rect.width
             else:
                 self.pos.x = entity.rect.right
+            self.velocity.x = 0
+            self.acceleration.x = 0
 
 
         self.pos.y += self.velocity.y * dt
         self.on_ground = False
         entity = level.get_collision_with(self)
         if entity is not None:
-            self.velocity.y = 0
-            self.acceleration.y = 0
             if self.velocity.y >= 0:
                 self.on_ground = True
                 self.pos.y = entity.rect.top - self.rect.height
             else:
                 self.pos.y = entity.rect.bottom
+            self.velocity.y = 0
+            self.acceleration.y = 0
         
 
+        self.velocity.clamp_magnitude_ip(10_000)
+
+        self.pos.y = (self.pos.y + WINDOW_HEIGHT) % WINDOW_HEIGHT
+        self.pos.x = (self.pos.x + WINDOW_WIDTH) % WINDOW_WIDTH
