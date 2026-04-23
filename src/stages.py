@@ -5,6 +5,7 @@ from prismane.settings import WINDOW_SIZE, WINDOW_WIDTH
 from prismane import Event
 from prismane.effects import Fade
 from prismane.misc import Background
+from prismane.camera import Camera
 
 from .ui import FButton
 from .player import Player
@@ -48,24 +49,33 @@ class MainMenuStage(Stage):
 
     def draw(self):
         super().draw()
-
         window = self.element_tree["Engine"].window
-        self.element_tree["Renderer"].draw({"window": window})
+        display = self.element_tree["Engine"].display
+        display.image.fill("black")
+        window.fill("black")
+        self.element_tree["Renderer"].draw({"display": display.image})
 
 
 class GameStage(Stage):
     def __init__(self):
         super().__init__()
 
+        self.populate_group("player", Player(pg.Vector2(100, 100)))
         self.populate_group("entities",
-                            Player(pg.Vector2(100, 100)),
                             Background(get_image(Path("assets/backgrounds/pink.png")))
                             )
 
         self.populate_group("level", Level())
 
+        self.camera = Camera("MainCamura", 0, 0, 0, 0)
+        self.camera.target = self.groups["player"][0]
+
     def draw(self):
         super().draw()
-        window = self.element_tree["Engine"].window
-        window.fill("black")
-        self.element_tree["Renderer"].draw({"window": window})
+        super().clear()
+        display = self.element_tree["Engine"].display
+        self.element_tree["Renderer"].draw({"display": display.image})
+
+    def update(self):
+        super().update()
+        self.camera.follow_target()

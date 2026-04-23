@@ -10,7 +10,7 @@ class Entity(Element):
         self.pos: pg.Vector2 = pg.Vector2(0, 0)
         self.size: pg.Vector2 = pg.Vector2(0, 0)
         self.image: pg.Surface
-        self.draw_target: str = "window"
+        self.target: str = "display"
         self.z: int = 1
 
     @property
@@ -29,7 +29,7 @@ class Entity(Element):
         return self.rect.colliderect(entity.rect)
 
     def draw(self):
-        self.element_tree["Renderer"].queue_draw(self.image, self.z, self.draw_target, self.pos)
+        self.element_tree["Renderer"].queue_draw(self.image, self.z, self.target, self.pos)
 
 
 class EntityGroup(Element):

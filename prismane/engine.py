@@ -3,6 +3,7 @@ from .panels import MasterControlPanel
 from .stage import Stage
 from .renderer import Renderer
 from .element import Element
+from .display import Display
 
 import asyncio
 
@@ -29,6 +30,9 @@ class Engine(Element):
 
         self.renderer = Renderer()
 
+        # I just put the self.screen_size since we need the full resolution anyways :\
+        self.display = Display(self.window, *self.screen_size)
+
         self.stages = {}
         self.current_stage: Stage
 
@@ -53,7 +57,7 @@ class Engine(Element):
         # delete old information
         self.current_stage.unload()  # custom defined function
         self.current_stage.destroy()  # function to remove self from the element tree. Always here
-        
+
         # load new information
         self.current_stage = self.stages[new_stage]()
         self.current_stage.load()
@@ -65,7 +69,10 @@ class Engine(Element):
                 self.running = False
 
     def draw(self):
-        self.current_stage.draw() 
+        self.current_stage.draw()
+        self.display.update()
+        self.display.queue_draw()
+        self.renderer.draw({"window": self.window})
         pg.display.update()
 
     async def run(self):

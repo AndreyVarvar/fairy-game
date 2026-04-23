@@ -54,3 +54,8 @@ class Stage(Element):
         for group in self.groups.values():
             group.draw()
 
+    def clear(self):
+        window = self.element_tree["Engine"].window
+        display = self.element_tree["Engine"].display
+        display.image.fill("black")
+        window.fill("black")
