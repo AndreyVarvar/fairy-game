@@ -10,7 +10,7 @@ class Entity(Element):
         self.pos: pg.Vector2 = pg.Vector2(0, 0)
         self.size: pg.Vector2 = pg.Vector2(0, 0)
         self.image: pg.Surface
-        self.target: str = "window"
+        self.target: str = "display"
         self.z: int = 1
 
     @property
