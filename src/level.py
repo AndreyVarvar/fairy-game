@@ -3,6 +3,16 @@ import pygame as pg
 
 
 
+class LevelEntity(Entity):
+    def __init__(self, camera, singleton: bool = False) -> None:
+        super().__init__(singleton)
+        self.camera = camera
+
+    def draw(self):
+        pass
+
+
+
 class Tile(Entity):
     def __init__(self, pos: pg.Vector2) -> None:
         super().__init__()
@@ -40,5 +50,5 @@ class Level(Entity):
     def update(self):
         self.entities.update()
 
-    def queue_draw(self):
-        self.entities.queue_draw()
+    def draw(self):
+        self.entities.draw()

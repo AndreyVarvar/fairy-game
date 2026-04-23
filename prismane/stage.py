@@ -52,5 +52,5 @@ class Stage(Element):
     def draw(self):
         self.element_tree["Renderer"].clear()
         for group in self.groups.values():
-            group.queue_draw()
+            group.draw()
 

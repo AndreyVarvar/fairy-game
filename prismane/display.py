@@ -31,9 +31,9 @@ class Display(Entity):
         # scales up the display up to the window size.
         self.scale = min(self.window.get_width() / self.image.get_width(), self.window.get_height() / self.image.get_height())
         self.frame = pg.transform.scale_by(self.image, self.scale)
-        self.size = self.frame.size
+        self.size = pg.Vector2(self.frame.size)
         self.pos.x, self.pos.y = (self.window.get_width() - self.frame.get_width()) // 2, (self.window.get_height() - self.frame.get_height()) // 2
 
-    def queue_draw(self) -> None:
-        self.element_tree["Renderer"].queue_draw(self.frame, self.z, self.target, self.pos)
+    def draw(self) -> None:
+        self.element_tree["Renderer"].draw(self.frame, self.z, self.target, self.pos)
 

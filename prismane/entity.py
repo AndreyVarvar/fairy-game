@@ -10,7 +10,7 @@ class Entity(Element):
         self.pos: pg.Vector2 = pg.Vector2(0, 0)
         self.size: pg.Vector2 = pg.Vector2(0, 0)
         self.image: pg.Surface
-        self.target: str = "window"
+        self.draw_target: str = "window"
         self.z: int = 1
 
     @property
@@ -28,8 +28,8 @@ class Entity(Element):
     def collides_with(self, entity: Entity):
         return self.rect.colliderect(entity.rect)
 
-    def queue_draw(self):
-        self.element_tree["Renderer"].queue_draw(self.image, self.z, self.target, self.pos)
+    def draw(self):
+        self.element_tree["Renderer"].queue_draw(self.image, self.z, self.draw_target, self.pos)
 
 
 class EntityGroup(Element):
@@ -42,9 +42,9 @@ class EntityGroup(Element):
         for entity in entities:
             self.queue.append(entity)
 
-    def queue_draw(self) -> None:
+    def draw(self) -> None:
         for entity in self.entities:
-            entity.queue_draw()
+            entity.draw()
 
     def update(self) -> None:
         # NOTE: we should make this work with chunks
