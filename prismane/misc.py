@@ -3,6 +3,7 @@ from .settings import WINDOW_HEIGHT, WINDOW_SIZE, WINDOW_WIDTH
 
 import pygame as pg
 
+# FIXME: make compatible with Display class
 class Background(Entity):
     def __init__(self, image: pg.Surface, mode: str = "stretch", offset: pg.Vector2 = pg.Vector2(0, 0)):
         """

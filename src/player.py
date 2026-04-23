@@ -83,3 +83,7 @@ class Player(Entity):
 
         self.pos.y = (self.pos.y + WINDOW_HEIGHT) % WINDOW_HEIGHT
         self.pos.x = (self.pos.x + WINDOW_WIDTH) % WINDOW_WIDTH
+
+    def queue_draw(self):
+        camera = self.element_tree["MainCamura"]
+        self.element_tree["Renderer"].queue_draw(self.image, self.z, self.target, [self.pos[0] - camera.scroll[0], self.pos[1] - camera.scroll[1]])

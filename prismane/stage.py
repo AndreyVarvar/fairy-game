@@ -53,3 +53,9 @@ class Stage(Element):
         self.element_tree["Renderer"].clear()
         for group in self.groups.values():
             group.queue_draw()
+
+    def clear(self):
+        window = self.element_tree["Engine"].window
+        display = self.element_tree["Engine"].display
+        display.image.fill("black")
+        window.fill("black")

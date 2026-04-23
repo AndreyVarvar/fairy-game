@@ -14,6 +14,10 @@ class Tile(Entity):
         self.pos = pos
         self.z = 2
 
+    def queue_draw(self):
+        camera = self.element_tree["MainCamura"]
+        self.element_tree["Renderer"].queue_draw(self.image, self.z, self.target, [self.pos[0] - camera.scroll[0], self.pos[1] - camera.scroll[1]])
+
 
 class Level(Entity):
     def __init__(self) -> None:

@@ -7,14 +7,16 @@ from .panels import InputControlPanel
 # use MasterControlPanel from prismane for the mouse thingy
 
 def ease_in_quart(x) -> float:
-    return pg.math.clamp(x * x * x * x, 0, 1)
+    return x * x * x * x
 
 class Camera(Element):
-    def __init__(self, top: int, left: int, bottom: int, right: int) -> None:
-        super().__init__()
+    def __init__(self, name: str, top: int, left: int, bottom: int, right: int) -> None:
+        super().__init__(singleton=True, name=name)
         self.display: Display = self.element_tree["Display"]
         self.bound_rect: pg.FRect = pg.FRect(left, top, self.display.image.width - left - right, self.display.image.height - top - bottom)
         self.view_rect: pg.FRect = pg.FRect(0, 0, self.display.image.width, self.display.image.height)
+
+        self.follow_coefficient = 1/10
 
         self.target_sprite = None
         self.target_pos = None
@@ -44,8 +46,8 @@ class Camera(Element):
     def follow_target(self) -> None:
         self.view_rect.center = self.target
         self.bound_rect.center = self.view_rect.center
-        self.scroll.x += (self.bound_rect.x - self.scroll.x)
-        self.scroll.y += (self.bound_rect.y - self.scroll.y)
+        self.scroll.x += (self.bound_rect.x - self.scroll.x) * self.follow_coefficient
+        self.scroll.y += (self.bound_rect.y - self.scroll.y) * self.follow_coefficient
 
     @property
     def mouse_pos_in_world(self) -> tuple[float, float]:

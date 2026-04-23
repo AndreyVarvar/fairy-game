@@ -60,23 +60,22 @@ class GameStage(Stage):
     def __init__(self):
         super().__init__()
 
+        self.populate_group("player", Player(pg.Vector2(100, 100)))
         self.populate_group("entities",
-                            Player(pg.Vector2(100, 100)),
                             Background(get_image(Path("assets/backgrounds/pink.png")))
                             )
 
         self.populate_group("level", Level())
 
-        self.camera = Camera(0, 0, 0, 0)
+        self.camera = Camera("MainCamura", 0, 0, 0, 0)
+        self.camera.target = self.groups["player"][0]
 
     def draw(self):
         super().draw()
-        window = self.element_tree["Engine"].window
+        super().clear()
         display = self.element_tree["Engine"].display
-        display.image.fill("black")
-        window.fill("black")
         self.element_tree["Renderer"].draw({"display": display.image})
 
     def update(self):
         super().update()
-        print(self.element_tree["TimeControlPanel"].fps())
+        self.camera.follow_target()
