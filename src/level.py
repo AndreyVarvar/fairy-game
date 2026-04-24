@@ -1,21 +1,21 @@
-from prismane import Entity, EntityGroup
+from prismane import Entity, EntityGroup, camera
 import pygame as pg
 
 
 
 class LevelEntity(Entity):
-    def __init__(self, camera, singleton: bool = False) -> None:
+    def __init__(self, camera_name, singleton: bool = False) -> None:
         super().__init__(singleton)
-        self.camera = camera
+        self.camera = self.element_tree[camera_name]
 
     def draw(self):
-        pass
+        self.element_tree["Renderer"].queue_draw(self.image, self.z, self.target, [self.pos[0] - self.camera.scroll[0], self.pos[1] - self.camera.scroll[1]])
 
 
 
-class Tile(Entity):
+class Tile(LevelEntity):
     def __init__(self, pos: pg.Vector2) -> None:
-        super().__init__()
+        super().__init__(camera_name="MainCamura")
 
         self.size = pg.Vector2(200, 200)
         self.image = pg.Surface(self.size)

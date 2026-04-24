@@ -62,15 +62,17 @@ class GameStage(Stage):
     def __init__(self):
         super().__init__()
 
+        self.camera = Camera("MainCamura", 0, 0, 0, 0)
+        
         self.populate_group("player", Player(pg.Vector2(100, 100)))
         self.populate_group("entities",
-                            Background(get_image(Path("assets/backgrounds/pink.png")))
+                            Background(get_image(Path("assets/backgrounds/pink.png"))),
                             )
 
+        self.camera.target = self.groups["player"][0]
+        
         self.populate_group("level", Level())
 
-        self.camera = Camera("MainCamura", 0, 0, 0, 0)
-        self.camera.target = self.groups["player"][0]
 
     def draw(self):
         super().draw()

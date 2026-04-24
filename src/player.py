@@ -3,15 +3,15 @@ from prismane import TimeControlPanel, InputControlPanel
 from prismane.assets import get_image
 from prismane.settings import WINDOW_HEIGHT, WINDOW_WIDTH
 
-from .level import Level
+from .level import Level, LevelEntity
 
 from pathlib import Path
 
 import pygame as pg
 
-class Player(Entity):
+class Player(LevelEntity):
     def __init__(self, pos: pg.Vector2) -> None:
-        super().__init__()
+        super().__init__(camera_name="MainCamura")
         self.pos = pos
         self.velocity: pg.Vector2 = pg.Vector2(0, 0)
         self.acceleration: pg.Vector2 = pg.Vector2(0, 0)
@@ -83,7 +83,3 @@ class Player(Entity):
 
         self.pos.y = (self.pos.y + WINDOW_HEIGHT) % WINDOW_HEIGHT
         self.pos.x = (self.pos.x + WINDOW_WIDTH) % WINDOW_WIDTH
-
-    def queue_draw(self):
-        camera = self.element_tree["MainCamura"]
-        self.element_tree["Renderer"].queue_draw(self.image, self.z, self.target, [self.pos[0] - camera.scroll[0], self.pos[1] - camera.scroll[1]])
