@@ -13,8 +13,8 @@ class Camera(Element):
     def __init__(self, name: str, top: int, left: int, bottom: int, right: int) -> None:
         super().__init__(singleton=True, name=name)
         self.display: Display = self.element_tree["Display"]
-        self.bound_rect: pg.FRect = pg.FRect(left, top, self.display.image.width - left - right, self.display.image.height - top - bottom)
-        self.view_rect: pg.FRect = pg.FRect(0, 0, self.display.image.width, self.display.image.height)
+        self.bound_rect: pg.FRect = pg.FRect(left, top, self.display.image.get_width() - left - right, self.display.image.get_height() - top - bottom)
+        self.view_rect: pg.FRect = pg.FRect(0, 0, self.display.image.get_width(), self.display.image.get_height())
 
         self.follow_coefficient = 1/10
 
@@ -30,7 +30,7 @@ class Camera(Element):
         elif self.target_pos:
             return self.target_pos
         else:
-            return (self.display.image.width//2, self.display.image.height//2)
+            return (self.display.image.get_width()//2, self.display.image.get_height()//2)
 
     @target.setter
     def target(self, value) -> None:
@@ -41,7 +41,7 @@ class Camera(Element):
             self.target_sprite = None
             self.target_pos = value
         else:
-            self.target_pos = (self.display.image.width//2, self.display.image.height//2)
+            self.target_pos = (self.display.image.get_width()//2, self.display.image.get_height()//2)
 
     def follow_target(self) -> None:
         self.view_rect.center = self.target

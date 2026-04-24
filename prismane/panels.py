@@ -1,6 +1,6 @@
 import pygame as pg
-from collections.abc import Callable
 from .element import Element
+from .display import Display
 
 
 class MasterControlPanel(Element):  # used to update all the panels in one place
@@ -77,13 +77,26 @@ class InputControlPanel(Element):
         self.mouse_pressed: list[bool] = [False, False, False]
         self.mouse_just_pressed: list[bool] = [False, False, False]
         self.mouse_just_released: list[bool] = [False, False, False]
-        self.mouse_click_pos: tuple[int, int] = (0, 0)
-        self.mouse_release_pos: tuple[int, int] = (0, 0)
-        self.mouse_pos: tuple[int, int] = (0, 0)
+        self.mouse_click_pos: pg.Vector2 = pg.Vector2(0, 0)
+        self.mouse_release_pos: pg.Vector2 = pg.Vector2(0, 0)
+        self.mouse_pos: pg.Vector2 = pg.Vector2(0, 0)
 
         self.scroll: tuple[int, int] = (0, 0)  # scroll wheel intensity
 
         self.cursor_queue = []
+
+
+    def get_scaled_mouse_pos(self) -> pg.Vector2:
+        mouse_pos = pg.Vector2(*pg.mouse.get_pos())
+        display: Display = self.element_tree["Display"]
+        offset = display.pos
+        scale = display.scale
+
+        mouse_pos -= offset
+        mouse_pos /= scale
+
+        return mouse_pos
+
 
     def update(self, events: list[pg.Event]):
         self.keys_pressed = pg.key.get_pressed()
@@ -92,7 +105,7 @@ class InputControlPanel(Element):
         self.mouse_just_pressed = [False, False, False]
         self.mouse_just_released = [False, False, False]
         
-        self.mouse_pos = pg.mouse.get_pos()
+        self.mouse_pos = self.get_scaled_mouse_pos()
 
         for event in events:
             match event.type:
@@ -110,16 +123,19 @@ class InputControlPanel(Element):
                     self.keys_just_pressed.append(event.key)
 
         if self.mouse_just_pressed[0]:
-            self.mouse_click_pos = pg.mouse.get_pos()
+            self.mouse_click_pos = self.get_scaled_mouse_pos()
         
         if self.mouse_just_released[0]:
-            self.mouse_release_pos = pg.mouse.get_pos()
+            self.mouse_release_pos = self.get_scaled_mouse_pos()
         
         if len(self.cursor_queue) == 0:
             pg.mouse.set_cursor(pg.SYSTEM_CURSOR_ARROW)
         else:
             pg.mouse.set_cursor(self.cursor_queue[0])
             self.cursor_queue.clear()
+
+        if self.mouse_just_pressed[0]:
+            print(self.mouse_click_pos)
     
     def queue_cursor(self, cursor: int):
         """
