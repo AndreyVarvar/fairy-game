@@ -4,7 +4,7 @@ from .settings import *
 from .display import Display
 from .element import Element
 from .panels import InputControlPanel
-# use MasterControlPanel from prismane for the mouse thingy
+# use InputControlPanel from prismane for the mouse thingy
 
 def ease_in_quart(x) -> float:
     return x * x * x * x

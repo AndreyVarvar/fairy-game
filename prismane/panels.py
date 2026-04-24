@@ -81,7 +81,7 @@ class InputControlPanel(Element):
         self.mouse_release_pos: tuple[int, int] = (0, 0)
         self.mouse_pos: tuple[int, int] = (0, 0)
 
-        self.scroll: tuple[int, int] = (0, 0)
+        self.scroll: tuple[int, int] = (0, 0)  # scroll wheel intensity
 
         self.cursor_queue = []
 

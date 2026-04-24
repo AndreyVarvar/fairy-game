@@ -1,7 +1,6 @@
 import pygame as pg
 
 from .element import Element
-from .panels import InputControlPanel, TimeControlPanel
 
 
 class Display(Element):

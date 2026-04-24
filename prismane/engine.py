@@ -31,7 +31,7 @@ class Engine(Element):
         self.renderer = Renderer()
 
         # I just put the self.screen_size since we need the full resolution anyways :\
-        self.display = Display(self.window, *self.screen_size)
+        self.display = Display(self.window, *self.screen_size, flags=pg.SRCALPHA)
 
         self.stages = {}
         self.current_stage: Stage
