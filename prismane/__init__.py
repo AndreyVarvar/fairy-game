@@ -8,4 +8,5 @@ from .camera import Camera
 from .entity import Entity, EntityGroup
 from .renderer import Renderer
 from .event import Event
+from .animation import Spritesheet, Animation
 

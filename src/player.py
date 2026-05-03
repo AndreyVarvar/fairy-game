@@ -80,6 +80,3 @@ class Player(LevelEntity):
         
 
         self.velocity.clamp_magnitude_ip(10_000)
-
-        self.pos.y = (self.pos.y + WINDOW_HEIGHT) % WINDOW_HEIGHT
-        self.pos.x = (self.pos.x + WINDOW_WIDTH) % WINDOW_WIDTH
