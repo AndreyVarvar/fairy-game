@@ -1,7 +1,9 @@
 from prismane import Entity
 from prismane import TimeControlPanel, InputControlPanel
+from prismane.animation import DirectorySpritesheet
 from prismane.assets import get_image
 from prismane.settings import WINDOW_HEIGHT, WINDOW_WIDTH
+from prismane import Animation, DirectorySpritesheet
 
 from .level import Level, LevelEntity
 
@@ -18,7 +20,13 @@ class Player(LevelEntity):
 
         self.gravity: pg.Vector2 = pg.Vector2(0, 2000)
 
-        self.image = get_image(Path("assets/entities/fairy.png"))
+        self.states = {
+            "idle left": Animation(DirectorySpritesheet(Path("assets/entities/models/idle_l"), "Timeline 1_{0:04}.png", 22), 10),
+        }
+        self.current_state = "idle left"
+
+        self.image = self.states[self.current_state].get_frame()  # TODO: currenly player hitbox is tied to image
+
         self.z = 1
         self.size = pg.Vector2(self.image.get_size())
 
@@ -43,6 +51,11 @@ class Player(LevelEntity):
             self.velocity.y = -1000
 
     def update(self):
+        # animations
+        self.states[self.current_state].update()
+        self.image = self.states[self.current_state].get_frame()
+
+        # movement
         self.acceleration = pg.Vector2(0, 0)
         self.acceleration += self.gravity
         
@@ -52,7 +65,8 @@ class Player(LevelEntity):
         self.velocity += self.acceleration * dt  # acceleration
         if self.on_ground:
             self.velocity.x /= 5**dt
-
+    
+        # collision
         level: Level = self.element_tree["CurrentStage"].groups["level"][0]
         
         self.pos.x += self.velocity.x * dt

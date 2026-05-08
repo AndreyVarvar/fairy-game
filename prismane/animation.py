@@ -4,30 +4,49 @@ from .assets import get_image
 from .panels import TimeControlPanel
 
 from pathlib import Path
+from enum import Enum
 
 import pygame as pg
 
-class Spritesheet(Element):
-    def __init__(self, image_path: Path, frame_size: pg.Vector2, is_horizontal: bool):
-        super().__init__()
-        self.spritesheet = get_image(image_path)
-        self.frame_size = frame_size
-        self.is_horizontal = is_horizontal
 
-        self.frame_count: int
-        if self.is_horizontal:
-            self.frame_count = int(self.spritesheet.get_width() / self.frame_size.x)
-        else:
-            self.frame_count = int(self.spritesheet.get_height() / self.frame_size.y)
+class SpritesheetType(Enum):
+    IMAGE_HORIZONTAL = 0  # a single image contains all frames in horizontal layout
+    IMAGE_VERTICAL = 1  # a single image contains all frames in vertical layout
+    DIRECTORY = 2  # all frames are in a directory
+
+
+class Spritesheet(Element):
+    def __init__(self, sprites: list[pg.Surface]):
+        super().__init__()
+        self.frames = sprites
+        self.frame_count = len(self.frames)
     
     def get_sprite(self, n) -> pg.Surface:
-        if n < 0 or n >= self.frame_count:
-            raise Exception(f"Frame index {n} out of range.")
-        if self.is_horizontal:
-            return self.spritesheet.subsurface((self.frame_size[0]*n, 0, self.frame_size[0], self.frame_size[1]))
+        return self.frames[n]
 
-        return self.spritesheet.subsurface((0, self.frame_size[1]*n, self.frame_size[0], self.frame_size[1]))
+class DirectorySpritesheet(Spritesheet):
+    def __init__(self, directory_path: Path, file_format: str, frame_count: int):
+        """
+        directory_path: pathlib.Path. Location of the directory
+        file_format: str. Format in which files are formatted. Example: 'Frame{0:04}' (Frame0000, Frame0001, Frame0002, ...)
+        frame_count: int. Number of such files.
+        """
+        sprites = []
+        for i in range(frame_count):
+            sprites.append(get_image(directory_path / file_format.format(i)))
+        super().__init__(sprites)
 
+class ImageSpritesheet(Spritesheet):
+    def __init__(self, image_path: Path, frame_size: tuple[int, int], is_horizontal: bool):
+        image: pg.Surface = get_image(image_path)
+        sprites = []
+        if is_horizontal:
+            for i in range(image.get_width() // frame_size[0]):
+                sprites.append(image.subsurface(frame_size[0] * i, 0, frame_size[0], frame_size[1]))
+        else:
+            for i in range(image.get_height() // frame_size[1]):
+                sprites.append(image.subsurface(0, frame_size[1] * i, frame_size[0], frame_size[1]))
+        super().__init__(sprites)
 
 class Animation(Entity):
     def __init__(self, spritesheet: Spritesheet, fps: float, initial_frame_index: int = 0, loop: bool = True):
