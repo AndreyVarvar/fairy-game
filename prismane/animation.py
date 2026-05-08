@@ -72,6 +72,7 @@ class Animation(Entity):
 
         while self.current_frame_time > self.spf:
             self.current_frame += 1
+            self.current_frame_time -= self.spf
         
         if self.loop:
             self.end = (self.current_frame >= self.total_frames-1)
@@ -79,8 +80,7 @@ class Animation(Entity):
         else:
             self.current_frame = min(self.current_frame, self.total_frames-1)
             self.end = (self.current_frame == self.total_frames-1)
-
-        self.current_frame_time -= self.spf
+        
     
     def get_frame(self):
         return self.spritesheet.get_sprite(self.current_frame)
