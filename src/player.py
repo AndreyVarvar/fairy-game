@@ -31,19 +31,32 @@ class Player(LevelEntity):
             "jump right": Animation(DirectorySpritesheet(Path("assets/entities/models/jump_right"), "Timeline 1_{0:04}.png", 13), 10, loop=False),
             "fall left": Animation(DirectorySpritesheet(Path("assets/entities/models/fall_l"), "Timeline 1_{0:04}.png", 12), 10, loop=False),
             "fall right": Animation(DirectorySpritesheet(Path("assets/entities/models/fall_r"), "Timeline 1_{0:04}.png", 12), 10, loop=False),
+            "attack left": Animation(DirectorySpritesheet(Path("assets/entities/models/attack_l"), "Timeline 1_{0:04}.png", 15), 10, loop=False),
+            "attack right": Animation(DirectorySpritesheet(Path("assets/entities/models/attack_r"), "Timeline 1_{0:04}.png", 15), 10, loop=False),
         }
         self.current_state = "idle left"
+
         self.facing = "left"
+        self.attacking = False
+        self.offsets = {
+            "attack left": pg.Vector2(-110, 0),
+            "attack right": pg.Vector2(15, 0)
+        }
+
+        input_panel: InputControlPanel = self.element_tree["InputControlPanel"]
+
         # conditions for switching from state A to state B
         self.switch_conditions = [
             Event(action=lambda: self.set_state("walk left"), condition=lambda: self.on_ground and self.velocity.x < 0),
             Event(action=lambda: self.set_state("walk right"), condition=lambda: self.on_ground and self.velocity.x > 0),
-            Event(action=lambda: self.set_state("idle left"), condition=lambda: self.velocity.x == 0 and self.facing == "left" and self.on_ground),
-            Event(action=lambda: self.set_state("idle right"), condition=lambda: self.velocity.x == 0 and self.facing == "right" and self.on_ground),
+            Event(action=lambda: self.set_state("idle left"), condition=lambda: self.velocity.x == 0 and self.facing == "left" and self.on_ground and not self.attacking),
+            Event(action=lambda: self.set_state("idle right"), condition=lambda: self.velocity.x == 0 and self.facing == "right" and self.on_ground and not self.attacking),
             Event(action=lambda: self.set_state("jump left"), condition=lambda: self.velocity.y < 0 and not self.on_ground and self.facing == "left"),
             Event(action=lambda: self.set_state("jump right"), condition=lambda: self.velocity.y < 0 and not self.on_ground and self.facing == "right"),
             Event(action=lambda: self.set_state("fall left"), condition=lambda: self.velocity.y > 0 and not self.on_ground and self.facing == "left"),
             Event(action=lambda: self.set_state("fall right"), condition=lambda: self.velocity.y > 0 and not self.on_ground and self.facing == "right"),
+            Event(action=lambda: self.set_state("attack left"), condition=lambda: self.current_state == "idle left" and self.on_ground and pg.K_p in input_panel.keys_just_pressed and not self.attacking),
+            Event(action=lambda: self.set_state("attack right"), condition=lambda: self.current_state == "idle right" and self.on_ground and pg.K_p in input_panel.keys_just_pressed and not self.attacking),
         ]
 
         self.image = self.states[self.current_state].get_frame()  # TODO: currenly player hitbox is tied to image
@@ -54,8 +67,10 @@ class Player(LevelEntity):
     def set_state(self, state: str):
         jump_states = ["jump left", "jump right"]
         fall_states = ["fall left", "fall right"]
-        if (state in jump_states and self.current_state not in jump_states) or (state in fall_states and self.current_state not in fall_states):
-            self.states[state].reset()
+        attack_states = ["attack left", "attack right"]
+        for resetable_state in [jump_states, fall_states, attack_states]:
+            if state in resetable_state and self.current_state not in resetable_state:
+                self.states[state].reset()
 
         self.current_state = state
 
@@ -71,17 +86,13 @@ class Player(LevelEntity):
         if input_panel.keys_pressed[pg.K_a]:
             input_acceleration.x = -accel
 
-        if abs(self.velocity.x) < 1000 or input_acceleration.x * self.velocity.x < 0:
+        if abs(self.velocity.x) < 250 or input_acceleration.x * self.velocity.x < 0:
             self.acceleration += input_acceleration
 
         if pg.K_SPACE in input_panel.keys_just_pressed and self.on_ground:
             self.velocity.y = -1000
 
     def update(self):
-        # animations
-        self.states[self.current_state].update()
-        self.image = self.states[self.current_state].get_frame()
-
         # movement
         self.acceleration = pg.Vector2(0, 0)
         self.acceleration += self.gravity
@@ -91,7 +102,7 @@ class Player(LevelEntity):
         dt = self.element_tree["TimeControlPanel"].dt
         self.velocity += self.acceleration * dt  # acceleration
         if self.on_ground:
-            self.velocity.x /= 5**dt
+            self.velocity.x /= 10**dt  # friction
     
         # collision
         level: Level = self.element_tree["CurrentStage"].groups["level"][0]
@@ -120,7 +131,7 @@ class Player(LevelEntity):
             self.acceleration.y = 0
         
 
-        if abs(self.velocity.x) < 10:
+        if abs(self.velocity.x) < 50:
             self.velocity.x = 0
         self.velocity.clamp_magnitude_ip(10_000)
 
@@ -131,5 +142,20 @@ class Player(LevelEntity):
                 self.facing = "left"
 
         # states
+        self.attacking = self.current_state in ["attack left", "attack right"] and not self.states[self.current_state].end
+        
         for event in self.switch_conditions:
             event.update()
+        
+        # DO NOT USE self.attacking HERE!!!!
+        # it will cause a visual jitter the moment states switch
+        # it's related to the enimation.end condition
+        if self.current_state in ["attack left", "attack right"]:
+            self.draw_offset = self.offsets[self.current_state]
+        else:
+            self.draw_offset = pg.Vector2(0, 0)
+        
+        # animations
+        self.states[self.current_state].update()
+        self.image = self.states[self.current_state].get_frame()
+

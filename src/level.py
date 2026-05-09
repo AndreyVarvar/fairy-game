@@ -9,7 +9,7 @@ class LevelEntity(Entity):
         self.camera = self.element_tree[camera_name]
 
     def draw(self):
-        self.element_tree["Renderer"].queue_draw(self.image, self.z, self.target, [self.pos[0] - self.camera.scroll[0], self.pos[1] - self.camera.scroll[1]])
+        self.element_tree["Renderer"].queue_draw(self.image, self.z, self.target, pg.Vector2(self.pos[0] - self.camera.scroll[0], self.pos[1] - self.camera.scroll[1]) + self.draw_offset)
 
 
 

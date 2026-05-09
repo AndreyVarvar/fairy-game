@@ -12,6 +12,7 @@ class Entity(Element):
         self.image: pg.Surface
         self.target: str = "display"
         self.z: int = 1
+        self.draw_offset: pg.Vector2 = pg.Vector2(0, 0)
 
     @property
     def center(self) -> tuple[float, float]:
@@ -29,7 +30,7 @@ class Entity(Element):
         return self.rect.colliderect(entity.rect)
 
     def draw(self):
-        self.element_tree["Renderer"].queue_draw(self.image, self.z, self.target, self.pos)
+        self.element_tree["Renderer"].queue_draw(self.image, self.z, self.target, self.pos + self.draw_offset)
 
 
 class EntityGroup(Element):
