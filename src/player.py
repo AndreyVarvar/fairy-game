@@ -29,6 +29,8 @@ class Player(LevelEntity):
             "walk right": Animation(DirectorySpritesheet(Path("assets/entities/models/walk_r"), "Timeline 1_{0:04}.png", 20), 10),
             "jump left": Animation(DirectorySpritesheet(Path("assets/entities/models/jump_left"), "Timeline 1_{0:04}.png", 13), 10, loop=False),
             "jump right": Animation(DirectorySpritesheet(Path("assets/entities/models/jump_right"), "Timeline 1_{0:04}.png", 13), 10, loop=False),
+            "fall left": Animation(DirectorySpritesheet(Path("assets/entities/models/fall_l"), "Timeline 1_{0:04}.png", 12), 10, loop=False),
+            "fall right": Animation(DirectorySpritesheet(Path("assets/entities/models/fall_r"), "Timeline 1_{0:04}.png", 12), 10, loop=False),
         }
         self.current_state = "idle left"
         self.facing = "left"
@@ -38,8 +40,10 @@ class Player(LevelEntity):
             Event(action=lambda: self.set_state("walk right"), condition=lambda: self.on_ground and self.velocity.x > 0),
             Event(action=lambda: self.set_state("idle left"), condition=lambda: self.velocity.x == 0 and self.facing == "left" and self.on_ground),
             Event(action=lambda: self.set_state("idle right"), condition=lambda: self.velocity.x == 0 and self.facing == "right" and self.on_ground),
-            Event(action=lambda: [self.states["jump left"].reset() if self.current_state != "jump left" else None, self.set_state("jump left")], condition=lambda: self.velocity.y < 0 and not self.on_ground and self.facing == "left"),
-            Event(action=lambda: [self.states["jump right"].reset() if self.current_state != "jump right" else None, self.set_state("jump right")], condition=lambda: self.velocity.y < 0 and not self.on_ground and self.facing == "right"),
+            Event(action=lambda: self.set_state("jump left"), condition=lambda: self.velocity.y < 0 and not self.on_ground and self.facing == "left"),
+            Event(action=lambda: self.set_state("jump right"), condition=lambda: self.velocity.y < 0 and not self.on_ground and self.facing == "right"),
+            Event(action=lambda: self.set_state("fall left"), condition=lambda: self.velocity.y > 0 and not self.on_ground and self.facing == "left"),
+            Event(action=lambda: self.set_state("fall right"), condition=lambda: self.velocity.y > 0 and not self.on_ground and self.facing == "right"),
         ]
 
         self.image = self.states[self.current_state].get_frame()  # TODO: currenly player hitbox is tied to image
@@ -48,6 +52,11 @@ class Player(LevelEntity):
         self.size = pg.Vector2(self.image.get_size())
 
     def set_state(self, state: str):
+        jump_states = ["jump left", "jump right"]
+        fall_states = ["fall left", "fall right"]
+        if (state in jump_states and self.current_state not in jump_states) or (state in fall_states and self.current_state not in fall_states):
+            self.states[state].reset()
+
         self.current_state = state
 
     def process_input(self):
