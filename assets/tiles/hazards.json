@@ -1,0 +1,7 @@
+{
+  "spritesheet-type": "single-image",
+  "images": {
+    "spike": [14, 58, 57, 74],
+    "mushroom": [97, 25, 166, 114]
+  }
+}

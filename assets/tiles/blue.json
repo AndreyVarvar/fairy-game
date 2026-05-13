@@ -1,0 +1,14 @@
+{
+  "spritesheet-type": "single-image",
+  "images": {
+    "platform small": [17, 21, 201, 112],
+    "platform big": [16, 164, 352, 155],
+    "top-left": [27, 329, 115, 133],
+    "top-middle 1": [143, 329, 115, 133],
+    "top-middle 2": [259, 329, 115, 133],
+    "top-right": [375, 329, 115, 133],
+    "middle": [27, 463, 115, 75],
+    "bottom-left": [27, 539, 115, 75],
+    "bottom-right": [143, 539, 115, 75]
+  }
+}

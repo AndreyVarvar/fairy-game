@@ -1,9 +1,8 @@
 from prismane import Entity
 from prismane import TimeControlPanel, InputControlPanel
-from prismane.animation import DirectorySpritesheet
 from prismane.assets import get_image
 from prismane.settings import WINDOW_HEIGHT, WINDOW_WIDTH
-from prismane import Animation, DirectorySpritesheet
+from prismane import Animation, Spritesheet
 from prismane import Event
 
 from .level import Level, LevelEntity
@@ -23,16 +22,16 @@ class Player(LevelEntity):
         self.on_ground = False
 
         self.states = {
-            "idle left": Animation(DirectorySpritesheet(Path("assets/entities/models/idle_l"), "Timeline 1_{0:04}.png", 22), 10),
-            "idle right": Animation(DirectorySpritesheet(Path("assets/entities/models/idle_r"), "Timeline 1_{0:04}.png", 22), 10),
-            "walk left": Animation(DirectorySpritesheet(Path("assets/entities/models/walk_l"), "Timeline 1_{0:04}.png", 20), 10),
-            "walk right": Animation(DirectorySpritesheet(Path("assets/entities/models/walk_r"), "Timeline 1_{0:04}.png", 20), 10),
-            "jump left": Animation(DirectorySpritesheet(Path("assets/entities/models/jump_left"), "Timeline 1_{0:04}.png", 13), 10, loop=False),
-            "jump right": Animation(DirectorySpritesheet(Path("assets/entities/models/jump_right"), "Timeline 1_{0:04}.png", 13), 10, loop=False),
-            "fall left": Animation(DirectorySpritesheet(Path("assets/entities/models/fall_l"), "Timeline 1_{0:04}.png", 12), 10, loop=False),
-            "fall right": Animation(DirectorySpritesheet(Path("assets/entities/models/fall_r"), "Timeline 1_{0:04}.png", 12), 10, loop=False),
-            "attack left": Animation(DirectorySpritesheet(Path("assets/entities/models/attack_l"), "Timeline 1_{0:04}.png", 15), 10, loop=False),
-            "attack right": Animation(DirectorySpritesheet(Path("assets/entities/models/attack_r"), "Timeline 1_{0:04}.png", 15), 10, loop=False),
+            "idle left": Animation(Spritesheet(Path("assets/entities/models/idle_l/idle_l.json")), 10),
+            "idle right": Animation(Spritesheet(Path("assets/entities/models/idle_r/idle_r.json")), 10),
+            "walk left": Animation(Spritesheet(Path("assets/entities/models/walk_l/walk_l.json")), 10),
+            "walk right": Animation(Spritesheet(Path("assets/entities/models/walk_r/walk_r.json")), 10),
+            "jump left": Animation(Spritesheet(Path("assets/entities/models/jump_left/jump_left.json")), 10),
+            "jump right": Animation(Spritesheet(Path("assets/entities/models/jump_right/jump_right.json")), 10),
+            "fall left": Animation(Spritesheet(Path("assets/entities/models/fall_l/fall_l.json")), 10),
+            "fall right": Animation(Spritesheet(Path("assets/entities/models/fall_r/fall_r.json")), 10),
+            "attack left": Animation(Spritesheet(Path("assets/entities/models/attack_l/attack_l.json")), 10),
+            "attack right": Animation(Spritesheet(Path("assets/entities/models/attack_r/attack_r.json")), 10)
         }
         self.current_state = "idle left"
 

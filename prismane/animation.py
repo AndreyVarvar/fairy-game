@@ -7,46 +7,60 @@ from pathlib import Path
 from enum import Enum
 
 import pygame as pg
-
-
-class SpritesheetType(Enum):
-    IMAGE_HORIZONTAL = 0  # a single image contains all frames in horizontal layout
-    IMAGE_VERTICAL = 1  # a single image contains all frames in vertical layout
-    DIRECTORY = 2  # all frames are in a directory
+import json
 
 
 class Spritesheet(Element):
-    def __init__(self, sprites: list[pg.Surface]):
+    def __init__(self, spritesheet_json_path: Path):
         super().__init__()
-        self.frames = sprites
-        self.frame_count = len(self.frames)
+
+        self.frames: list = self.load(spritesheet_json_path)
+        self.frame_count: int = len(self.frames)
     
-    def get_sprite(self, n) -> pg.Surface:
-        return self.frames[n]
-
-class DirectorySpritesheet(Spritesheet):
-    def __init__(self, directory_path: Path, file_format: str, frame_count: int):
-        """
-        directory_path: pathlib.Path. Location of the directory
-        file_format: str. Format in which files are formatted. Example: 'Frame{0:04}' (Frame0000, Frame0001, Frame0002, ...)
-        frame_count: int. Number of such files.
-        """
-        sprites = []
-        for i in range(frame_count):
-            sprites.append(get_image(directory_path / file_format.format(i)))
-        super().__init__(sprites)
-
-class ImageSpritesheet(Spritesheet):
-    def __init__(self, image_path: Path, frame_size: tuple[int, int], is_horizontal: bool):
-        image: pg.Surface = get_image(image_path)
-        sprites = []
-        if is_horizontal:
-            for i in range(image.get_width() // frame_size[0]):
-                sprites.append(image.subsurface(frame_size[0] * i, 0, frame_size[0], frame_size[1]))
+        
+    def load(self, spritesheet_json_path: Path) -> list:
+        frames: list = []
+        with open(spritesheet_json_path, 'r') as file:
+            spritesheet_json = json.load(file)
+        
+        if spritesheet_json["spritesheet-type"] == "single-image":
+            frames = self.load_single_image_type(spritesheet_json)
+        elif spritesheet_json["spritesheet-type"] == "directory":
+            frames = self.load_directory_type(spritesheet_json)
         else:
-            for i in range(image.get_height() // frame_size[1]):
-                sprites.append(image.subsurface(0, frame_size[1] * i, frame_size[0], frame_size[1]))
-        super().__init__(sprites)
+            raise Exception(f"Unknown spritesheet type: {spritesheet_json['spritesheet-type']}")
+
+        return frames
+
+    def load_single_image_type(self, spritesheet_json: dict):
+        image = get_image(Path(spritesheet_json["image-path"]))
+        sprites = []
+        for rect in spritesheet_json["images"]: 
+            sprites.append(image.subsurface(rect))
+        return sprites
+
+
+    def load_directory_type(self, spritesheet_json: dict):
+        sprites = []
+        format_type = spritesheet_json["format-type"]
+        directory_path = Path(spritesheet_json["directory-path"])
+
+        if format_type == "formatted":
+            format = spritesheet_json["format"]
+            sprite_count = spritesheet_json["count"]
+            for i in range(sprite_count):
+                sprites.append(get_image(directory_path / format.format(i)))
+        elif format_type == "file-names":
+            sprite_names = spritesheet_json["images"]
+            for name in sprite_names:
+                sprites.append(get_image(directory_path / name))
+        else:
+            raise Exception(f"Unknown directory spritesheet type formatting: {format_type}")
+
+        return sprites
+
+    def get_sprite(self, n: int) -> pg.Surface:
+        return self.frames[n]
 
 class Animation(Entity):
     def __init__(self, spritesheet: Spritesheet, fps: float, initial_frame_index: int = 0, loop: bool = True):

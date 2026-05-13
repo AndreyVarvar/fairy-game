@@ -1,0 +1,7 @@
+{
+  "spritesheet-type": "directory",
+  "format-type": "formatted",
+  "directory-path": "./assets/entities/models/walk_l",
+  "format": "Timeline 1_{0:04}.png",
+  "count": 20
+}
