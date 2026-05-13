@@ -13,13 +13,11 @@ import json
 class Spritesheet(Element):
     def __init__(self, spritesheet_json_path: Path):
         super().__init__()
-
-        self.frames: list = self.load(spritesheet_json_path)
-        self.frame_count: int = len(self.frames)
-    
+        self.frames: dict = self.load(spritesheet_json_path)
+        self.indexes: dict = { idx: key for idx, key in enumerate(list(self.frames.keys())) }
         
-    def load(self, spritesheet_json_path: Path) -> list:
-        frames: list = []
+    def load(self, spritesheet_json_path: Path) -> dict:
+        frames: dict = {}
         with open(spritesheet_json_path, 'r') as file:
             spritesheet_json = json.load(file)
         
@@ -32,16 +30,17 @@ class Spritesheet(Element):
 
         return frames
 
-    def load_single_image_type(self, spritesheet_json: dict):
+    def load_single_image_type(self, spritesheet_json: dict) -> dict:
         image = get_image(Path(spritesheet_json["image-path"]))
-        sprites = []
-        for rect in spritesheet_json["images"]: 
-            sprites.append(image.subsurface(rect))
+        sprites = {}
+        for name in spritesheet_json["images"]: 
+            rect = spritesheet_json["images"][name]
+            sprites[name] = image.subsurface(rect)
         return sprites
 
 
     def load_directory_type(self, spritesheet_json: dict):
-        sprites = []
+        sprites: dict = {}
         format_type = spritesheet_json["format-type"]
         directory_path = Path(spritesheet_json["directory-path"])
 
@@ -49,24 +48,33 @@ class Spritesheet(Element):
             format = spritesheet_json["format"]
             sprite_count = spritesheet_json["count"]
             for i in range(sprite_count):
-                sprites.append(get_image(directory_path / format.format(i)))
+                sprites[format.format(i)] = get_image(directory_path / format.format(i))
         elif format_type == "file-names":
             sprite_names = spritesheet_json["images"]
             for name in sprite_names:
-                sprites.append(get_image(directory_path / name))
+                sprites[name] = get_image(directory_path / name)
         else:
             raise Exception(f"Unknown directory spritesheet type formatting: {format_type}")
 
         return sprites
 
-    def get_sprite(self, n: int) -> pg.Surface:
-        return self.frames[n]
+    def __getitem__(self, i):
+        if i in self.frames:
+            return self.frames[i]
+        
+        if not isinstance(i, int):
+            raise Exception(f"`{i}` is not in the spritesheet and is not an index.")
+
+        return self.frames[self.indexes[i]]  # get i-th element from the spritesheet
+
+    def __len__(self):
+        return len(self.frames)
 
 class Animation(Entity):
     def __init__(self, spritesheet: Spritesheet, fps: float, initial_frame_index: int = 0, loop: bool = True):
         super().__init__()
         self.spritesheet = spritesheet
-        self.total_frames = self.spritesheet.frame_count
+        self.total_frames = len(self.spritesheet)
         self.fps = fps
         self.loop = loop
 
@@ -97,5 +105,4 @@ class Animation(Entity):
         
     
     def get_frame(self):
-        return self.spritesheet.get_sprite(self.current_frame)
-
+        return self.spritesheet[self.current_frame]

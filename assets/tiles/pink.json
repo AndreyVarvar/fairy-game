@@ -1,5 +1,6 @@
 {
   "spritesheet-type": "single-image",
+  "image-path": "./assets/tiles/pink.png",
   "images": {
     "platform small": [30, 55, 201, 117],
     "platform big": [20, 213, 353, 154],

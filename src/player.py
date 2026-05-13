@@ -1,11 +1,8 @@
-from prismane import Entity
-from prismane import TimeControlPanel, InputControlPanel
-from prismane.assets import get_image
-from prismane.settings import WINDOW_HEIGHT, WINDOW_WIDTH
+from prismane import InputControlPanel
 from prismane import Animation, Spritesheet
 from prismane import Event
 
-from .level import Level, LevelEntity
+from .level import LevelEntity, Level
 
 from pathlib import Path
 
@@ -13,7 +10,7 @@ import pygame as pg
 
 class Player(LevelEntity):
     def __init__(self, pos: pg.Vector2) -> None:
-        super().__init__(camera_name="MainCamura")
+        super().__init__(camera_name="MainCamura", hitbox=pg.FRect(50, 0, 110, 232))
         self.pos = pos
         self.velocity: pg.Vector2 = pg.Vector2(0, 0)
         self.acceleration: pg.Vector2 = pg.Vector2(0, 0)
@@ -22,15 +19,15 @@ class Player(LevelEntity):
         self.on_ground = False
 
         self.states = {
-            "idle left": Animation(Spritesheet(Path("assets/entities/models/idle_l/idle_l.json")), 10),
-            "idle right": Animation(Spritesheet(Path("assets/entities/models/idle_r/idle_r.json")), 10),
-            "walk left": Animation(Spritesheet(Path("assets/entities/models/walk_l/walk_l.json")), 10),
-            "walk right": Animation(Spritesheet(Path("assets/entities/models/walk_r/walk_r.json")), 10),
-            "jump left": Animation(Spritesheet(Path("assets/entities/models/jump_left/jump_left.json")), 10),
-            "jump right": Animation(Spritesheet(Path("assets/entities/models/jump_right/jump_right.json")), 10),
-            "fall left": Animation(Spritesheet(Path("assets/entities/models/fall_l/fall_l.json")), 10),
-            "fall right": Animation(Spritesheet(Path("assets/entities/models/fall_r/fall_r.json")), 10),
-            "attack left": Animation(Spritesheet(Path("assets/entities/models/attack_l/attack_l.json")), 10),
+            "idle left":    Animation(Spritesheet(Path("assets/entities/models/idle_l/idle_l.json")), 10),
+            "idle right":   Animation(Spritesheet(Path("assets/entities/models/idle_r/idle_r.json")), 10),
+            "walk left":    Animation(Spritesheet(Path("assets/entities/models/walk_l/walk_l.json")), 10),
+            "walk right":   Animation(Spritesheet(Path("assets/entities/models/walk_r/walk_r.json")), 10),
+            "jump left":    Animation(Spritesheet(Path("assets/entities/models/jump_left/jump_left.json")), 10),
+            "jump right":   Animation(Spritesheet(Path("assets/entities/models/jump_right/jump_right.json")), 10),
+            "fall left":    Animation(Spritesheet(Path("assets/entities/models/fall_l/fall_l.json")), 10),
+            "fall right":   Animation(Spritesheet(Path("assets/entities/models/fall_r/fall_r.json")), 10),
+            "attack left":  Animation(Spritesheet(Path("assets/entities/models/attack_l/attack_l.json")), 10),
             "attack right": Animation(Spritesheet(Path("assets/entities/models/attack_r/attack_r.json")), 10)
         }
         self.current_state = "idle left"
@@ -110,9 +107,9 @@ class Player(LevelEntity):
         entity = level.get_collision_with(self)
         if entity is not None:
             if self.velocity.x > 0:
-                self.pos.x = entity.rect.left - self.rect.width
+                self.pos.x = entity.collision_box.left - self.rect.width
             else:
-                self.pos.x = entity.rect.right
+                self.pos.x = entity.collision_box.right
             self.velocity.x = 0
             self.acceleration.x = 0
 
@@ -123,9 +120,9 @@ class Player(LevelEntity):
         if entity is not None:
             if self.velocity.y >= 0:
                 self.on_ground = True
-                self.pos.y = entity.rect.top - self.rect.height
+                self.pos.y = entity.collision_box.top - self.rect.height
             else:
-                self.pos.y = entity.rect.bottom
+                self.pos.y = entity.collision_box.bottom
             self.velocity.y = 0
             self.acceleration.y = 0
         
@@ -148,7 +145,7 @@ class Player(LevelEntity):
         
         # DO NOT USE self.attacking HERE!!!!
         # it will cause a visual jitter the moment states switch
-        # it's related to the enimation.end condition
+        # it's related to the animation.end condition
         if self.current_state in ["attack left", "attack right"]:
             self.draw_offset = self.offsets[self.current_state]
         else:
@@ -156,5 +153,6 @@ class Player(LevelEntity):
         
         # animations
         self.states[self.current_state].update()
-        self.image = self.states[self.current_state].get_frame()
+        self.image = self.states[self.current_state].get_frame().copy()
+        pg.draw.rect(self.image, (255, 0, 0), self.hitbox, 5)
 

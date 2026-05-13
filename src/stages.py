@@ -9,7 +9,7 @@ from prismane.camera import Camera
 
 from .ui import FButton
 from .player import Player
-from .level import Level
+from .level import Level1
 
 import pygame as pg
 
@@ -64,14 +64,14 @@ class GameStage(Stage):
 
         self.camera = Camera("MainCamura", 0, 0, 0, 0)
         
-        self.populate_group("player", Player(pg.Vector2(100, 100)))
+        self.populate_group("player", Player(pg.Vector2(-200, -500)))
         self.populate_group("entities",
                             Background(get_image(Path("assets/backgrounds/pink.png"))),
                             )
 
         self.camera.target = self.groups["player"][0]
         
-        self.populate_group("level", Level())
+        self.populate_group("level", Level1())
 
 
     def draw(self):
