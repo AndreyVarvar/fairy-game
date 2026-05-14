@@ -15,7 +15,7 @@ class Player(LevelEntity):
         self.velocity: pg.Vector2 = pg.Vector2(0, 0)
         self.acceleration: pg.Vector2 = pg.Vector2(0, 0)
 
-        self.gravity: pg.Vector2 = pg.Vector2(0, 2000)
+        self.gravity: pg.Vector2 = pg.Vector2(0, 1000)
         self.on_ground = False
 
         self.states = {
@@ -85,8 +85,8 @@ class Player(LevelEntity):
         if abs(self.velocity.x) < 250 or input_acceleration.x * self.velocity.x < 0:
             self.acceleration += input_acceleration
 
-        if pg.K_SPACE in input_panel.keys_just_pressed and self.on_ground:
-            self.velocity.y = -1000
+        if pg.K_SPACE in input_panel.keys_just_pressed and self.on_ground:  # jump
+            self.velocity.y = -500
 
     def update(self):
         # movement
@@ -107,9 +107,9 @@ class Player(LevelEntity):
         entity = level.get_collision_with(self)
         if entity is not None:
             if self.velocity.x > 0:
-                self.pos.x = entity.collision_box.left - self.rect.width
+                self.pos.x = entity.collision_box.left - self.hitbox.right
             else:
-                self.pos.x = entity.collision_box.right
+                self.pos.x = entity.collision_box.right - self.hitbox.left
             self.velocity.x = 0
             self.acceleration.x = 0
 
