@@ -10,7 +10,7 @@ import pygame as pg
 
 class Player(LevelEntity):
     def __init__(self, pos: pg.Vector2) -> None:
-        super().__init__(camera_name="MainCamura", hitbox=pg.FRect(50, 0, 110, 232))
+        super().__init__(camera_name="MainCamura", hitbox=pg.FRect(70, 0, 70, 232))
         self.pos = pos
         self.velocity: pg.Vector2 = pg.Vector2(0, 0)
         self.acceleration: pg.Vector2 = pg.Vector2(0, 0)
@@ -19,16 +19,16 @@ class Player(LevelEntity):
         self.on_ground = False
 
         self.states = {
-            "idle left":    Animation(Spritesheet(Path("assets/entities/models/idle_l/idle_l.json")), 10),
-            "idle right":   Animation(Spritesheet(Path("assets/entities/models/idle_r/idle_r.json")), 10),
-            "walk left":    Animation(Spritesheet(Path("assets/entities/models/walk_l/walk_l.json")), 10),
-            "walk right":   Animation(Spritesheet(Path("assets/entities/models/walk_r/walk_r.json")), 10),
-            "jump left":    Animation(Spritesheet(Path("assets/entities/models/jump_left/jump_left.json")), 10),
-            "jump right":   Animation(Spritesheet(Path("assets/entities/models/jump_right/jump_right.json")), 10),
-            "fall left":    Animation(Spritesheet(Path("assets/entities/models/fall_l/fall_l.json")), 10),
-            "fall right":   Animation(Spritesheet(Path("assets/entities/models/fall_r/fall_r.json")), 10),
-            "attack left":  Animation(Spritesheet(Path("assets/entities/models/attack_l/attack_l.json")), 10),
-            "attack right": Animation(Spritesheet(Path("assets/entities/models/attack_r/attack_r.json")), 10)
+            "idle left":    Animation(Spritesheet(Path("assets/entities/models/idle_l/idle_l.json")),         10),
+            "idle right":   Animation(Spritesheet(Path("assets/entities/models/idle_r/idle_r.json")),         10),
+            "walk left":    Animation(Spritesheet(Path("assets/entities/models/walk_l/walk_l.json")),         10),
+            "walk right":   Animation(Spritesheet(Path("assets/entities/models/walk_r/walk_r.json")),         10),
+            "jump left":    Animation(Spritesheet(Path("assets/entities/models/jump_left/jump_left.json")),   10, loop=False),
+            "jump right":   Animation(Spritesheet(Path("assets/entities/models/jump_right/jump_right.json")), 10, loop=False),
+            "fall left":    Animation(Spritesheet(Path("assets/entities/models/fall_l/fall_l.json")),         10, loop=False),
+            "fall right":   Animation(Spritesheet(Path("assets/entities/models/fall_r/fall_r.json")),         10, loop=False),
+            "attack left":  Animation(Spritesheet(Path("assets/entities/models/attack_l/attack_l.json")),     10, loop=False),
+            "attack right": Animation(Spritesheet(Path("assets/entities/models/attack_r/attack_r.json")),     10, loop=False)
         }
         self.current_state = "idle left"
 
@@ -86,7 +86,7 @@ class Player(LevelEntity):
             self.acceleration += input_acceleration
 
         if pg.K_SPACE in input_panel.keys_just_pressed and self.on_ground:  # jump
-            self.velocity.y = -500
+            self.velocity.y = -600
 
     def update(self):
         # movement
@@ -153,6 +153,5 @@ class Player(LevelEntity):
         
         # animations
         self.states[self.current_state].update()
-        self.image = self.states[self.current_state].get_frame().copy()
-        pg.draw.rect(self.image, (255, 0, 0), self.hitbox, 5)
+        self.image = self.states[self.current_state].get_frame()
 

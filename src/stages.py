@@ -22,8 +22,6 @@ class MainMenuStage(Stage):
         start_button = FButton(pos=(WINDOW_WIDTH//2, 200), image=get_image(Path("assets/ui/start_button.png")), z=1)
         rules_button = FButton(pos=(WINDOW_WIDTH//2, 500), image=get_image(Path("assets/ui/rules_button.png")), z=1)
 
-        print(start_button.pos)
-
         self.populate_group("ui", 
                             start_button,
                             rules_button,

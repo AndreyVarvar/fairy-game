@@ -133,10 +133,7 @@ class InputControlPanel(Element):
         else:
             pg.mouse.set_cursor(self.cursor_queue[0])
             self.cursor_queue.clear()
-
-        if self.mouse_just_pressed[0]:
-            print(self.mouse_click_pos)
-    
+   
     def queue_cursor(self, cursor: int):
         """
         cursor: int. An instance of a pygame system cursor. Example: pygame.SYSTEM_CURSOR_ARROW
