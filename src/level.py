@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-from . import player
 from prismane import Spritesheet
 from prismane import Entity, EntityGroup
 import pygame as pg
 from pathlib import Path
-from prismane.assets import get_spritesheet
+from prismane.assets import AssetLoader
 
 
 class LevelEntity(Entity):
@@ -30,7 +29,7 @@ class LevelEntity(Entity):
 class Mushroom(LevelEntity):
     def __init__(self, pos: pg.Vector2) -> None:
         super().__init__("MainCamura", pg.FRect(0, 0, 166, 114), "mushroom")
-        hazards = get_spritesheet(Path("./assets/tiles/hazards.json"))
+        hazards = self.element_tree["AssetLoader"].get_spritesheet(Path("./assets/tiles/hazards.json"))
         self.image = hazards["mushroom"]
         self.pos = pos
 
@@ -38,7 +37,7 @@ class Mushroom(LevelEntity):
 class Spike(LevelEntity):
     def __init__(self, pos: pg.Vector2) -> None:
         super().__init__("MainCamura", pg.FRect(0, 0, 57, 74), "spike")
-        hazards = get_spritesheet(Path("./assets/tiles/hazards.json"))
+        hazards = self.element_tree["AssetLoader"].get_spritesheet(Path("./assets/tiles/hazards.json"))
         self.image = hazards["spike"]
         self.pos = pos
 

@@ -1,22 +1,27 @@
 import pygame as pg
+
+from prismane.assets import AssetLoader
 from .panels import MasterControlPanel
 from .stage import Stage
 from .renderer import Renderer
 from .element import Element
 from .display import Display
+from .settings import Settings
 
 import asyncio
 
 class Engine(Element):
-    def __init__(self, screen_size: tuple[int, int], title: str, fps: int=60, flags=0):
+    def __init__(self, window_size: tuple[int, int], title: str, display_size: tuple[int, int] = None, fps: int=60, flags=0):
         super().__init__(singleton=True)
 
         pg.mixer.pre_init(buffer=2048)
         pg.init()
 
-        self.screen_size = self.screen_width, self.screen_height = screen_size
+        self.asset_loader: AssetLoader = AssetLoader()
+
+        self.settings: Settings = Settings(window_size=window_size, display_size=display_size if display_size else window_size)
         # TODO: make self.window for the shenanigans with resizing or whatever
-        self.window = pg.display.set_mode(screen_size, flags=flags)
+        self.window = pg.display.set_mode(self.settings.window_size, flags=flags)
         pg.display.set_caption(title)
 
         # internal variables
@@ -31,7 +36,7 @@ class Engine(Element):
         self.renderer = Renderer()
 
         # I just put the self.screen_size since we need the full resolution anyways :\
-        self.display = Display(self.window, *self.screen_size, flags=pg.SRCALPHA)
+        self.display = Display(self.window, *self.settings.display_size, flags=pg.SRCALPHA)
 
         self.stages = {}
         self.current_stage: Stage

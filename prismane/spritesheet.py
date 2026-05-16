@@ -1,6 +1,5 @@
-from pygame import sprite
 from .element import Element
-from .assets import get_image
+from .assets import AssetLoader
 
 from pathlib import Path
 import json
@@ -27,7 +26,7 @@ class Spritesheet(Element):
         return frames
 
     def load_single_image_type(self, spritesheet_json: dict) -> dict:
-        image = get_image(Path(spritesheet_json["image-path"]))
+        image = self.element_tree["AssetLoader"].get_image(Path(spritesheet_json["image-path"]))
         sprites = {}
         for name in spritesheet_json["images"]: 
             rect = spritesheet_json["images"][name]
@@ -44,11 +43,11 @@ class Spritesheet(Element):
             format = spritesheet_json["format"]
             sprite_count = spritesheet_json["count"]
             for i in range(sprite_count):
-                sprites[format.format(i)] = get_image(directory_path / format.format(i))
+                sprites[format.format(i)] = self.element_tree["AssetLoader"].get_image(directory_path / format.format(i))
         elif format_type == "file-names":
             sprite_names = spritesheet_json["images"]
             for name in sprite_names:
-                sprites[name] = get_image(directory_path / name)
+                sprites[name] = self.element_tree["AssetLoader"].get_image(directory_path / name)
         else:
             raise Exception(f"Unknown directory spritesheet type formatting: {format_type}")
 

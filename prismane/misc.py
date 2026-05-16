@@ -1,5 +1,5 @@
 from .entity import Entity
-from .settings import WINDOW_HEIGHT, WINDOW_SIZE, WINDOW_WIDTH
+from .settings import Settings
 
 import pygame as pg
 
@@ -15,16 +15,18 @@ class Background(Entity):
         """
         super().__init__()
 
+        settings: Settings = self.element_tree["Settings"]
+
         self.offset = offset
         self.mode = mode
 
         self.reference = image
-        self.image = pg.Surface(WINDOW_SIZE, pg.SRCALPHA).convert_alpha()
+        self.image = pg.Surface(settings.window_size, pg.SRCALPHA).convert_alpha()
         
         self.z = 0  # push it back
 
         if self.mode == "stretch":
-            self.image = pg.transform.scale(self.reference, WINDOW_SIZE)
+            self.image = pg.transform.scale(self.reference, settings.window_size)
         
         self.prev_offset = offset
 
@@ -33,9 +35,10 @@ class Background(Entity):
             self.prev_offset = self.offset
 
             if self.mode == "tile":
+                settings: Settings = self.element_tree["Settings"]
                 w, h = self.reference.get_size()
-                for x in range(0, WINDOW_WIDTH, w):
-                    for y in range(0, WINDOW_HEIGHT, h):
+                for x in range(0, settings.window_width, w):
+                    for y in range(0, settings.window_height, h):
                         self.image.blit(self.reference, (self.offset.x + x, self.offset.y + y))
             elif self.mode == "none":
                 self.image.blit(self.reference, self.offset)

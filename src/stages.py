@@ -1,11 +1,11 @@
 from prismane import Stage
-from prismane.assets import get_image
+from prismane.assets import AssetLoader
 from pathlib import Path
-from prismane.settings import WINDOW_SIZE, WINDOW_WIDTH
 from prismane import Event
 from prismane.effects import Fade
 from prismane.misc import Background
 from prismane.camera import Camera
+from prismane.settings import Settings
 
 from .ui import FButton
 from .player import Player
@@ -19,13 +19,16 @@ class MainMenuStage(Stage):
     def __init__(self):
         super().__init__()
 
-        start_button = FButton(pos=(WINDOW_WIDTH//2, 200), image=get_image(Path("assets/ui/start_button.png")), z=1)
-        rules_button = FButton(pos=(WINDOW_WIDTH//2, 500), image=get_image(Path("assets/ui/rules_button.png")), z=1)
+        settings: Settings = self.element_tree["Settings"]
+        asset_loader: AssetLoader = self.element_tree["AssetLoader"]
+
+        start_button = FButton(pos=(settings.window_width//2, 200), image=asset_loader.get_image(Path("assets/ui/start_button.png")), z=1)
+        rules_button = FButton(pos=(settings.window_width//2, 500), image=asset_loader.get_image(Path("assets/ui/rules_button.png")), z=1)
 
         self.populate_group("ui", 
                             start_button,
                             rules_button,
-                            Background(get_image(Path("assets/backgrounds/title.png")))
+                            Background(asset_loader.get_image(Path("assets/backgrounds/title.png")))
                             )
 
         self.populate_events(
@@ -38,7 +41,7 @@ class MainMenuStage(Stage):
         pg.display.set_caption(str(self.element_tree["TimeControlPanel"].fps()))
 
     def transition(self):
-        fadeout_image = pg.Surface(WINDOW_SIZE, pg.SRCALPHA)
+        fadeout_image = pg.Surface(self.element_tree["Settings"].window_size, pg.SRCALPHA)
         fadeout_image.fill((0, 0, 0))
 
         fadeout = Fade(2, fadeout_image, f=lambda x: 1 - (1-x)**2)
@@ -60,12 +63,14 @@ class GameStage(Stage):
     def __init__(self):
         super().__init__()
 
+        asset_loader: AssetLoader = self.element_tree["AssetLoader"]
+        
         self.camera = Camera("MainCamura", 0, 0, 0, 0)
         
         self.add_singleton("level", Level1())
         self.add_singleton("player", Player(pg.Vector2(-100, 0)))
         self.populate_group("entities",
-                            Background(get_image(Path("assets/backgrounds/pink.png"))),
+                            Background(asset_loader.get_image(Path("assets/backgrounds/pink.png"))),
                             )
         self.camera.target = self.singletons["player"]
         
