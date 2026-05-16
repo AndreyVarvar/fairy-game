@@ -1,6 +1,7 @@
 from prismane import InputControlPanel
-from prismane import Animation, Spritesheet
+from prismane import Animation
 from prismane import Event
+from prismane.assets import get_spritesheet
 
 from .level import LevelEntity, Level
 
@@ -19,16 +20,16 @@ class Player(LevelEntity):
         self.on_ground = False
 
         self.states = {
-            "idle left":    Animation(Spritesheet(Path("assets/entities/models/idle_l/idle_l.json")),         10),
-            "idle right":   Animation(Spritesheet(Path("assets/entities/models/idle_r/idle_r.json")),         10),
-            "walk left":    Animation(Spritesheet(Path("assets/entities/models/walk_l/walk_l.json")),         10),
-            "walk right":   Animation(Spritesheet(Path("assets/entities/models/walk_r/walk_r.json")),         10),
-            "jump left":    Animation(Spritesheet(Path("assets/entities/models/jump_left/jump_left.json")),   10, loop=False),
-            "jump right":   Animation(Spritesheet(Path("assets/entities/models/jump_right/jump_right.json")), 10, loop=False),
-            "fall left":    Animation(Spritesheet(Path("assets/entities/models/fall_l/fall_l.json")),         10, loop=False),
-            "fall right":   Animation(Spritesheet(Path("assets/entities/models/fall_r/fall_r.json")),         10, loop=False),
-            "attack left":  Animation(Spritesheet(Path("assets/entities/models/attack_l/attack_l.json")),     10, loop=False),
-            "attack right": Animation(Spritesheet(Path("assets/entities/models/attack_r/attack_r.json")),     10, loop=False)
+            "idle left":    Animation(get_spritesheet(Path("assets/entities/models/idle_l/idle_l.json")),         10),
+            "idle right":   Animation(get_spritesheet(Path("assets/entities/models/idle_r/idle_r.json")),         10),
+            "walk left":    Animation(get_spritesheet(Path("assets/entities/models/walk_l/walk_l.json")),         10),
+            "walk right":   Animation(get_spritesheet(Path("assets/entities/models/walk_r/walk_r.json")),         10),
+            "jump left":    Animation(get_spritesheet(Path("assets/entities/models/jump_left/jump_left.json")),   50, loop=False),
+            "jump right":   Animation(get_spritesheet(Path("assets/entities/models/jump_right/jump_right.json")), 50, loop=False),
+            "fall left":    Animation(get_spritesheet(Path("assets/entities/models/fall_l/fall_l.json")),         10, loop=False),
+            "fall right":   Animation(get_spritesheet(Path("assets/entities/models/fall_r/fall_r.json")),         10, loop=False),
+            "attack left":  Animation(get_spritesheet(Path("assets/entities/models/attack_l/attack_l.json")),     10, loop=False),
+            "attack right": Animation(get_spritesheet(Path("assets/entities/models/attack_r/attack_r.json")),     10, loop=False)
         }
         self.current_state = "idle left"
 
@@ -101,30 +102,36 @@ class Player(LevelEntity):
             self.velocity.x /= 10**dt  # friction
     
         # collision
-        level: Level = self.element_tree["CurrentStage"].groups["level"][0]
-        
+        level: Level = self.element_tree["CurrentStage"].singletons["level"]
+
         self.pos.x += self.velocity.x * dt
-        entity = level.get_collision_with(self)
+        entity: LevelEntity = level.get_collision_with(self)
         if entity is not None:
-            if self.velocity.x > 0:
-                self.pos.x = entity.collision_box.left - self.hitbox.right
-            else:
-                self.pos.x = entity.collision_box.right - self.hitbox.left
-            self.velocity.x = 0
-            self.acceleration.x = 0
+            if entity.collision_type == "static":
+                if self.velocity.x > 0:
+                    self.pos.x = entity.collision_box.left - self.hitbox.right
+                else:
+                    self.pos.x = entity.collision_box.right - self.hitbox.left
+                self.velocity.x = 0
+                self.acceleration.x = 0
 
 
         self.pos.y += self.velocity.y * dt
         self.on_ground = False
-        entity = level.get_collision_with(self)
+        entity: LevelEntity = level.get_collision_with(self)
         if entity is not None:
-            if self.velocity.y >= 0:
-                self.on_ground = True
-                self.pos.y = entity.collision_box.top - self.rect.height
-            else:
-                self.pos.y = entity.collision_box.bottom
-            self.velocity.y = 0
-            self.acceleration.y = 0
+            if entity.collision_type == "static":
+                if self.velocity.y >= 0:
+                    self.on_ground = True
+                    self.pos.y = entity.collision_box.top - self.rect.height
+                else:
+                    self.pos.y = entity.collision_box.bottom
+                self.velocity.y = 0
+                self.acceleration.y = 0
+
+            if entity.collision_type == "mushroom":
+                if self.velocity.y > 0:
+                    self.velocity.y = -1000
         
 
         if abs(self.velocity.x) < 50:

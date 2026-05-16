@@ -62,14 +62,13 @@ class GameStage(Stage):
 
         self.camera = Camera("MainCamura", 0, 0, 0, 0)
         
-        self.populate_group("player", Player(pg.Vector2(-100, 0)))
+        self.add_singleton("level", Level1())
+        self.add_singleton("player", Player(pg.Vector2(-100, 0)))
         self.populate_group("entities",
                             Background(get_image(Path("assets/backgrounds/pink.png"))),
                             )
-
-        self.camera.target = self.groups["player"][0]
+        self.camera.target = self.singletons["player"]
         
-        self.populate_group("level", Level1())
 
 
     def draw(self):

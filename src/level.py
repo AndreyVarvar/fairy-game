@@ -1,18 +1,19 @@
 from __future__ import annotations
 
+from . import player
 from prismane import Spritesheet
 from prismane import Entity, EntityGroup
 import pygame as pg
 from pathlib import Path
-
-
+from prismane.assets import get_spritesheet
 
 
 class LevelEntity(Entity):
-    def __init__(self, camera_name, hitbox, singleton: bool = False) -> None:
+    def __init__(self, camera_name, hitbox, collision_type: str = "static", singleton: bool = False) -> None:
         super().__init__(singleton)
         self.camera = self.element_tree[camera_name]
         self.hitbox: pg.FRect = hitbox  # NOTE: hitbox is measured in relation to the top-left corner of the entity (its position)
+        self.collision_type = collision_type
 
     @property
     def collision_box(self) -> pg.FRect:
@@ -26,6 +27,22 @@ class LevelEntity(Entity):
 
 
 
+class Mushroom(LevelEntity):
+    def __init__(self, pos: pg.Vector2) -> None:
+        super().__init__("MainCamura", pg.FRect(0, 0, 166, 114), "mushroom")
+        hazards = get_spritesheet(Path("./assets/tiles/hazards.json"))
+        self.image = hazards["mushroom"]
+        self.pos = pos
+
+
+class Spike(LevelEntity):
+    def __init__(self, pos: pg.Vector2) -> None:
+        super().__init__("MainCamura", pg.FRect(0, 0, 57, 74), "spike")
+        hazards = get_spritesheet(Path("./assets/tiles/hazards.json"))
+        self.image = hazards["spike"]
+        self.pos = pos
+
+
 class Tile(LevelEntity):
     def __init__(self, pos: pg.Vector2, image: pg.Surface, hitbox: pg.FRect = pg.FRect(0, 0, 0, 0)) -> None:
         super().__init__("MainCamura", hitbox)
@@ -36,14 +53,14 @@ class Tile(LevelEntity):
         self.z = 2
 
         self.hitbox = hitbox if hitbox else pg.FRect(0, 0, *self.image.get_size())
-    
 
 
 class Level(Entity):
-    def __init__(self, entities: EntityGroup) -> None:
+    def __init__(self, entities: EntityGroup, player_start_pos: pg.Vector2) -> None:
         super().__init__()
         
         self.entities: EntityGroup = entities
+        self.player_start_pos = player_start_pos
 
     def get_collision_with(self, entity: LevelEntity):
         for level_entity in self.entities:
@@ -64,6 +81,7 @@ class Level1(Level):
         tileset = Spritesheet(Path("./assets/tiles/pink.json"))
         tile_hitbox = pg.FRect(0, 51, 115, 75)
         entities: EntityGroup = EntityGroup(
+            # tiles
             Tile(pg.Vector2(-1*w, 3*h), tileset["top-left"], tile_hitbox),
             Tile(pg.Vector2(0*w, 3*h), tileset["top-right"], tile_hitbox),
             
@@ -141,7 +159,6 @@ class Level1(Level):
             
             Tile(pg.Vector2(12*w, 17*h), tileset["top-left"], tile_hitbox),
             Tile(pg.Vector2(13*w, 17*h), tileset["top-right"], tile_hitbox),
-            Tile(pg.Vector2(13*w, 18*h+tile_hitbox.y), tileset["bottom-left"]),
             Tile(pg.Vector2(13*w, 18*h+tile_hitbox.y), tileset["middle"]),
             Tile(pg.Vector2(14*w, 18*h), tileset["top-middle 1"], tile_hitbox),
             Tile(pg.Vector2(15*w, 18*h), tileset["top-right"], tile_hitbox),
@@ -155,6 +172,16 @@ class Level1(Level):
             Tile(pg.Vector2(24*w, 19*h+tile_hitbox.y), tileset["bottom-left"]),
             Tile(pg.Vector2(25*w, 19*h+tile_hitbox.y), tileset["middle"]),
             Tile(pg.Vector2(26*w, 19*h+tile_hitbox.y), tileset["bottom-right"]),
+        
+            # MUSHROOMs
+            Mushroom(pg.Vector2(4*w, 6*h+10)),
+            Mushroom(pg.Vector2(4*w, 16*h+10)),
+            Mushroom(pg.Vector2(11.75*w, 14*h+10)),
+
+            # Spikes
+            Spike(pg.Vector2(11*w+40, 4*h+50)),
+            Spike(pg.Vector2(18*w+40, 6*h+50)),
+            Spike(pg.Vector2(11*w+40, 14*h+50)),
         )
-        super().__init__(entities)
+        super().__init__(entities, pg.Vector2(100, 100))
 

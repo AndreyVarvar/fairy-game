@@ -11,6 +11,7 @@ class Stage(Element):
     def __init__(self):
         super().__init__(singleton=True, name="CurrentStage")  # each stage should be a singleton
 
+        self.singletons: dict[str, Entity] = {}
         self.groups: dict[str, EntityGroup] = {}
         self.events: list[Event] = []
 
@@ -19,6 +20,9 @@ class Stage(Element):
 
         self.change_stages = False
         self.next_stage: str
+
+    def add_singleton(self, name: str, entity: Entity):
+        self.singletons[name] = entity
 
     def populate_group(self, group: str, *entities: Entity):
         self.groups[group] = EntityGroup(*entities)
@@ -46,11 +50,17 @@ class Stage(Element):
         for group in self.groups.values():
             group.update()
 
+        for singleton in self.singletons.values():
+            singleton.update()
+
         for event in self.events:
             event.update()
 
     def draw(self):
         self.element_tree["Renderer"].clear()
+        for singleton in self.singletons.values():
+            singleton.draw()
+
         for group in self.groups.values():
             group.draw()
 

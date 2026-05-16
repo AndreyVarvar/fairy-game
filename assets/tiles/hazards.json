@@ -1,4 +1,5 @@
 {
+  "image-path": "./assets/tiles/hazards.png",
   "spritesheet-type": "single-image",
   "images": {
     "spike": [14, 58, 57, 74],
