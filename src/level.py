@@ -55,12 +55,6 @@ class Tile(LevelEntity):
         self.hitbox = hitbox if hitbox else pg.FRect(0, 0, *self.image.get_size())
 
 
-class Heart(Entity):
-    def __init__(self, pos: pg.Vector2) -> None:
-        super().__init__()
-        self.z = 10
-        self.image = pg.transform.scale_by(self.element_tree["AssetLoader"].get_image("./assets/ui/heart.png"), 2)
-        self.pos = pos
 
 
 class Level(Entity):
@@ -191,5 +185,5 @@ class Level1(Level):
             Spike(pg.Vector2(18*w+40, 6*h+50)),
             Spike(pg.Vector2(11*w+40, 14*h+50)),
         )
-        super().__init__(entities, pg.Vector2(100, 100))
+        super().__init__(entities, pg.Vector2(144, 1169))
 

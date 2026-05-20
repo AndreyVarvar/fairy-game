@@ -1,6 +1,14 @@
 from prismane.ui import Button
+from prismane.entity import Entity
 
 import pygame as pg
+
+class HeartUI(Entity):
+    def __init__(self, pos: pg.Vector2) -> None:
+        super().__init__()
+        self.z = 10
+        self.image = pg.transform.scale_by(self.element_tree["AssetLoader"].get_image("./assets/ui/heart.png"), 2)
+        self.pos = pos
 
 class FButton(Button):
     def __init__(self, pos: tuple[int, int], image: pg.Surface, z=1, pos_anchor: str = "center"):

@@ -7,9 +7,9 @@ from prismane.misc import Background
 from prismane.camera import Camera
 from prismane.settings import Settings
 
-from .ui import FButton
+from .ui import FButton, HeartUI
 from .player import Player
-from .level import Level1, Heart
+from .level import Level1
 
 import pygame as pg
 
@@ -68,7 +68,7 @@ class GameStage(Stage):
         self.camera = Camera("MainCamura", 0, 0, 0, 0)
         
         self.add_singleton("level", Level1())
-        self.add_singleton("player", Player(pg.Vector2(-100, 0)))
+        self.add_singleton("player", Player(self.singletons["level"].player_start_pos))
         self.populate_group("entities",
                             Background(asset_loader.get_image(Path("assets/backgrounds/pink.png"))),
                             )
@@ -77,7 +77,7 @@ class GameStage(Stage):
         self.set_health_gui()
 
     def set_health_gui(self):
-        self.populate_group("hearts", *[Heart(pg.Vector2(20 + 200*i, 20)) for i in range(self.singletons["player"].health)])
+        self.populate_group("hearts", *[HeartUI(pg.Vector2(20 + 200*i, 20)) for i in range(self.singletons["player"].health)])
 
     def draw(self):
         super().draw()

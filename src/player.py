@@ -26,7 +26,7 @@ class Player(LevelEntity):
         self.damage_cooldown = 2
         self.damage_cooldown_timer_id = 0
 
-        self.max_speed_from_input = 400
+        self.max_speed_from_input = 300
         self.jump_velocity = -600
 
         asset_loader: AssetLoader = self.element_tree["AssetLoader"]
