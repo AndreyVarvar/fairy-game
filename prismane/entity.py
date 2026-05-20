@@ -66,3 +66,6 @@ class EntityGroup(Element):
 
     def __getitem__(self, index):
         return self.entities[index]
+
+    def __len__(self):
+        return len(self.entities)

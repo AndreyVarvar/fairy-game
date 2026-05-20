@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from prismane import Spritesheet
 from prismane import Entity, EntityGroup
+
 import pygame as pg
 from pathlib import Path
-from prismane.assets import AssetLoader
+
 
 
 class LevelEntity(Entity):
@@ -52,6 +53,14 @@ class Tile(LevelEntity):
         self.z = 2
 
         self.hitbox = hitbox if hitbox else pg.FRect(0, 0, *self.image.get_size())
+
+
+class Heart(Entity):
+    def __init__(self, pos: pg.Vector2) -> None:
+        super().__init__()
+        self.z = 0
+        self.image = pg.transform.scale_by(self.element_tree["AssetLoader"].get_image("./assets/ui/heart.png"), 2)
+        self.pos = pos
 
 
 class Level(Entity):

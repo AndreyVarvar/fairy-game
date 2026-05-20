@@ -2,6 +2,7 @@ from prismane import InputControlPanel
 from prismane import Animation
 from prismane import Event
 from prismane.assets import AssetLoader
+from prismane.panels import TimeControlPanel
 
 from .level import LevelEntity, Level
 
@@ -18,6 +19,12 @@ class Player(LevelEntity):
 
         self.gravity: pg.Vector2 = pg.Vector2(0, 1000)
         self.on_ground = False
+
+        self.initial_health = 3
+        self.health = self.initial_health
+        self.max_health = 5
+        self.damage_cooldown = 2
+        self.damage_cooldown_timer_id = 0
 
         asset_loader: AssetLoader = self.element_tree["AssetLoader"]
 
@@ -46,15 +53,15 @@ class Player(LevelEntity):
 
         # conditions for switching from state A to state B
         self.switch_conditions = [
-            Event(action=lambda: self.set_state("walk left"), condition=lambda: self.on_ground and self.velocity.x < 0),
-            Event(action=lambda: self.set_state("walk right"), condition=lambda: self.on_ground and self.velocity.x > 0),
-            Event(action=lambda: self.set_state("idle left"), condition=lambda: self.velocity.x == 0 and self.facing == "left" and self.on_ground and not self.attacking),
-            Event(action=lambda: self.set_state("idle right"), condition=lambda: self.velocity.x == 0 and self.facing == "right" and self.on_ground and not self.attacking),
-            Event(action=lambda: self.set_state("jump left"), condition=lambda: self.velocity.y < 0 and not self.on_ground and self.facing == "left"),
-            Event(action=lambda: self.set_state("jump right"), condition=lambda: self.velocity.y < 0 and not self.on_ground and self.facing == "right"),
-            Event(action=lambda: self.set_state("fall left"), condition=lambda: self.velocity.y > 0 and not self.on_ground and self.facing == "left"),
-            Event(action=lambda: self.set_state("fall right"), condition=lambda: self.velocity.y > 0 and not self.on_ground and self.facing == "right"),
-            Event(action=lambda: self.set_state("attack left"), condition=lambda: self.current_state == "idle left" and self.on_ground and pg.K_p in input_panel.keys_just_pressed and not self.attacking),
+            Event(action=lambda: self.set_state("walk left"),    condition=lambda: self.on_ground and self.velocity.x < 0),
+            Event(action=lambda: self.set_state("walk right"),   condition=lambda: self.on_ground and self.velocity.x > 0),
+            Event(action=lambda: self.set_state("idle left"),    condition=lambda: self.velocity.x == 0 and self.facing == "left" and self.on_ground and not self.attacking),
+            Event(action=lambda: self.set_state("idle right"),   condition=lambda: self.velocity.x == 0 and self.facing == "right" and self.on_ground and not self.attacking),
+            Event(action=lambda: self.set_state("jump left"),    condition=lambda: self.velocity.y < 0 and not self.on_ground and self.facing == "left"),
+            Event(action=lambda: self.set_state("jump right"),   condition=lambda: self.velocity.y < 0 and not self.on_ground and self.facing == "right"),
+            Event(action=lambda: self.set_state("fall left"),    condition=lambda: self.velocity.y > 0 and not self.on_ground and self.facing == "left"),
+            Event(action=lambda: self.set_state("fall right"),   condition=lambda: self.velocity.y > 0 and not self.on_ground and self.facing == "right"),
+            Event(action=lambda: self.set_state("attack left"),  condition=lambda: self.current_state == "idle left" and self.on_ground and pg.K_p in input_panel.keys_just_pressed and not self.attacking),
             Event(action=lambda: self.set_state("attack right"), condition=lambda: self.current_state == "idle right" and self.on_ground and pg.K_p in input_panel.keys_just_pressed and not self.attacking),
         ]
 
@@ -73,6 +80,10 @@ class Player(LevelEntity):
 
         self.current_state = state
 
+    @property
+    def dead(self):
+        return self.health <= 0
+
     def process_input(self):
         input_panel: InputControlPanel = self.element_tree["InputControlPanel"]
 
@@ -90,6 +101,12 @@ class Player(LevelEntity):
 
         if pg.K_SPACE in input_panel.keys_just_pressed and self.on_ground:  # jump
             self.velocity.y = -600
+
+    def damage(self):
+        time_panel: TimeControlPanel = self.element_tree["TimeControlPanel"]
+        if time_panel.check_timer(self.damage_cooldown_timer_id) == 0:
+            self.health -= 1
+            self.damage_cooldown_timer_id = time_panel.queue_timer(self.damage_cooldown)
 
     def update(self):
         # movement
@@ -116,6 +133,8 @@ class Player(LevelEntity):
                     self.pos.x = entity.collision_box.right - self.hitbox.left
                 self.velocity.x = 0
                 self.acceleration.x = 0
+            elif entity.collision_type == "spike":
+                self.damage()
 
 
         self.pos.y += self.velocity.y * dt
@@ -131,9 +150,12 @@ class Player(LevelEntity):
                 self.velocity.y = 0
                 self.acceleration.y = 0
 
-            if entity.collision_type == "mushroom":
+            elif entity.collision_type == "mushroom":
                 if self.velocity.y > 0:
                     self.velocity.y = -1000
+
+            elif entity.collision_type == "spike":
+                self.damage()
         
 
         if abs(self.velocity.x) < 50:
