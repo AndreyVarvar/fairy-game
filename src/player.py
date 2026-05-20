@@ -26,6 +26,9 @@ class Player(LevelEntity):
         self.damage_cooldown = 2
         self.damage_cooldown_timer_id = 0
 
+        self.max_speed_from_input = 400
+        self.jump_velocity = -600
+
         asset_loader: AssetLoader = self.element_tree["AssetLoader"]
 
         self.states = {
@@ -80,6 +83,7 @@ class Player(LevelEntity):
 
         self.current_state = state
 
+
     @property
     def dead(self):
         return self.health <= 0
@@ -96,11 +100,11 @@ class Player(LevelEntity):
         if input_panel.keys_pressed[pg.K_a]:
             input_acceleration.x = -accel
 
-        if abs(self.velocity.x) < 250 or input_acceleration.x * self.velocity.x < 0:
+        if abs(self.velocity.x) < self.max_speed_from_input or input_acceleration.x * self.velocity.x < 0:
             self.acceleration += input_acceleration
 
         if pg.K_SPACE in input_panel.keys_just_pressed and self.on_ground:  # jump
-            self.velocity.y = -600
+            self.velocity.y = self.jump_velocity
 
     def damage(self):
         time_panel: TimeControlPanel = self.element_tree["TimeControlPanel"]
@@ -183,6 +187,18 @@ class Player(LevelEntity):
             self.draw_offset = pg.Vector2(0, 0)
         
         # animations
+        time_panel: TimeControlPanel = self.element_tree["TimeControlPanel"]
+
         self.states[self.current_state].update()
-        self.image = self.states[self.current_state].get_frame()
+        flicker_cd = 0.5
+        flicker = (time_panel.check_timer(self.damage_cooldown_timer_id) % flicker_cd) > (flicker_cd/2)
+        
+        if flicker:
+            self.image = self.states[self.current_state].get_frame().copy()
+            self.image.fill((255, 0, 0), special_flags=pg.BLENDMODE_MUL)
+        else:
+            self.image = self.states[self.current_state].get_frame()
+        
+        # self.image = self.states[self.current_state].get_frame().copy()
+        # pg.draw.rect(self.image, (255, 0, 0), self.hitbox.move(-self.draw_offset), 5)
 

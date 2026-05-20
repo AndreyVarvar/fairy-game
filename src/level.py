@@ -58,7 +58,7 @@ class Tile(LevelEntity):
 class Heart(Entity):
     def __init__(self, pos: pg.Vector2) -> None:
         super().__init__()
-        self.z = 0
+        self.z = 10
         self.image = pg.transform.scale_by(self.element_tree["AssetLoader"].get_image("./assets/ui/heart.png"), 2)
         self.pos = pos
 
