@@ -6,6 +6,7 @@ from prismane import Entity, EntityGroup
 import pygame as pg
 from pathlib import Path
 
+from .dialogue import DialogueBox
 
 
 class LevelEntity(Entity):
@@ -198,5 +199,14 @@ class Level1(Level):
             Butterfly(pg.Vector2(26*w-10, 4*h-50), orientation="left"),
             Butterfly(pg.Vector2(16*w-10, 9*h-50), orientation="left"),
         )
+
+        self.butterflies_collected = 0
+
+        self.dialogues = {
+            "butterfly1": DialogueBox(Path("./assets/dialogues/butterfly1.json")),
+            "butterfly2": DialogueBox(Path("./assets/dialogues/butterfly1.json")),
+            "butterfly3": DialogueBox(Path("./assets/dialogues/butterfly1.json")),
+        }
+
         super().__init__(entities, pg.Vector2(144, 1169))
 

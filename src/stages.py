@@ -72,6 +72,9 @@ class GameStage(Stage):
         self.populate_group("entities",
                             Background(asset_loader.get_image(Path("assets/backgrounds/pink.png"))),
                             )
+
+
+
         self.camera.target = self.singletons["player"]
 
         self.populate_group("hearts", *[HeartUI(pg.Vector2(20 + 200*i, 20), idx=i) for i in range(self.singletons["player"].max_health)])

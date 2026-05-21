@@ -1,0 +1,22 @@
+{
+  "1": {
+    "type": "option",
+    "author": "Slightly sad cricket",
+    "text": "Do not go... Do not go... I am afraid of the water.",
+    "options": [
+      {
+        "text": "I know...",
+        "link": "2"
+      },
+      {
+        "text": "... but...",
+        "link": "2"
+      }
+    ]
+  },
+  "2": {
+    "type": "text",
+    "author": "Fairy",
+    "text": "I understand however I am in need of you to overcome the darkness."
+  }
+}

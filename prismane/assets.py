@@ -30,7 +30,5 @@ class AssetLoader(Element):
         return self.assets["images"][str(path)]
 
     def load_image(self, path: pathlib.Path):
-        settings: Settings = self.element_tree["Settings"]
-
         if str(path) not in self.assets["images"]:
             self.assets["images"][str(path)] = pg.image.load(path).convert_alpha()
