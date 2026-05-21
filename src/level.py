@@ -409,15 +409,4 @@ class Level1(Level):
             self.dialogue_termination_event.destroy()
             self.dialogue_termination_event = None
 
-    def update(self):
-        super().update()
-
-        if "dialogue" in self.singletons:
-            self.singletons["dialogue"].update()
-
-    def draw(self):
-        super().draw()
-
-        if "dialogue" in self.singletons:
-            self.singletons["dialogue"].draw()
 
