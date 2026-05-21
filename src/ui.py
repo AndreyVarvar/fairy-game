@@ -4,11 +4,21 @@ from prismane.entity import Entity
 import pygame as pg
 
 class HeartUI(Entity):
-    def __init__(self, pos: pg.Vector2) -> None:
+    def __init__(self, pos: pg.Vector2, idx: int) -> None:
         super().__init__()
         self.z = 10
         self.image = pg.transform.scale_by(self.element_tree["AssetLoader"].get_image("./assets/ui/heart.png"), 2)
         self.pos = pos
+        self.idx = idx
+
+    def update(self):
+        super().update()
+        
+        if self.element_tree["CurrentStage"].singletons["player"].health <= self.idx:
+            self.image.set_alpha(100)
+        else:
+            self.image.set_alpha(255)
+
 
 class FButton(Button):
     def __init__(self, pos: tuple[int, int], image: pg.Surface, z=1, pos_anchor: str = "center"):

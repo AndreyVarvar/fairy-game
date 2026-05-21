@@ -74,10 +74,7 @@ class GameStage(Stage):
                             )
         self.camera.target = self.singletons["player"]
 
-        self.set_health_gui()
-
-    def set_health_gui(self):
-        self.populate_group("hearts", *[HeartUI(pg.Vector2(20 + 200*i, 20)) for i in range(self.singletons["player"].health)])
+        self.populate_group("hearts", *[HeartUI(pg.Vector2(20 + 200*i, 20), idx=i) for i in range(self.singletons["player"].max_health)])
 
     def draw(self):
         super().draw()
@@ -88,7 +85,4 @@ class GameStage(Stage):
     def update(self):
         super().update()
         self.camera.follow_target()
-
-        if len(self.groups["hearts"]) != self.singletons["player"].health:
-            self.set_health_gui()
 

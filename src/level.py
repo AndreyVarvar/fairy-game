@@ -55,6 +55,14 @@ class Tile(LevelEntity):
         self.hitbox = hitbox if hitbox else pg.FRect(0, 0, *self.image.get_size())
 
 
+class Butterfly(LevelEntity):
+    def __init__(self, pos: pg.Vector2, orientation: str) -> None:
+        super().__init__("MainCamura", pg.FRect(0,0, 170, 179), "butterfly")
+        self.image = self.element_tree["AssetLoader"].get_image(Path("./assets/entities/butterfly.png"))
+        self.pos = pos
+
+        if orientation == "right":
+            self.image = pg.transform.flip(self.image, flip_x=True, flip_y=False)
 
 
 class Level(Entity):
@@ -184,6 +192,11 @@ class Level1(Level):
             Spike(pg.Vector2(11*w+40, 4*h+50)),
             Spike(pg.Vector2(18*w+40, 6*h+50)),
             Spike(pg.Vector2(11*w+40, 14*h+50)),
+
+            # Butterflies
+            Butterfly(pg.Vector2(-1*w-10, 2*h-50), orientation="right"),
+            Butterfly(pg.Vector2(26*w-10, 4*h-50), orientation="left"),
+            Butterfly(pg.Vector2(16*w-10, 9*h-50), orientation="left"),
         )
         super().__init__(entities, pg.Vector2(144, 1169))
 
