@@ -1,12 +1,8 @@
 from __future__ import annotations
 
-<<<<<<< HEAD
-from prismane import Spritesheet, Entity, EntityGroup, Event
-=======
 from prismane import Spritesheet, Animation, AssetLoader
 from prismane import Entity, EntityGroup
 from prismane import Event
->>>>>>> 3241c8a56c98bb1ffb577861a164a4cc5d490c14
 
 import pygame as pg
 from pathlib import Path
@@ -120,12 +116,12 @@ class Oleni(LevelEntity):
         acceleration = 3000
         self.acceleration.x += acceleration * ((self.facing == "right") - (self.facing == "left"))
 
-        level: Level = self.element_tree["CurrentStage"].groups["level"][0]
+        level: Level = self.element_tree["CurrentStage"].singletons["level"]
 
         bottomright = self.collision_box.bottomright
         bottomleft = self.collision_box.bottomleft
-        right_check = level.collidepoint((bottomright[0], bottomright[1] + 1))
-        left_check = level.collidepoint((bottomleft[0], bottomleft[1] + 1))
+        right_check = level.collidepoint((bottomright[0], bottomright[1] + 1), "tiles")
+        left_check = level.collidepoint((bottomleft[0], bottomleft[1] + 1), "tiles")
         if not right_check and self.on_ground:
             self.facing = "left"
             self.velocity.x *= -1
@@ -158,7 +154,7 @@ class Oleni(LevelEntity):
         level: Level = self.element_tree["CurrentStage"].singletons["level"]
 
         self.pos.x += self.velocity.x * dt
-        entity: LevelEntity = level.get_collision_with(self)
+        entity: LevelEntity = level.get_collision_with(self, "tiles")
         if entity is not None:
             if entity.collision_type == "static":
                 if self.velocity.x > 0:
@@ -171,7 +167,7 @@ class Oleni(LevelEntity):
 
         self.pos.y += self.velocity.y * dt
         self.on_ground = False
-        entity: LevelEntity = level.get_collision_with(self)
+        entity: LevelEntity = level.get_collision_with(self, "tiles")
         if entity is not None:
             if entity.collision_type == "static":
                 if self.velocity.y >= 0:
@@ -273,6 +269,8 @@ class Level1(Level):
         w, h = 115, 75  # tile width and tile height, shortened for conveniece in the monstrocity you see below (yes, it was manually written. Every single entry. Every single tile. You could say it woul've been better to write a script to do that for me, but I am too lazy to write the autotiler, and even though it would've taken me 30 minutes I'd rather spend the next 2 hours manually writing everyghing down)
         tileset = Spritesheet(Path("./assets/tiles/pink.json"))
         tile_hitbox = pg.FRect(0, 51, 115, 75)
+
+        self.events = []
 
         self.groups: dict[str, EntityGroup] = {
             "tiles": EntityGroup(
@@ -395,8 +393,8 @@ class Level1(Level):
         self.dialogue_termination_event = None
 
     def start_dialogue(self, dialogue_json_path: Path):
-        self.dialogue = DialogueBox(dialogue_json_path)
-        self.dialogue_termination_event = Event(action=lambda: self.stop_dialogue(), condition=lambda: self.dialogue.end)
+        self.singletons["dialogue"] = DialogueBox(dialogue_json_path)
+        self.dialogue_termination_event = Event(action=lambda: self.stop_dialogue(), condition=lambda: self.singletons["dialogue"].end)
         
         self.events.append(self.dialogue_termination_event)
 
@@ -414,12 +412,12 @@ class Level1(Level):
     def update(self):
         super().update()
 
-        if self.dialogue:
-            self.dialogue.update()
+        if "dialogue" in self.singletons:
+            self.singletons["dialogue"].update()
 
     def draw(self):
         super().draw()
 
-        if self.dialogue:
-            self.dialogue.draw()
+        if "dialogue" in self.singletons:
+            self.singletons["dialogue"].draw()
 

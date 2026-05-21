@@ -137,52 +137,57 @@ class Player(LevelEntity):
         # collision
         level: Level = self.element_tree["CurrentStage"].singletons["level"]
 
+        # collision with tiles
         self.pos.x += self.velocity.x * dt
-        entity: LevelEntity = level.get_collision_with(self)
-        if entity is not None:
-            if entity.collision_type == "static":
-                if self.velocity.x > 0:
-                    self.pos.x = entity.collision_box.left - self.hitbox.right
-                else:
-                    self.pos.x = entity.collision_box.right - self.hitbox.left
-                self.velocity.x = 0
-                self.acceleration.x = 0
-            elif entity.collision_type == "spike":
-                self.damage()
-            elif entity.collision_type == "butterfly":
-                self.element_tree["CurrentStage"].singletons["level"].start_dialogue(Path("./assets/dialogues/butterfly1.json"))
-                self.velocity.x = 0
-                self.acceleration.x = 0
-                self.has_control = False
+        tile: LevelEntity = level.get_collision_with(self, "tiles")
+        if tile is not None:
+            if self.velocity.x > 0:
+                self.pos.x = tile.collision_box.left - self.hitbox.right
+            else:
+                self.pos.x = tile.collision_box.right - self.hitbox.left
+            self.velocity.x = 0
+            self.acceleration.x = 0
 
 
         self.pos.y += self.velocity.y * dt
         self.on_ground = False
-        entity: LevelEntity = level.get_collision_with(self)
-        if entity is not None:
-            if entity.collision_type == "static":
-                if self.velocity.y >= 0:
-                    self.on_ground = True
-                    self.pos.y = entity.collision_box.top - self.rect.height
-                else:
-                    self.pos.y = entity.collision_box.bottom
-                self.velocity.y = 0
-                self.acceleration.y = 0
+        tile: LevelEntity = level.get_collision_with(self, "tiles")
+        if tile is not None:
+            if self.velocity.y >= 0:
+                self.on_ground = True
+                self.pos.y = tile.collision_box.top - self.rect.height
+            else:
+                self.pos.y = tile.collision_box.bottom
+            self.velocity.y = 0
+            self.acceleration.y = 0
 
-            elif entity.collision_type == "mushroom":
-                if self.velocity.y > 0:
-                    self.velocity.y = -1000
+        # collision with spikes
+        spike: LevelEntity = level.get_collision_with(self, "spikes")
+        if spike is not None:
+            self.damage()
 
-            elif entity.collision_type == "spike":
-                self.damage()
+        # collision with mushrooms
+        mushroom: LevelEntity = level.get_collision_with(self, "mushrooms")
+        if mushroom is not None:
+            if self.velocity.y > 0:
+                self.velocity.y = -1000
 
+        # collision with butterflies
+        butterfly: LevelEntity = level.get_collision_with(self, "butterflies")
+        if butterfly is not None:
+            self.element_tree["CurrentStage"].singletons["level"].start_dialogue(Path("./assets/dialogues/butterfly1.json"))
+            self.velocity.x = 0
+            self.acceleration.x = 0
+            self.has_control = False
+
+
+        # states
         if self.velocity.x != 0:
             if self.velocity.x > 0:
                 self.facing = "right"
             else:
                 self.facing = "left"
-
-        # states
+        
         self.attacking = self.current_state in ["attack left", "attack right"] and not self.states[self.current_state].end
         
         for event in self.switch_conditions:
@@ -211,5 +216,4 @@ class Player(LevelEntity):
         
         # self.image = self.states[self.current_state].get_frame().copy()
         # pg.draw.rect(self.image, (255, 0, 0), self.hitbox.move(-self.draw_offset), 5)
-        pg.draw.rect(self.image, (255, 0, 0), (self.hitbox.x + self.draw_offset.x, self.hitbox.y + self.draw_offset.y, self.hitbox.w, self.hitbox.h), 5)
 

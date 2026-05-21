@@ -78,11 +78,6 @@ class GameStage(Stage):
         self.camera.target = self.singletons["player"]
 
         self.populate_group("hearts", *[HeartUI(pg.Vector2(20 + 200*i, 20), idx=i) for i in range(self.singletons["player"].max_health)])
-        self.set_health_gui()
-
-    def set_health_gui(self):
-        self.populate_group("hearts", *[HeartUI(pg.Vector2(20 + 200*i, 20), idx=i) for i in range(self.singletons["player"].health)])
-        self.populate_group("level", Level1())
 
     def draw(self):
         super().draw()
