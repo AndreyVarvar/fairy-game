@@ -15,6 +15,7 @@ class Player(LevelEntity):
         super().__init__(camera_name="MainCamura", hitbox=pg.FRect(70, 0, 70, 232))
         self.pos = pos
         self.velocity: pg.Vector2 = pg.Vector2(0, 0)
+        self.max_velocity: int = 320
         self.acceleration: pg.Vector2 = pg.Vector2(0, 0)
 
         self.gravity: pg.Vector2 = pg.Vector2(0, 1000)
@@ -48,7 +49,7 @@ class Player(LevelEntity):
         self.facing = "left"
         self.attacking = False
         self.offsets = {
-            "attack left": pg.Vector2(110, 0),
+            "attack left": pg.Vector2(-110, 0),
             "attack right": pg.Vector2(15, 0)
         }
 
@@ -123,7 +124,13 @@ class Player(LevelEntity):
         self.velocity += self.acceleration * dt  # acceleration
         if self.on_ground:
             self.velocity.x /= 10**dt  # friction
-    
+
+        self.velocity.x = max(-self.max_velocity, min(self.max_velocity, self.velocity.x)) # blud forgot to cap velocity :skull:
+
+        if abs(self.velocity.x) < 50:
+            self.velocity.x = 0
+        self.velocity.clamp_magnitude_ip(10_000)
+
         # collision
         level: Level = self.element_tree["CurrentStage"].singletons["level"]
 
@@ -160,11 +167,6 @@ class Player(LevelEntity):
 
             elif entity.collision_type == "spike":
                 self.damage()
-        
-
-        if abs(self.velocity.x) < 50:
-            self.velocity.x = 0
-        self.velocity.clamp_magnitude_ip(10_000)
 
         if self.velocity.x != 0:
             if self.velocity.x > 0:

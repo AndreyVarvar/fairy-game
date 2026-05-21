@@ -78,7 +78,7 @@ class GameStage(Stage):
         self.set_health_gui()
 
     def set_health_gui(self):
-        self.populate_group("hearts", *[HeartUI(pg.Vector2(20 + 200*i, 20)) for i in range(self.singletons["player"].health)])
+        self.populate_group("hearts", *[HeartUI(pg.Vector2(20 + 200*i, 20), idx=i) for i in range(self.singletons["player"].health)])
         self.populate_group("level", Level1())
 
     def draw(self):

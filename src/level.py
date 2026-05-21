@@ -49,6 +49,7 @@ class Oleni(LevelEntity):
         super().__init__(camera_name="MainCamura", hitbox=pg.FRect(0, 16, 160, 208))
         self.pos = pos
         self.velocity: pg.Vector2 = pg.Vector2(0, 0)
+        self.max_velocity: int = 30
         self.acceleration: pg.Vector2 = pg.Vector2(0, 0)
 
         self.gravity: pg.Vector2 = pg.Vector2(0, 1000)
@@ -91,11 +92,11 @@ class Oleni(LevelEntity):
 
     @property
     def left(self) -> pg.FRect:
-        return pg.FRect(self.hitbox.x, self.hitbox.y, 136, 225)
+        return pg.FRect(self.collision_box.x - 136, self.collision_box.y, 136, 225)
 
     @property
     def right(self) -> pg.FRect:
-        return pg.FRect(self.hitbox.right, self.hitbox.y, 136, 225)
+        return pg.FRect(self.collision_box.right, self.collision_box.y, 136, 225)
 
     def set_state(self, state: str):
         jump_states = ["jump left", "jump right"]
@@ -108,21 +109,26 @@ class Oleni(LevelEntity):
         self.current_state = state
 
     def roam(self):
-        if not self.on_ground:
+        if not self.on_ground or (self.facing == "left" and self.element_tree["CurrentStage"].singletons["player"].rect.colliderect(self.left)) or (self.element_tree["CurrentStage"].singletons["player"].rect.colliderect(self.right) and self.facing == "right"):
             return
 
-        acceleration = 5000
-        # self.acceleration.x += acceleration * ((self.facing == "right") - (self.facing == "left"))
+        acceleration = 3000
+        self.acceleration.x += acceleration * ((self.facing == "right") - (self.facing == "left"))
 
         level: Level = self.element_tree["CurrentStage"].groups["level"][0]
 
-        bottomright = self.rect.bottomright
-        bottomleft = self.rect.bottomleft
-        right_check = level.collidepoint((bottomright[0], bottomright[1] + 10))
-        left_check = level.collidepoint((bottomleft[0], bottomleft[1] + 10))
-        # TODO: if needed we can add conditions for when it is in the air, tho I don't know why that would ever occur
-        if self.velocity.x > 0 and ((not right_check) or (not left_check)):
+        bottomright = self.collision_box.bottomright
+        bottomleft = self.collision_box.bottomleft
+        right_check = level.collidepoint((bottomright[0], bottomright[1] + 1))
+        left_check = level.collidepoint((bottomleft[0], bottomleft[1] + 1))
+        if not right_check and self.on_ground:
+            self.facing = "left"
             self.velocity.x *= -1
+            self.acceleration.x *= -2
+        elif not left_check and self.on_ground:
+            self.facing = "right"
+            self.velocity.x *= -1
+            self.acceleration.x *= -2
 
     def update(self):
         # movement
@@ -134,37 +140,42 @@ class Oleni(LevelEntity):
         dt = self.element_tree["TimeControlPanel"].dt
         self.velocity += self.acceleration * dt  # acceleration
         if self.on_ground:
-            # why do you put 10 to the power dt? - Aiden
+            #NOTE: why do you put 10 to the power dt? - Aiden
             self.velocity.x /= 10**dt  # friction
 
+        self.velocity.x = max(-self.max_velocity, min(self.max_velocity, self.velocity.x))
+
+        if abs(self.velocity.x) < 20:
+            self.velocity.x = 0
+        self.velocity.clamp_magnitude_ip(10_000)
+
         # collision
-        level: Level = self.element_tree["CurrentStage"].groups["level"][0]
+        level: Level = self.element_tree["CurrentStage"].singletons["level"]
 
         self.pos.x += self.velocity.x * dt
-        entity = level.get_collision_with(self)
+        entity: LevelEntity = level.get_collision_with(self)
         if entity is not None:
-            if self.velocity.x > 0:
-                self.pos.x = entity.collision_box.left - self.hitbox.right
-            else:
-                self.pos.x = entity.collision_box.right - self.hitbox.left
-            self.velocity.x = 0
-            self.acceleration.x = 0
+            if entity.collision_type == "static":
+                if self.velocity.x > 0:
+                    self.pos.x = entity.collision_box.left - self.hitbox.right
+                else:
+                    self.pos.x = entity.collision_box.right - self.hitbox.left
+                self.velocity.x = 0
+                self.acceleration.x = 0
+
 
         self.pos.y += self.velocity.y * dt
         self.on_ground = False
-        entity = level.get_collision_with(self)
+        entity: LevelEntity = level.get_collision_with(self)
         if entity is not None:
-            if self.velocity.y >= 0:
-                self.on_ground = True
-                self.pos.y = entity.collision_box.top - self.rect.height
-            else:
-                self.pos.y = entity.collision_box.bottom
-            self.velocity.y = 0
-            self.acceleration.y = 0
-
-        if abs(self.velocity.x) < 50:
-            self.velocity.x = 0
-        self.velocity.clamp_magnitude_ip(10_000)
+            if entity.collision_type == "static":
+                if self.velocity.y >= 0:
+                    self.on_ground = True
+                    self.pos.y = entity.collision_box.top - self.rect.height
+                else:
+                    self.pos.y = entity.collision_box.bottom
+                self.velocity.y = 0
+                self.acceleration.y = 0
 
         if self.velocity.x != 0:
             if self.velocity.x > 0:
@@ -187,9 +198,6 @@ class Oleni(LevelEntity):
         # animations
         self.states[self.current_state].update()
         self.image = self.states[self.current_state].get_frame().copy()
-
-        pg.draw.rect(self.image, (255, 0, 0), (self.hitbox.x + self.draw_offset.x, self.hitbox.y + self.draw_offset.y, self.hitbox.w, self.hitbox.h), 5)
-        pg.draw.rect(self.image, (0, 255, 0), (self.hitbox.x + self.draw_offset.x - 136, self.hitbox.y + self.draw_offset.y, 136, 225), 5)
 
 
 class Tile(LevelEntity):
@@ -353,7 +361,7 @@ class Level1(Level):
             Butterfly(pg.Vector2(16*w-10, 9*h-50), orientation="left"),
 
             # Oleni
-            Oleni(pg.Vector2(11*w+40, 14*h - 200))
+            Oleni(pg.Vector2(18*w, 14*h))
         )
         super().__init__(entities, pg.Vector2(144, 1169))
 
