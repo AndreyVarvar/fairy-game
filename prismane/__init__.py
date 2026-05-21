@@ -10,4 +10,5 @@ from .renderer import Renderer
 from .event import Event
 from .animation import Animation
 from .spritesheet import Spritesheet
-
+from .animation import Spritesheet, Animation
+from .assets import AssetLoader

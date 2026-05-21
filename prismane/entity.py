@@ -26,7 +26,6 @@ class Entity(Element):
         # for all input, sound, or music related stuff (+dt and game_running_time) use "InputControlPanel", "SoundControlPanel", and "MusicControlPanel" (+"GameControlPanel")
         pass
 
-
     def draw(self):
         self.element_tree["Renderer"].queue_draw(self.image, self.z, self.target, self.pos + self.draw_offset)
 

@@ -48,7 +48,7 @@ class Player(LevelEntity):
         self.facing = "left"
         self.attacking = False
         self.offsets = {
-            "attack left": pg.Vector2(-110, 0),
+            "attack left": pg.Vector2(110, 0),
             "attack right": pg.Vector2(15, 0)
         }
 
@@ -201,4 +201,5 @@ class Player(LevelEntity):
         
         # self.image = self.states[self.current_state].get_frame().copy()
         # pg.draw.rect(self.image, (255, 0, 0), self.hitbox.move(-self.draw_offset), 5)
+        pg.draw.rect(self.image, (255, 0, 0), (self.hitbox.x + self.draw_offset.x, self.hitbox.y + self.draw_offset.y, self.hitbox.w, self.hitbox.h), 5)
 

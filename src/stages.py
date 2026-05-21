@@ -64,17 +64,22 @@ class GameStage(Stage):
         super().__init__()
 
         asset_loader: AssetLoader = self.element_tree["AssetLoader"]
-        
+
         self.camera = Camera("MainCamura", 0, 0, 0, 0)
-        
         self.add_singleton("level", Level1())
         self.add_singleton("player", Player(self.singletons["level"].player_start_pos))
+
         self.populate_group("entities",
                             Background(asset_loader.get_image(Path("assets/backgrounds/pink.png"))),
                             )
         self.camera.target = self.singletons["player"]
 
         self.populate_group("hearts", *[HeartUI(pg.Vector2(20 + 200*i, 20), idx=i) for i in range(self.singletons["player"].max_health)])
+        self.set_health_gui()
+
+    def set_health_gui(self):
+        self.populate_group("hearts", *[HeartUI(pg.Vector2(20 + 200*i, 20)) for i in range(self.singletons["player"].health)])
+        self.populate_group("level", Level1())
 
     def draw(self):
         super().draw()

@@ -1,7 +1,7 @@
 {
   "spritesheet-type": "directory",
   "format-type": "formatted",
-  "directory-path": "./assets/entities/models/oleni_idle_l.json",
+  "directory-path": "./assets/entities/models/oleni_idle_l",
   "format": "Timeline 1_{0:04}.png",
   "count": 24
 }
