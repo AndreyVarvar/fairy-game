@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from prismane import Spritesheet
-from prismane import Entity, EntityGroup
+from prismane import Spritesheet, Entity, EntityGroup, Event
 
 import pygame as pg
 from pathlib import Path
@@ -67,146 +66,189 @@ class Butterfly(LevelEntity):
 
 
 class Level(Entity):
-    def __init__(self, entities: EntityGroup, player_start_pos: pg.Vector2) -> None:
+    def __init__(self, player_start_pos: pg.Vector2) -> None:
         super().__init__()
-        
-        self.entities: EntityGroup = entities
+        self.events: list
+        self.groups: dict[str, EntityGroup]
+        self.singletons: dict[str, Entity]
         self.player_start_pos = player_start_pos
 
-    def get_collision_with(self, entity: LevelEntity):
-        for level_entity in self.entities:
+    def get_collision_with(self, entity: LevelEntity, group: str):
+        for level_entity in self.groups[group]:
             if level_entity.collides_with(entity):
                 return level_entity
         return None
 
     def update(self):
-        self.entities.update()
+        for group in self.groups.values():
+            group.update()
+
+        for singletone in self.singletons.values():
+            singletone.update()
+        
+        for event in self.events:
+            event.update()
 
     def draw(self):
-        self.entities.draw()
+        for group in self.groups.values():
+            group.draw()
+
+        for singleton in self.singletons.values():
+            singleton.draw()
 
 
 class Level1(Level):
     def __init__(self) -> None:
+        super().__init__(pg.Vector2(144, 1169))
+        
         w, h = 115, 75  # tile width and tile height, shortened for conveniece in the monstrocity you see below (yes, it was manually written. Every single entry. Every single tile. You could say it woul've been better to write a script to do that for me, but I am too lazy to write the autotiler, and even though it would've taken me 30 minutes I'd rather spend the next 2 hours manually writing everyghing down)
         tileset = Spritesheet(Path("./assets/tiles/pink.json"))
         tile_hitbox = pg.FRect(0, 51, 115, 75)
-        entities: EntityGroup = EntityGroup(
-            # tiles
-            Tile(pg.Vector2(-1*w, 3*h), tileset["top-left"], tile_hitbox),
-            Tile(pg.Vector2(0*w, 3*h), tileset["top-right"], tile_hitbox),
-            
-            Tile(pg.Vector2(-1*w, 9*h), tileset["top-left"], tile_hitbox),
-            Tile(pg.Vector2(0*w, 9*h), tileset["top-middle 1"], tile_hitbox),
-            Tile(pg.Vector2(1*w, 9*h), tileset["top-right"], tile_hitbox),
-            Tile(pg.Vector2(-1*w, 10*h+tile_hitbox.y), tileset["bottom-left"]),
-            Tile(pg.Vector2(0*w, 10*h+tile_hitbox.y), tileset["middle"]),
-            Tile(pg.Vector2(1*w, 10*h+tile_hitbox.y), tileset["middle"]),
-            Tile(pg.Vector2(0*w, 11*h+tile_hitbox.y), tileset["bottom-left"]),
-            Tile(pg.Vector2(1*w, 11*h+tile_hitbox.y), tileset["middle"]),
-            Tile(pg.Vector2(2*w, 11*h), tileset["top-right"], tile_hitbox),
-            
-            Tile(pg.Vector2(4*w, 7*h), tileset["top-left"], tile_hitbox),
-            Tile(pg.Vector2(5*w, 7*h), tileset["top-middle 2"], tile_hitbox),
-            Tile(pg.Vector2(6*w, 7*h), tileset["top-middle 1"], tile_hitbox),
-            Tile(pg.Vector2(7*w, 7*h), tileset["top-middle 2"], tile_hitbox),
-            Tile(pg.Vector2(8*w, 7*h), tileset["top-right"], tile_hitbox),
-            
-            Tile(pg.Vector2(9*w, 5*h), tileset["top-left"], tile_hitbox),
-            Tile(pg.Vector2(10*w, 5*h), tileset["top-middle 1"], tile_hitbox),
-            Tile(pg.Vector2(11*w, 5*h), tileset["top-right"], tile_hitbox),
-            
-            Tile(pg.Vector2(13*w, 5*h), tileset["top-left"], tile_hitbox),
-            Tile(pg.Vector2(14*w, 5*h), tileset["top-middle 1"], tile_hitbox),
-            Tile(pg.Vector2(15*w, 5*h), tileset["top-middle 2"], tile_hitbox),
-            Tile(pg.Vector2(16*w, 5*h), tileset["top-right"], tile_hitbox),
-            
-            Tile(pg.Vector2(18*w, 7*h), tileset["top-left"], tile_hitbox),
-            Tile(pg.Vector2(19*w, 7*h), tileset["top-middle 1"], tile_hitbox),
-            Tile(pg.Vector2(20*w, 7*h), tileset["top-right"], tile_hitbox),
-            
-            Tile(pg.Vector2(22*w, 6*h), tileset["top-left"], tile_hitbox),
-            Tile(pg.Vector2(23*w, 6*h), tileset["top-right"], tile_hitbox),
-            
-            Tile(pg.Vector2(25*w, 5*h), tileset["top-left"], tile_hitbox),
-            Tile(pg.Vector2(26*w, 5*h), tileset["top-right"], tile_hitbox),
-            
-            Tile(pg.Vector2(15*w, 10*h), tileset["top-left"], tile_hitbox),
-            Tile(pg.Vector2(16*w, 10*h), tileset["top-right"], tile_hitbox),
-            
-            Tile(pg.Vector2(24*w, 11*h), tileset["top-left"], tile_hitbox),
-            Tile(pg.Vector2(25*w, 11*h), tileset["top-middle 1"], tile_hitbox),
-            Tile(pg.Vector2(26*w, 11*h), tileset["top-middle 2"], tile_hitbox),
-            Tile(pg.Vector2(27*w, 11*h), tileset["top-right"], tile_hitbox),
-            
-            Tile(pg.Vector2(4*w, 17*h), tileset["top-left"], tile_hitbox),
-            Tile(pg.Vector2(5*w, 17*h), tileset["top-right"], tile_hitbox),
-            
-            Tile(pg.Vector2(10*w, 15*h), tileset["top-left"], tile_hitbox),
-            Tile(pg.Vector2(11*w, 15*h), tileset["top-middle 1"], tile_hitbox),
-            Tile(pg.Vector2(12*w, 15*h), tileset["top-right"], tile_hitbox),
-            
-            Tile(pg.Vector2(17*w, 17*h), tileset["top-left"], tile_hitbox),
-            Tile(pg.Vector2(18*w, 17*h), tileset["top-middle 2"], tile_hitbox),
-            Tile(pg.Vector2(19*w, 17*h), tileset["top-middle 1"], tile_hitbox),
-            Tile(pg.Vector2(20*w, 17*h), tileset["top-middle 2"], tile_hitbox),
-            Tile(pg.Vector2(21*w, 17*h), tileset["top-middle 1"], tile_hitbox),
-            Tile(pg.Vector2(22*w, 17*h), tileset["top-right"], tile_hitbox),
-            
-            Tile(pg.Vector2(1*w, 18*h), tileset["top-left"], tile_hitbox),
-            Tile(pg.Vector2(2*w, 18*h), tileset["top-right"], tile_hitbox),
-            Tile(pg.Vector2(1*w, 19*h+tile_hitbox.y), tileset["bottom-left"]),
-            Tile(pg.Vector2(2*w, 19*h+tile_hitbox.y), tileset["bottom-right"]),
-            
-            Tile(pg.Vector2(7*w, 17*h), tileset["top-left"], tile_hitbox),
-            Tile(pg.Vector2(8*w, 17*h), tileset["top-middle 1"], tile_hitbox),
-            Tile(pg.Vector2(9*w, 17*h), tileset["top-right"], tile_hitbox),
-            Tile(pg.Vector2(7*w, 18*h+tile_hitbox.y), tileset["middle"]),
-            Tile(pg.Vector2(8*w, 18*h+tile_hitbox.y), tileset["middle"]),
-            Tile(pg.Vector2(9*w, 18*h+tile_hitbox.y), tileset["middle"]),
-            Tile(pg.Vector2(7*w, 19*h+tile_hitbox.y), tileset["bottom-left"]),
-            Tile(pg.Vector2(8*w, 19*h+tile_hitbox.y), tileset["middle"]),
-            Tile(pg.Vector2(9*w, 19*h+tile_hitbox.y), tileset["bottom-right"]),
-            
-            Tile(pg.Vector2(12*w, 17*h), tileset["top-left"], tile_hitbox),
-            Tile(pg.Vector2(13*w, 17*h), tileset["top-right"], tile_hitbox),
-            Tile(pg.Vector2(13*w, 18*h+tile_hitbox.y), tileset["middle"]),
-            Tile(pg.Vector2(14*w, 18*h), tileset["top-middle 1"], tile_hitbox),
-            Tile(pg.Vector2(15*w, 18*h), tileset["top-right"], tile_hitbox),
-            Tile(pg.Vector2(13*w, 19*h+tile_hitbox.y), tileset["bottom-left"]),
-            Tile(pg.Vector2(14*w, 19*h+tile_hitbox.y), tileset["middle"]),
-            Tile(pg.Vector2(15*w, 19*h+tile_hitbox.y), tileset["bottom-right"]),
-            
-            Tile(pg.Vector2(24*w, 18*h), tileset["top-left"], tile_hitbox),
-            Tile(pg.Vector2(25*w, 18*h), tileset["top-middle 1"], tile_hitbox),
-            Tile(pg.Vector2(26*w, 18*h), tileset["top-right"], tile_hitbox),
-            Tile(pg.Vector2(24*w, 19*h+tile_hitbox.y), tileset["bottom-left"]),
-            Tile(pg.Vector2(25*w, 19*h+tile_hitbox.y), tileset["middle"]),
-            Tile(pg.Vector2(26*w, 19*h+tile_hitbox.y), tileset["bottom-right"]),
-        
-            # MUSHROOMs
-            Mushroom(pg.Vector2(4*w, 6*h+10)),
-            Mushroom(pg.Vector2(4*w, 16*h+10)),
-            Mushroom(pg.Vector2(11.75*w, 14*h+10)),
 
-            # Spikes
-            Spike(pg.Vector2(11*w+40, 4*h+50)),
-            Spike(pg.Vector2(18*w+40, 6*h+50)),
-            Spike(pg.Vector2(11*w+40, 14*h+50)),
-
-            # Butterflies
-            Butterfly(pg.Vector2(-1*w-10, 2*h-50), orientation="right"),
-            Butterfly(pg.Vector2(26*w-10, 4*h-50), orientation="left"),
-            Butterfly(pg.Vector2(16*w-10, 9*h-50), orientation="left"),
-        )
-
-        self.butterflies_collected = 0
-
-        self.dialogues = {
-            "butterfly1": DialogueBox(Path("./assets/dialogues/butterfly1.json")),
-            "butterfly2": DialogueBox(Path("./assets/dialogues/butterfly1.json")),
-            "butterfly3": DialogueBox(Path("./assets/dialogues/butterfly1.json")),
+        self.groups: dict[str, EntityGroup] = {
+            "tiles": EntityGroup(
+                Tile(pg.Vector2(-1*w, 3*h), tileset["top-left"], tile_hitbox),
+                Tile(pg.Vector2(0*w, 3*h), tileset["top-right"], tile_hitbox),
+                
+                Tile(pg.Vector2(-1*w, 9*h), tileset["top-left"], tile_hitbox),
+                Tile(pg.Vector2(0*w, 9*h), tileset["top-middle 1"], tile_hitbox),
+                Tile(pg.Vector2(1*w, 9*h), tileset["top-right"], tile_hitbox),
+                Tile(pg.Vector2(-1*w, 10*h+tile_hitbox.y), tileset["bottom-left"]),
+                Tile(pg.Vector2(0*w, 10*h+tile_hitbox.y), tileset["middle"]),
+                Tile(pg.Vector2(1*w, 10*h+tile_hitbox.y), tileset["middle"]),
+                Tile(pg.Vector2(0*w, 11*h+tile_hitbox.y), tileset["bottom-left"]),
+                Tile(pg.Vector2(1*w, 11*h+tile_hitbox.y), tileset["middle"]),
+                Tile(pg.Vector2(2*w, 11*h), tileset["top-right"], tile_hitbox),
+                
+                Tile(pg.Vector2(4*w, 7*h), tileset["top-left"], tile_hitbox),
+                Tile(pg.Vector2(5*w, 7*h), tileset["top-middle 2"], tile_hitbox),
+                Tile(pg.Vector2(6*w, 7*h), tileset["top-middle 1"], tile_hitbox),
+                Tile(pg.Vector2(7*w, 7*h), tileset["top-middle 2"], tile_hitbox),
+                Tile(pg.Vector2(8*w, 7*h), tileset["top-right"], tile_hitbox),
+                
+                Tile(pg.Vector2(9*w, 5*h), tileset["top-left"], tile_hitbox),
+                Tile(pg.Vector2(10*w, 5*h), tileset["top-middle 1"], tile_hitbox),
+                Tile(pg.Vector2(11*w, 5*h), tileset["top-right"], tile_hitbox),
+                
+                Tile(pg.Vector2(13*w, 5*h), tileset["top-left"], tile_hitbox),
+                Tile(pg.Vector2(14*w, 5*h), tileset["top-middle 1"], tile_hitbox),
+                Tile(pg.Vector2(15*w, 5*h), tileset["top-middle 2"], tile_hitbox),
+                Tile(pg.Vector2(16*w, 5*h), tileset["top-right"], tile_hitbox),
+                
+                Tile(pg.Vector2(18*w, 7*h), tileset["top-left"], tile_hitbox),
+                Tile(pg.Vector2(19*w, 7*h), tileset["top-middle 1"], tile_hitbox),
+                Tile(pg.Vector2(20*w, 7*h), tileset["top-right"], tile_hitbox),
+                
+                Tile(pg.Vector2(22*w, 6*h), tileset["top-left"], tile_hitbox),
+                Tile(pg.Vector2(23*w, 6*h), tileset["top-right"], tile_hitbox),
+                
+                Tile(pg.Vector2(25*w, 5*h), tileset["top-left"], tile_hitbox),
+                Tile(pg.Vector2(26*w, 5*h), tileset["top-right"], tile_hitbox),
+                
+                Tile(pg.Vector2(15*w, 10*h), tileset["top-left"], tile_hitbox),
+                Tile(pg.Vector2(16*w, 10*h), tileset["top-right"], tile_hitbox),
+                
+                Tile(pg.Vector2(24*w, 11*h), tileset["top-left"], tile_hitbox),
+                Tile(pg.Vector2(25*w, 11*h), tileset["top-middle 1"], tile_hitbox),
+                Tile(pg.Vector2(26*w, 11*h), tileset["top-middle 2"], tile_hitbox),
+                Tile(pg.Vector2(27*w, 11*h), tileset["top-right"], tile_hitbox),
+                
+                Tile(pg.Vector2(4*w, 17*h), tileset["top-left"], tile_hitbox),
+                Tile(pg.Vector2(5*w, 17*h), tileset["top-right"], tile_hitbox),
+                
+                Tile(pg.Vector2(10*w, 15*h), tileset["top-left"], tile_hitbox),
+                Tile(pg.Vector2(11*w, 15*h), tileset["top-middle 1"], tile_hitbox),
+                Tile(pg.Vector2(12*w, 15*h), tileset["top-right"], tile_hitbox),
+                
+                Tile(pg.Vector2(17*w, 17*h), tileset["top-left"], tile_hitbox),
+                Tile(pg.Vector2(18*w, 17*h), tileset["top-middle 2"], tile_hitbox),
+                Tile(pg.Vector2(19*w, 17*h), tileset["top-middle 1"], tile_hitbox),
+                Tile(pg.Vector2(20*w, 17*h), tileset["top-middle 2"], tile_hitbox),
+                Tile(pg.Vector2(21*w, 17*h), tileset["top-middle 1"], tile_hitbox),
+                Tile(pg.Vector2(22*w, 17*h), tileset["top-right"], tile_hitbox),
+                
+                Tile(pg.Vector2(1*w, 18*h), tileset["top-left"], tile_hitbox),
+                Tile(pg.Vector2(2*w, 18*h), tileset["top-right"], tile_hitbox),
+                Tile(pg.Vector2(1*w, 19*h+tile_hitbox.y), tileset["bottom-left"]),
+                Tile(pg.Vector2(2*w, 19*h+tile_hitbox.y), tileset["bottom-right"]),
+                
+                Tile(pg.Vector2(7*w, 17*h), tileset["top-left"], tile_hitbox),
+                Tile(pg.Vector2(8*w, 17*h), tileset["top-middle 1"], tile_hitbox),
+                Tile(pg.Vector2(9*w, 17*h), tileset["top-right"], tile_hitbox),
+                Tile(pg.Vector2(7*w, 18*h+tile_hitbox.y), tileset["middle"]),
+                Tile(pg.Vector2(8*w, 18*h+tile_hitbox.y), tileset["middle"]),
+                Tile(pg.Vector2(9*w, 18*h+tile_hitbox.y), tileset["middle"]),
+                Tile(pg.Vector2(7*w, 19*h+tile_hitbox.y), tileset["bottom-left"]),
+                Tile(pg.Vector2(8*w, 19*h+tile_hitbox.y), tileset["middle"]),
+                Tile(pg.Vector2(9*w, 19*h+tile_hitbox.y), tileset["bottom-right"]),
+                
+                Tile(pg.Vector2(12*w, 17*h), tileset["top-left"], tile_hitbox),
+                Tile(pg.Vector2(13*w, 17*h), tileset["top-right"], tile_hitbox),
+                Tile(pg.Vector2(13*w, 18*h+tile_hitbox.y), tileset["middle"]),
+                Tile(pg.Vector2(14*w, 18*h), tileset["top-middle 1"], tile_hitbox),
+                Tile(pg.Vector2(15*w, 18*h), tileset["top-right"], tile_hitbox),
+                Tile(pg.Vector2(13*w, 19*h+tile_hitbox.y), tileset["bottom-left"]),
+                Tile(pg.Vector2(14*w, 19*h+tile_hitbox.y), tileset["middle"]),
+                Tile(pg.Vector2(15*w, 19*h+tile_hitbox.y), tileset["bottom-right"]),
+                
+                Tile(pg.Vector2(24*w, 18*h), tileset["top-left"], tile_hitbox),
+                Tile(pg.Vector2(25*w, 18*h), tileset["top-middle 1"], tile_hitbox),
+                Tile(pg.Vector2(26*w, 18*h), tileset["top-right"], tile_hitbox),
+                Tile(pg.Vector2(24*w, 19*h+tile_hitbox.y), tileset["bottom-left"]),
+                Tile(pg.Vector2(25*w, 19*h+tile_hitbox.y), tileset["middle"]),
+                Tile(pg.Vector2(26*w, 19*h+tile_hitbox.y), tileset["bottom-right"])
+            ),
+            "mushrooms": EntityGroup(
+                # MUSHROOMs
+                Mushroom(pg.Vector2(4*w, 6*h+10)),
+                Mushroom(pg.Vector2(4*w, 16*h+10)),
+                Mushroom(pg.Vector2(11.75*w, 14*h+10)),
+            ),
+            "spikes": EntityGroup(
+                # Spikes
+                Spike(pg.Vector2(11*w+40, 4*h+50)),
+                Spike(pg.Vector2(18*w+40, 6*h+50)),
+                Spike(pg.Vector2(11*w+40, 14*h+50)),
+            ),
+            "butterflies": EntityGroup(
+                # Butterflies
+                Butterfly(pg.Vector2(-1*w-10, 2*h-50), orientation="right"),
+                Butterfly(pg.Vector2(26*w-10, 4*h-50), orientation="left"),
+                Butterfly(pg.Vector2(16*w-10, 9*h-50), orientation="left"),
+            )
         }
 
-        super().__init__(entities, pg.Vector2(144, 1169))
+        self.singletons = {}
+        self.dialogue_termination_event = None
+
+    def start_dialogue(self, dialogue_json_path: Path):
+        self.dialogue = DialogueBox(dialogue_json_path)
+        self.dialogue_termination_event = Event(action=lambda: self.stop_dialogue(), condition=lambda: self.dialogue.end)
+        
+        self.events.append(
+            self.dialogue_termination_event
+        )
+
+    def stop_dialogue(self):
+        if self.dialogue:
+            self.dialogue.destroy()
+            self.entities.remove(self.dialogue)
+            self.dialogue = None
+
+        if self.dialogue_termination_event:
+            self.events.remove(self.dialogue_termination_event)
+            self.dialogue_termination_event.destroy()
+            self.dialogue_termination_event = None
+
+    def update(self):
+        super().update()
+
+        if self.dialogue:
+            self.dialogue.update()
+
+    def draw(self):
+        super().draw()
+
+        if self.dialogue:
+            self.dialogue.draw()
 

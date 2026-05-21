@@ -73,6 +73,8 @@ class Player(LevelEntity):
         self.z = 1
         self.size = pg.Vector2(self.image.get_size())
 
+        self.has_control = True
+
     def set_state(self, state: str):
         jump_states = ["jump left", "jump right"]
         fall_states = ["fall left", "fall right"]
@@ -117,7 +119,8 @@ class Player(LevelEntity):
         self.acceleration = pg.Vector2(0, 0)
         self.acceleration += self.gravity
         
-        self.process_input()
+        if self.has_control:
+            self.process_input()
 
         dt = self.element_tree["TimeControlPanel"].dt
         self.velocity += self.acceleration * dt  # acceleration
@@ -139,6 +142,11 @@ class Player(LevelEntity):
                 self.acceleration.x = 0
             elif entity.collision_type == "spike":
                 self.damage()
+            elif entity.collision_type == "butterfly":
+                self.element_tree["CurrentStage"].singletons["level"].start_dialogue(Path("./assets/dialogues/butterfly1.json"))
+                self.velocity.x = 0
+                self.acceleration.x = 0
+                self.has_control = False
 
 
         self.pos.y += self.velocity.y * dt

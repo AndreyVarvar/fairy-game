@@ -41,6 +41,9 @@ class EntityGroup(Element):
         for entity in entities:
             self.queue.append(entity)
 
+    def remove(self, entity: Entity):
+        self.entities.remove(entity)
+
     def draw(self) -> None:
         for entity in self.entities:
             entity.draw()

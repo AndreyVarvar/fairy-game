@@ -28,6 +28,8 @@ class DialogueBox(Entity):
         rect = self.dialogue_box.get_rect(midbottom=pg.Vector2(settings.window_width//2, settings.window_height-100))
         self.pos = pg.Vector2(rect.topleft)
 
+        self.end = False
+
         self.z = 10
 
     def update(self):
