@@ -124,16 +124,18 @@ class InputControlPanel(Element):
 
         if self.mouse_just_pressed[0]:
             self.mouse_click_pos = self.get_scaled_mouse_pos()
-        
+
         if self.mouse_just_released[0]:
             self.mouse_release_pos = self.get_scaled_mouse_pos()
-        
+
         if len(self.cursor_queue) == 0:
             pg.mouse.set_cursor(pg.SYSTEM_CURSOR_ARROW)
         else:
             pg.mouse.set_cursor(self.cursor_queue[0])
             self.cursor_queue.clear()
-   
+        # if self.mouse_just_pressed[0]:
+        #     print(self.mouse_click_pos)
+
     def queue_cursor(self, cursor: int):
         """
         cursor: int. An instance of a pygame system cursor. Example: pygame.SYSTEM_CURSOR_ARROW
@@ -163,9 +165,9 @@ class SoundControlPanel(Element):
         Args:
             sound (pygame.Sound): pygame.Sound instance to be played.
             channel_id (int, optional): ID of the channel the sound should be played in. Defaults to 0.
-            volume (float, optional): Sound volume. Defaults to 1.0.
+            volume (float, optional): Sound volume (from 0.0 to 1.0). Defaults to 1.0.
             polite (bool, optional): Polite sounds will not interupt currently playing sounds. Defaults to False.
-            loops (int, optional): How many additional loops to play. Value of -1 indicates the sound is played continuesly. Defaults to 0.
+            loops (int, optional): How many additional loops to play. Value of -1 indicates the sound is played repeatedly. Defaults to 0.
 
         Raises:
             TypeError: sound is not an instance of pygame.Sound.
@@ -177,22 +179,31 @@ class SoundControlPanel(Element):
 
         self.sound_queue.append((sound, channel_id, volume, polite, loops))
 
-    def stop_channel(self, channel_id):
+    def stop_channel(self, channel_id: int):
+        """
+        Stops the channel from playing any sounds, effectively resetting it.
+
+        Arg:
+            channel_id (int, mandatory): ID of the channel the sound should be played in. Defaults to 0.
+        """
         pg.mixer.Channel(channel_id).stop()
 
     def play_sound_queue(self):
+        """
+        This function is supposed to run every frame, playing every sound that was queued in the queue.
+        """
         while len(self.sound_queue) > 0:
             sound, channel, volume, polite, loops = self.sound_queue.pop(0)  # FIFO
             sound.set_volume(volume * self.volume)
 
             if polite and pg.mixer.Channel(channel).get_busy():
                 continue
-            
+
             pg.mixer.Channel(channel).play(sound, loops=loops)
 
     def clear_sound_queue(self):
         self.sound_queue.clear()
-        
+
 
 class MusicControlPanel(Element):
     def __init__(self):

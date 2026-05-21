@@ -8,7 +8,7 @@ from .settings import Settings
 class AssetLoader(Element):
     def __init__(self):
         super().__init__(singleton=True)
-        
+
         self.assets = {
             "spritesheets": {},
             "images": {},
