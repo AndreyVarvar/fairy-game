@@ -81,6 +81,8 @@ class InputControlPanel(Element):
         self.mouse_release_pos: pg.Vector2 = pg.Vector2(0, 0)
         self.mouse_pos: pg.Vector2 = pg.Vector2(0, 0)
 
+        self.just_pressed_anything: bool = False
+
         self.scroll: tuple[int, int] = (0, 0)  # scroll wheel intensity
 
         self.cursor_queue = []
@@ -104,6 +106,8 @@ class InputControlPanel(Element):
 
         self.mouse_just_pressed = [False, False, False]
         self.mouse_just_released = [False, False, False]
+
+        self.just_pressed_anything = False
         
         self.mouse_pos = self.get_scaled_mouse_pos()
 
@@ -113,6 +117,7 @@ class InputControlPanel(Element):
                     self.scroll = (event.x, event.y)
                 case pg.MOUSEBUTTONDOWN:
                     if event.button <= 3:
+                        self.just_pressed_anything = True
                         self.mouse_pressed[event.button-1] = True
                         self.mouse_just_pressed[event.button-1] = True
                 case pg.MOUSEBUTTONUP:
@@ -121,6 +126,7 @@ class InputControlPanel(Element):
                         self.mouse_just_released[event.button-1] = True
                 case pg.KEYDOWN:
                     self.keys_just_pressed.append(event.key)
+                    self.just_pressed_anything = True
 
         if self.mouse_just_pressed[0]:
             self.mouse_click_pos = self.get_scaled_mouse_pos()

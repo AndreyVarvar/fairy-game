@@ -4,7 +4,7 @@ from prismane import Event
 from prismane.assets import AssetLoader
 from prismane.panels import TimeControlPanel
 
-from .level import LevelEntity, Level
+from .level import LevelEntity, Level, Tile, Spike, Mushroom, Butterfly
 
 from pathlib import Path
 
@@ -151,7 +151,7 @@ class Player(LevelEntity):
 
         self.pos.y += self.velocity.y * dt
         self.on_ground = False
-        tile: LevelEntity = level.get_collision_with(self, "tiles")
+        tile: Tile = level.get_collision_with(self, "tiles")
         if tile is not None:
             if self.velocity.y >= 0:
                 self.on_ground = True
@@ -162,23 +162,27 @@ class Player(LevelEntity):
             self.acceleration.y = 0
 
         # collision with spikes
-        spike: LevelEntity = level.get_collision_with(self, "spikes")
+        spike: Spike = level.get_collision_with(self, "spikes")
         if spike is not None:
             self.damage()
 
         # collision with mushrooms
-        mushroom: LevelEntity = level.get_collision_with(self, "mushrooms")
+        mushroom: Mushroom = level.get_collision_with(self, "mushrooms")
         if mushroom is not None:
             if self.velocity.y > 0:
                 self.velocity.y = -1000
 
         # collision with butterflies
-        butterfly: LevelEntity = level.get_collision_with(self, "butterflies")
+        butterfly: Butterfly = level.get_collision_with(self, "butterflies")
         if butterfly is not None:
-            self.element_tree["CurrentStage"].singletons["level"].start_dialogue(Path("./assets/dialogues/butterfly1.json"))
-            self.velocity.x = 0
-            self.acceleration.x = 0
-            self.has_control = False
+            if not butterfly.is_being_talked_to:
+                self.element_tree["CurrentStage"].singletons["level"].start_dialogue(Path("./assets/dialogues/butterfly1.json"))
+                self.velocity.x = 0
+                self.acceleration.x = 0
+                self.has_control = False
+                butterfly.is_being_talked_to = True
+        else:
+            self.has_control = True
 
 
         # states

@@ -219,8 +219,20 @@ class Butterfly(LevelEntity):
         self.image = self.element_tree["AssetLoader"].get_image(Path("./assets/entities/butterfly.png"))
         self.pos = pos
 
+        self.is_being_talked_to = False
+
         if orientation == "right":
             self.image = pg.transform.flip(self.image, flip_x=True, flip_y=False)
+
+    def update(self):
+        super().update()
+
+        if self.is_being_talked_to:
+            if "dialogue" not in self.element_tree["CurrentStage"].singletons["level"].singletons:
+                self.element_tree["CurrentStage"].singletons["level"].butterflies_collected += 1
+                self.destroy()
+                self.element_tree["CurrentStage"].singletons["level"].groups["butterflies"].remove(self)
+
 
 class Level(Entity):
     def __init__(self, player_start_pos: pg.Vector2) -> None:
@@ -248,8 +260,8 @@ class Level(Entity):
         for group in self.groups.values():
             group.update()
 
-        for singletone in self.singletons.values():
-            singletone.update()
+        for singleton in self.singletons.values():
+            singleton.update()
         
         for event in self.events:
             event.update()
@@ -269,6 +281,8 @@ class Level1(Level):
         w, h = 115, 75  # tile width and tile height, shortened for conveniece in the monstrocity you see below (yes, it was manually written. Every single entry. Every single tile. You could say it woul've been better to write a script to do that for me, but I am too lazy to write the autotiler, and even though it would've taken me 30 minutes I'd rather spend the next 2 hours manually writing everyghing down)
         tileset = Spritesheet(Path("./assets/tiles/pink.json"))
         tile_hitbox = pg.FRect(0, 51, 115, 75)
+
+        self.butterflies_collected = 0
 
         self.events = []
 
