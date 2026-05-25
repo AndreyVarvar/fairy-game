@@ -1,0 +1,270 @@
+{
+  "1": {
+    "type": "text",
+    "author": "Smarty Gnome",
+    "text": "A fairy who is humble enough to walk for so long?",
+    "link": "2"
+  },
+  "2": {
+    "type": "option",
+    "author": "Smarty Gnome",
+    "text": "Hm. You're either fearless or really hopeless.",
+    "options": [
+      {
+        "text": "Both...",
+        "link": "3"
+      },
+      {
+        "text": "My wing...",
+        "link": "6"
+      }
+    ]
+  },
+  "3": {
+    "type": "text",
+    "author": "Fairy",
+    "text": "I'm both.",
+    "link": "4"
+  },
+  "4": {
+    "type": "text",
+    "author": "Smarty Gnome",
+    "text": "Hah! I like that answer.",
+    "link": "5"
+  },
+  "5": {
+    "type": "text",
+    "author": "Smarty Gnome",
+    "text": "Also I decided I like you.",
+    "link": "10"
+  },
+  "6": {
+    "type": "text",
+    "author": "Fairy",
+    "text": "Well take a look at my wing.",
+    "link": "7"
+  },
+  "7": {
+    "type": "text",
+    "author": "Smarty Gnome",
+    "text": "And? I still think you are better than other fairies.",
+    "link": "8"
+  },
+  "8": {
+    "type": "text",
+    "author": "Smarty Gnome",
+    "text": "You seem like a real fighter.",
+    "link": "9"
+  },
+  "9": {
+    "type": "text",
+    "author": "Smarty Gnome",
+    "text": "I like this about you.",
+    "link": "10"
+  },
+  
+  "10": {
+    "type": "text",
+    "author": "Smarty Gnome",
+    "text": "It's so rare to see a fairy like you.",
+    "link": "11"
+  },
+  "11": {
+    "type": "option",
+    "author": "Smarty Gnome",
+    "text": "Though I doubt that you are here to talk with a gnome.",
+    "options": [
+      {
+        "text": "Talk with a gnome...",
+        "link": "12"
+      },
+      {
+        "text": "The waterfall...",
+        "link": "16"
+      }
+    ]
+  },
+  "12": {
+    "type": "text",
+    "author": "Fairy",
+    "text": "Aw, who told you I didn't came for you? You are sooo charming.",
+    "link": "13"
+  },
+  "13": {
+    "type": "text",
+    "author": "Smarty Gnome",
+    "text": "Stop!",
+    "link": "14"
+  },
+  "14": {
+    "type": "text",
+    "author": "Smarty Gnome",
+    "text": "You are going to make me blush!!",
+    "link": "15"
+  },
+  "15": {
+    "type": "option",
+    "author": "Smarty Gnome",
+    "text": "Your words drip with sarcasm, silly fairy!!!",
+    "options": [
+      {
+        "text": "Silly...",
+        "link": "20"
+      },
+      {
+        "text": "... fairy...",
+        "link": "20"
+      }
+    ]
+  },
+  "16": {
+    "type": "text",
+    "author": "Fairy",
+    "text": "I enjoy your company but I'm looking for the waterfall.",
+    "link": "17"
+  },
+  "17": {
+    "type": "text",
+    "author": "Smarty Gnome",
+    "text": "Shut up! You are making me blush!!",
+    "link": "18"
+  },
+  "18": {
+    "type": "text",
+    "author": "Smarty Gnome",
+    "text": "Wait. The waterfall?",
+    "link": "19"
+  },
+  "19": {
+    "type": "option",
+    "author": "Smarty Gnome",
+    "text": "What a silly fairy you are!!!",
+    "options": [
+      {
+        "text": "Silly...",
+        "link": "20"
+      },
+      {
+        "text": "... fairy...",
+        "link": "20"
+      }
+    ]
+  },
+  "20": {
+    "type": "text",
+    "author": "Fairy",
+    "text": "Silly fairy?",
+    "link": "21"
+  },
+  "21": {
+    "type": "text",
+    "author": "Smarty Gnome",
+    "text": "Silly silly silly fairy.",
+    "link": "22"
+  },
+  "22": {
+    "type": "text",
+    "author": "Smarty Gnome",
+    "text": "I know the path you are taking.",
+    "link": "23"
+  },
+  "23": {
+    "type": "text",
+    "author": "Smarty Gnome",
+    "text": "It's the one to the waterfall.",
+    "link": "24"
+  },
+  "24": {
+    "type": "option",
+    "author": "Smarty Gnome",
+    "text": "Did you even know that the waterfall was formed from the tears of\nthe Fairy Goddess?",
+    "options": [
+      {
+        "text": "...",
+        "link": "25"
+      },
+      {
+        "text": "...",
+        "link": "25"
+      }
+    ]
+  },
+  "25": {
+    "type": "text",
+    "author": "Fairy",
+    "text": "...",
+    "link": "26"
+  },
+  "26": {
+    "type": "option",
+    "author": "Smarty Gnome",
+    "text": "Of course you didn't know!",
+    "options": [
+      {
+        "text": "I thought...",
+        "link": "27"
+      },
+      {
+        "text": "... you liked bravery...",
+        "link": "27"
+      }
+    ]
+  },
+  "27": {
+    "type": "text",
+    "author": "Fairy",
+    "text": "I thought you liked bravery.",
+    "link": "28"
+  },
+  "28": {
+    "type": "text",
+    "author": "Smarty Gnome",
+    "text": "To go to the waterfall is not bravery.",
+    "link": "29"
+  },
+  "29": {
+    "type": "text",
+    "author": "Smarty Gnome",
+    "text": "It's stupidity.",
+    "link": "30"
+  },
+  "30": {
+    "type": "option",
+    "author": "Smarty Gnome",
+    "text": "But I can't change your mind, can I?",
+    "options": [
+      {
+        "text": "No...",
+        "link": "31"
+      },
+      {
+        "text": "Nope...",
+        "link": "31"
+      }
+    ]
+  },
+  "31": {
+    "type": "text",
+    "author": "Fairy",
+    "text": "Nuh-uh.",
+    "link": "32"
+  },
+  "32": {
+    "type": "text",
+    "author": "Smarty Gnome",
+    "text": "Ugh.",
+    "link": "33"
+  },
+  "33": {
+    "type": "text",
+    "author": "Smarty Gnome",
+    "text": "... I do like you.",
+    "link": "34"
+  },
+  "34": {
+    "type": "text",
+    "author": "Smarty Gnome",
+    "text": "So try no to die, silly fairy.",
+    "link": null
+  }
+}

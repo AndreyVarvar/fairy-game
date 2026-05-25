@@ -135,7 +135,7 @@ class Level1(Level):
                 Oleni(pg.Vector2(18*w, 14*h)),
             ),
             "gnomes": EntityGroup(
-                Gnome(pg.Vector2(8*w, 6*h))
+                Gnome(pg.Vector2(8*w-40, 6*h-30))
             )
         }
 

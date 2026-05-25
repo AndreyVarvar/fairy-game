@@ -5,7 +5,7 @@ from prismane.assets import AssetLoader
 from prismane.panels import TimeControlPanel
 
 from .level import LevelEntity, Level
-from .level_entities import Tile, Spike, Mushroom, Butterfly
+from .level_entities import Tile, Spike, Mushroom, Butterfly, Gnome
 
 from pathlib import Path
 
@@ -122,9 +122,14 @@ class Player(LevelEntity):
         # movement
         self.acceleration = pg.Vector2(0, 0)
         self.acceleration += self.gravity
+
+        self.has_control = "dialogue" not in self.element_tree["CurrentStage"].singletons["level"].singletons
         
         if self.has_control:
             self.process_input()
+        else:
+            self.velocity.x = 0
+            self.acceleration.x = 0
 
         dt = self.element_tree["TimeControlPanel"].dt
         self.velocity += self.acceleration * dt  # acceleration
@@ -176,18 +181,19 @@ class Player(LevelEntity):
                 self.velocity.y = -1000
 
         # collision with butterflies
-        butterfly: Butterfly = level.get_collision_with(self, "butterflies")
+        butterfly: Butterfly | None = level.get_collision_with(self, "butterflies")
         if butterfly is not None:
             if not butterfly.is_being_talked_to:
                 self.butterflies_collected += 1
                 self.element_tree["CurrentStage"].singletons["level"].start_dialogue(Path(f"./assets/dialogues/butterfly{self.butterflies_collected}.json"))
-                self.velocity.x = 0
-                self.acceleration.x = 0
-                self.has_control = False
                 butterfly.is_being_talked_to = True
-        else:
-            self.has_control = True
 
+        # collision with gnomes
+        gnome: Gnome | None = level.get_collision_with(self, "gnomes")
+        if gnome is not None:
+            if gnome.talked_to is False:
+                gnome.talked_to = True
+                self.element_tree["CurrentStage"].singletons["level"].start_dialogue(Path("./assets/dialogues/gnome.json"))
 
         # states
         if self.velocity.x != 0:
