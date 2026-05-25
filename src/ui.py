@@ -14,7 +14,7 @@ class HeartUI(Entity):
     def update(self):
         super().update()
         
-        if self.element_tree["CurrentStage"].singletons["player"].health <= self.idx:
+        if self.element_tree["CurrentStage"].singletons["level"].singletons["player"].health <= self.idx:
             self.image.set_alpha(100)
         else:
             self.image.set_alpha(255)

@@ -4,6 +4,7 @@ from .level import Level
 from .background import Background
 from .level_entities import Tile, Mushroom, Spike, Gnome, Oleni, Butterfly
 from .dialogue import DialogueBox
+from .player import Player
 
 from pathlib import Path
 import pygame as pg
@@ -142,9 +143,13 @@ class Level1(Level):
         asset_loader = self.element_tree["AssetLoader"]
 
         self.singletons = {
-            "background": Background(asset_loader.get_image(Path("./assets/backgrounds/pink.png")))
+            "background": Background(asset_loader.get_image(Path("./assets/backgrounds/pink.png"))),
+            "player": Player(self.player_start_pos)
         }
         self.dialogue_termination_event = None
+
+    def reset(self):
+        self.__init__()
 
     def start_dialogue(self, dialogue_json_path: Path):
         self.singletons["dialogue"] = DialogueBox(dialogue_json_path)
@@ -162,5 +167,10 @@ class Level1(Level):
             self.events.remove(self.dialogue_termination_event)
             self.dialogue_termination_event.destroy()
             self.dialogue_termination_event = None
+
+    # def update(self):
+    #     super().update()
+    #
+    #     if self.singletons["player"].pos 
 
 

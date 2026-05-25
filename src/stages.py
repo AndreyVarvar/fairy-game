@@ -7,7 +7,6 @@ from prismane.camera import Camera
 from prismane.settings import Settings
 
 from .ui import FButton, HeartUI
-from .player import Player
 from .levels import Level1
 from .background import Background
 
@@ -63,16 +62,12 @@ class GameStage(Stage):
     def __init__(self):
         super().__init__()
 
-        asset_loader: AssetLoader = self.element_tree["AssetLoader"]
-
         self.camera = Camera("MainCamura", 0, 0, 0, 0)
         self.add_singleton("level", Level1())
-        self.add_singleton("player", Player(self.singletons["level"].player_start_pos))
 
+        self.camera.target = self.singletons["level"].singletons["player"]
 
-        self.camera.target = self.singletons["player"]
-
-        self.populate_group("hearts", *[HeartUI(pg.Vector2(20 + 200*i, 20), idx=i) for i in range(self.singletons["player"].max_health)])
+        self.populate_group("hearts", *[HeartUI(pg.Vector2(20 + 200*i, 20), idx=i) for i in range(self.singletons["level"].singletons["player"].max_health)])
 
     def draw(self):
         super().draw()

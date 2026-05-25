@@ -53,7 +53,7 @@ class Level(Entity):
         for group in self.groups.values():
             group.update()
 
-        for singleton in self.singletons.values():
+        for singleton in list(self.singletons.values()):
             singleton.update()
         
         for event in self.events:

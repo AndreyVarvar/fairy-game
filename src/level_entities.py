@@ -59,8 +59,8 @@ class Oleni(LevelEntity):
             Event(action=lambda: self.set_state("walk right"), condition=lambda: self.on_ground and self.velocity.x > 0),
             Event(action=lambda: self.set_state("idle left"), condition=lambda: self.velocity.x == 0 and self.facing == "left" and self.on_ground and not self.attacking),
             Event(action=lambda: self.set_state("idle right"), condition=lambda: self.velocity.x == 0 and self.facing == "right" and self.on_ground and not self.attacking),
-            Event(action=lambda: self.set_state("attack left"), condition=lambda: self.current_state == "idle left" and self.on_ground and not self.attacking and self.element_tree["CurrentStage"].singletons["player"].rect.colliderect(self.left)),
-            Event(action=lambda: self.set_state("attack right"), condition=lambda: self.current_state == "idle right" and self.on_ground and not self.attacking and self.element_tree["CurrentStage"].singletons["player"].rect.colliderect(self.right)),
+            Event(action=lambda: self.set_state("attack left"), condition=lambda: self.current_state == "idle left" and self.on_ground and not self.attacking and self.element_tree["CurrentStage"].singletons["level"].singletons["player"].rect.colliderect(self.left)),
+            Event(action=lambda: self.set_state("attack right"), condition=lambda: self.current_state == "idle right" and self.on_ground and not self.attacking and self.element_tree["CurrentStage"].singletons["level"].singletons["player"].rect.colliderect(self.right)),
         ]
 
         self.image = self.states[self.current_state].get_frame()
@@ -86,7 +86,7 @@ class Oleni(LevelEntity):
         self.current_state = state
 
     def roam(self):
-        if not self.on_ground or (self.facing == "left" and self.element_tree["CurrentStage"].singletons["player"].rect.colliderect(self.left)) or (self.element_tree["CurrentStage"].singletons["player"].rect.colliderect(self.right) and self.facing == "right"):
+        if not self.on_ground or (self.facing == "left" and self.element_tree["CurrentStage"].singletons["level"].singletons["player"].rect.colliderect(self.left)) or (self.element_tree["CurrentStage"].singletons["level"].singletons["player"].rect.colliderect(self.right) and self.facing == "right"):
             return
 
         acceleration = 3000
