@@ -1,0 +1,23 @@
+{
+  "1": {
+    "type": "option",
+    "author": "Slightly mean cricket",
+    "text": "Your wings look funny. I want to know what your end will be.",
+    "options": [
+      {
+        "text": "I can say the same to you...",
+        "link": "2"
+      },
+      {
+        "text": "If you don't want to know your end then...",
+        "link": "2"
+      }
+    ]
+  },
+  "2": {
+    "type": "text",
+    "author": "Fairy",
+    "text": "We must stick together to live through the darkness.",
+    "link": null
+  }
+}

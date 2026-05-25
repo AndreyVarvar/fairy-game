@@ -3,13 +3,13 @@ from prismane.assets import AssetLoader
 from pathlib import Path
 from prismane import Event
 from prismane.effects import Fade
-from prismane.misc import Background
 from prismane.camera import Camera
 from prismane.settings import Settings
 
 from .ui import FButton, HeartUI
 from .player import Player
-from .level import Level1
+from .levels import Level1
+from .background import Background
 
 import pygame as pg
 
@@ -28,7 +28,7 @@ class MainMenuStage(Stage):
         self.populate_group("ui", 
                             start_button,
                             rules_button,
-                            Background(asset_loader.get_image(Path("assets/backgrounds/title.png")))
+                            Background(asset_loader.get_image(Path("./assets/backgrounds/title.png")))
                             )
 
         self.populate_events(
@@ -68,11 +68,6 @@ class GameStage(Stage):
         self.camera = Camera("MainCamura", 0, 0, 0, 0)
         self.add_singleton("level", Level1())
         self.add_singleton("player", Player(self.singletons["level"].player_start_pos))
-
-        self.populate_group("entities",
-                            Background(asset_loader.get_image(Path("assets/backgrounds/pink.png"))),
-                            )
-
 
 
         self.camera.target = self.singletons["player"]

@@ -25,10 +25,13 @@ class AssetLoader(Element):
             self.assets["spritesheets"][str(path)] = Spritesheet(path)
 
     # TODO: somehow make this incorporate the "from dir" thing
-    def get_image(self, path: pathlib.Path) -> pg.Surface:
-        self.load_image(path)
+    def get_image(self, path: pathlib.Path, transparent: bool = True) -> pg.Surface:
+        self.load_image(path, transparent)
         return self.assets["images"][str(path)]
 
-    def load_image(self, path: pathlib.Path):
+    def load_image(self, path: pathlib.Path, transparent: bool):
         if str(path) not in self.assets["images"]:
-            self.assets["images"][str(path)] = pg.image.load(path).convert_alpha()
+            if transparent:
+                self.assets["images"][str(path)] = pg.image.load(path).convert_alpha()
+            else:
+                self.assets["images"][str(path)] = pg.image.load(path).convert()

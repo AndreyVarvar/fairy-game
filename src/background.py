@@ -1,5 +1,5 @@
-from .entity import Entity
-from .settings import Settings
+from prismane import Entity
+from prismane.settings import Settings
 
 import pygame as pg
 
@@ -21,7 +21,7 @@ class Background(Entity):
         self.mode = mode
 
         self.reference = image
-        self.image = pg.Surface(settings.window_size, pg.SRCALPHA).convert_alpha()
+        self.image = pg.Surface(settings.window_size, pg.SRCALPHA).convert()
         
         self.z = 0  # push it back
 
@@ -42,5 +42,4 @@ class Background(Entity):
                         self.image.blit(self.reference, (self.offset.x + x, self.offset.y + y))
             elif self.mode == "none":
                 self.image.blit(self.reference, self.offset)
-
 

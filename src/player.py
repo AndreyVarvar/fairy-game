@@ -4,7 +4,8 @@ from prismane import Event
 from prismane.assets import AssetLoader
 from prismane.panels import TimeControlPanel
 
-from .level import LevelEntity, Level, Tile, Spike, Mushroom, Butterfly
+from .level import LevelEntity, Level
+from .level_entities import Tile, Spike, Mushroom, Butterfly
 
 from pathlib import Path
 
@@ -29,6 +30,8 @@ class Player(LevelEntity):
 
         self.max_speed_from_input = 300
         self.jump_velocity = -600
+
+        self.butterflies_collected = 0
 
         asset_loader: AssetLoader = self.element_tree["AssetLoader"]
 
@@ -65,8 +68,8 @@ class Player(LevelEntity):
             Event(action=lambda: self.set_state("jump right"),   condition=lambda: self.velocity.y < 0 and not self.on_ground and self.facing == "right"),
             Event(action=lambda: self.set_state("fall left"),    condition=lambda: self.velocity.y > 0 and not self.on_ground and self.facing == "left"),
             Event(action=lambda: self.set_state("fall right"),   condition=lambda: self.velocity.y > 0 and not self.on_ground and self.facing == "right"),
-            Event(action=lambda: self.set_state("attack left"),  condition=lambda: self.current_state == "idle left" and self.on_ground and pg.K_p in input_panel.keys_just_pressed and not self.attacking),
-            Event(action=lambda: self.set_state("attack right"), condition=lambda: self.current_state == "idle right" and self.on_ground and pg.K_p in input_panel.keys_just_pressed and not self.attacking),
+            Event(action=lambda: self.set_state("attack left"),  condition=lambda: self.current_state == "idle left" and self.on_ground and pg.K_p in input_panel.keys_just_pressed and not self.attacking and self.has_control),
+            Event(action=lambda: self.set_state("attack right"), condition=lambda: self.current_state == "idle right" and self.on_ground and pg.K_p in input_panel.keys_just_pressed and not self.attacking and self.has_control),
         ]
 
         self.image = self.states[self.current_state].get_frame()  # TODO: currenly player hitbox is tied to image
@@ -176,7 +179,8 @@ class Player(LevelEntity):
         butterfly: Butterfly = level.get_collision_with(self, "butterflies")
         if butterfly is not None:
             if not butterfly.is_being_talked_to:
-                self.element_tree["CurrentStage"].singletons["level"].start_dialogue(Path("./assets/dialogues/butterfly1.json"))
+                self.butterflies_collected += 1
+                self.element_tree["CurrentStage"].singletons["level"].start_dialogue(Path(f"./assets/dialogues/butterfly{self.butterflies_collected}.json"))
                 self.velocity.x = 0
                 self.acceleration.x = 0
                 self.has_control = False

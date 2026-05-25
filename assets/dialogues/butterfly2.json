@@ -1,0 +1,23 @@
+{
+  "1": {
+    "type": "option",
+    "author": "Slightly energetic cricket",
+    "text": "You are on some speedrun to danger. I like it!",
+    "options": [
+      {
+        "text": "I am danger...",
+        "link": "2"
+      },
+      {
+        "text": "You seem brave...",
+        "link": "2"
+      }
+    ]
+  },
+  "2": {
+    "type": "text",
+    "author": "Fairy",
+    "text": "And I like you so you will help me fight the darkness.",
+    "link": null
+  }
+}
