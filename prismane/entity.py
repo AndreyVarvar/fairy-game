@@ -1,5 +1,6 @@
 from __future__ import annotations
 import pygame as pg
+import pygame._sdl2 as sdl2
 
 from .element import Element
 
@@ -9,8 +10,7 @@ class Entity(Element):
         super().__init__(singleton)
         self.pos: pg.Vector2 = pg.Vector2(0, 0)
         self.size: pg.Vector2 = pg.Vector2(0, 0)
-        self.image: pg.Surface
-        self.target: str = "display"
+        self.image: sdl2.Texture
         self.z: int = 1
         self.draw_offset: pg.Vector2 = pg.Vector2(0, 0)
 
@@ -19,7 +19,11 @@ class Entity(Element):
         return self.rect.center
 
     @property
-    def rect(self) -> pg.FRect:
+    def rect(self) -> pg.Rect:
+        return pg.Rect(self.pos, self.size)
+    
+    @property
+    def frect(self) -> pg.FRect:
         return pg.FRect(self.pos, self.size)
 
     def update(self):
@@ -27,7 +31,7 @@ class Entity(Element):
         pass
 
     def draw(self):
-        self.element_tree["Renderer"].queue_draw(self.image, self.z, self.target, self.pos + self.draw_offset)
+        self.element_tree["Renderer"].queue_draw(self.image, self.z, self.rect.move(self.draw_offset))
 
 
 class EntityGroup(Element):

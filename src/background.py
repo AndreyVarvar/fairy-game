@@ -20,26 +20,28 @@ class Background(Entity):
         self.offset = offset
         self.mode = mode
 
-        self.reference = image
-        self.image = pg.Surface(settings.window_size, pg.SRCALPHA).convert()
+        # self.reference = image
         
         self.z = 0  # push it back
 
-        if self.mode == "stretch":
-            self.image = pg.transform.scale(self.reference, settings.window_size)
+        # if self.mode == "stretch":
+        #     self.image = pg.transform.scale(self.reference, settings.window_size)
         
-        self.prev_offset = offset
+        self.image = image
+        self.size = settings.window_size
 
-    def update(self):
-        if self.prev_offset != self.offset and self.mode != "stretch":
-            self.prev_offset = self.offset
+        # self.prev_offset = offset
 
-            if self.mode == "tile":
-                settings: Settings = self.element_tree["Settings"]
-                w, h = self.reference.get_size()
-                for x in range(0, settings.window_width, w):
-                    for y in range(0, settings.window_height, h):
-                        self.image.blit(self.reference, (self.offset.x + x, self.offset.y + y))
-            elif self.mode == "none":
-                self.image.blit(self.reference, self.offset)
+    # def update(self):
+    #     if self.prev_offset != self.offset and self.mode != "stretch":
+    #         self.prev_offset = self.offset
+    #
+    #         if self.mode == "tile":
+    #             settings: Settings = self.element_tree["Settings"]
+    #             w, h = self.reference.get_size()
+    #             for x in range(0, settings.window_width, w):
+    #                 for y in range(0, settings.window_height, h):
+    #                     self.image.blit(self.reference, (self.offset.x + x, self.offset.y + y))
+    #         elif self.mode == "none":
+    #             self.image.blit(self.reference, self.offset)
 

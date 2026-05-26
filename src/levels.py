@@ -2,7 +2,7 @@ from prismane import Spritesheet, EntityGroup, Event
 
 from .level import Level
 from .background import Background
-from .level_entities import Tile, Mushroom, Spike, Gnome, Oleni, Butterfly
+from .level_entities import LightPole, Tile, Mushroom, Spike, Gnome, Oleni, Butterfly
 from .dialogue import DialogueBox
 from .player import Player
 
@@ -137,6 +137,9 @@ class Level1(Level):
             ),
             "gnomes": EntityGroup(
                 Gnome(pg.Vector2(8*w-40, 6*h-30))
+            ),
+            "light poles": EntityGroup(
+                LightPole(pg.Vector2(24*w, 14*h))
             )
         }
 

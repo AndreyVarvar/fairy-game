@@ -2,10 +2,11 @@ from .entity import Entity
 from .panels import TimeControlPanel
 
 import pygame as pg
+import pygame._sdl2.video as sdl2
 from collections.abc import Callable
 
 class Fade(Entity):  # can be fadein, fadeout, or whatever else you want. That depends on the function f you pass in
-    def __init__(self, duration: int | float, image: pg.Surface, f: Callable = lambda x: pg.math.clamp(x, 0, 1)) -> None:
+    def __init__(self, duration: int | float, image: sdl2.Texture, f: Callable = lambda x: pg.math.clamp(x, 0, 1)) -> None:
         """
         duration: int | float. How many seconds does the Fade last.
         image: pygame.Surface. What image to fade.
@@ -13,10 +14,11 @@ class Fade(Entity):  # can be fadein, fadeout, or whatever else you want. That d
         You can create whatever you want with this
         """
         super().__init__()
-        self.fadeout_image = image
-        self.image = self.fadeout_image.copy()
-        self.image.set_alpha(0)
+        self.image = image
+        self.image.alpha = 0
  
+        self.size = self.element_tree["Settings"].window_size
+
         self.duration = duration
 
         self.time_panel: TimeControlPanel = self.element_tree["TimeControlPanel"]
@@ -24,6 +26,8 @@ class Fade(Entity):  # can be fadein, fadeout, or whatever else you want. That d
 
         self.f = f
         self.done = False
+
+        self.z = 10
 
     def reset(self):
         self.timer_id = self.time_panel.queue_timer(self.duration)
@@ -34,6 +38,4 @@ class Fade(Entity):  # can be fadein, fadeout, or whatever else you want. That d
         self.done = (percentage == 1.0)
         
         if not self.done:
-            self.image = self.fadeout_image.copy()
-            self.image.set_alpha(int(255 * self.f(percentage)))
-
+            self.image.alpha = int(255 * self.f(percentage))

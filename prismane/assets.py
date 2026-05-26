@@ -1,4 +1,5 @@
 import pygame as pg
+from pygame._sdl2.video import Renderer, Texture
 import pathlib
 
 from .element import Element
@@ -15,6 +16,11 @@ class AssetLoader(Element):
             "sounds": {}
         }
 
+    def texture_from_surface(self, surf: pg.Surface, renderer: Renderer | None = None):
+        renderer = renderer if renderer else self.element_tree["Engine"].window_renderer  # default renderer is the window renderer
+        
+        return Texture.from_surface(renderer, surf)
+
     def get_spritesheet(self, path: pathlib.Path):
         self.load_spritesheet(path)
         return self.assets["spritesheets"][str(path)]
@@ -25,13 +31,15 @@ class AssetLoader(Element):
             self.assets["spritesheets"][str(path)] = Spritesheet(path)
 
     # TODO: somehow make this incorporate the "from dir" thing
-    def get_image(self, path: pathlib.Path, transparent: bool = True) -> pg.Surface:
-        self.load_image(path, transparent)
+    def get_image(self, path: pathlib.Path, renderer: Renderer | None = None, transparent: bool = True) -> pg.Surface:
+        renderer = renderer if renderer else self.element_tree["Engine"].window_renderer  # default renderer is the window renderer
+        self.load_image(path, renderer, transparent)
+
         return self.assets["images"][str(path)]
 
-    def load_image(self, path: pathlib.Path, transparent: bool):
+    def load_image(self, path: pathlib.Path, renderer: Renderer, transparent: bool):
         if str(path) not in self.assets["images"]:
             if transparent:
-                self.assets["images"][str(path)] = pg.image.load(path).convert_alpha()
+                self.assets["images"][str(path)] = Texture.from_surface(renderer, pg.image.load(path))
             else:
-                self.assets["images"][str(path)] = pg.image.load(path).convert()
+                self.assets["images"][str(path)] = Texture.from_surface(renderer, pg.image.load(path).convert())

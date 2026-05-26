@@ -1,6 +1,6 @@
 import pygame as pg
 from .element import Element
-from .display import Display
+from .settings import Settings
 
 
 class MasterControlPanel(Element):  # used to update all the panels in one place
@@ -89,13 +89,17 @@ class InputControlPanel(Element):
 
 
     def get_scaled_mouse_pos(self) -> pg.Vector2:
-        mouse_pos = pg.Vector2(*pg.mouse.get_pos())
-        display: Display = self.element_tree["Display"]
-        offset = display.pos
-        scale = display.scale
+        mouse_pos = pg.Vector2(pg.mouse.get_pos())
+        
+        settings: Settings = self.element_tree["Settings"]
 
-        mouse_pos -= offset
-        mouse_pos /= scale
+        # we draw onto screen -> resize to logical_size
+        # that means we get mouse coordinates in screen size
+        # and have to translate it into logical_size since
+        # that is where we operate with it
+
+        mouse_pos.x *= settings.logical_width / settings.window_width
+        mouse_pos.y *= settings.logical_height / settings.window_height
 
         return mouse_pos
 

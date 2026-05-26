@@ -217,3 +217,10 @@ class Gnome(LevelEntity):
 
         self.talked_to = False
 
+
+class LightPole(LevelEntity):
+    def __init__(self, pos: pg.Vector2) -> None:
+        super().__init__("MainCamura", pg.FRect(), "light pole")
+        self.image = self.element_tree["AssetLoader"].get_image(Path("./assets/objects/lantern.png"))
+        self.pos = pos
+

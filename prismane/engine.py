@@ -1,4 +1,5 @@
 import pygame as pg
+import pygame._sdl2.video as sdl2
 
 from prismane.assets import AssetLoader
 from .panels import MasterControlPanel
@@ -11,7 +12,7 @@ from .settings import Settings
 import asyncio
 
 class Engine(Element):
-    def __init__(self, window_size: tuple[int, int], title: str, display_size: tuple[int, int] = None, fps: int=60, flags=0):
+    def __init__(self, window_size: tuple[int, int], title: str, logical_size: tuple[int, int] = None, fps: int = 60, fullscreen: bool = False):
         super().__init__(singleton=True)
 
         pg.mixer.pre_init(buffer=2048)
@@ -19,11 +20,9 @@ class Engine(Element):
 
         self.asset_loader: AssetLoader = AssetLoader()
 
-        self.settings: Settings = Settings(window_size=window_size, display_size=display_size if display_size else window_size)
-        # TODO: make self.window for the shenanigans with resizing or whatever
-        self.window = pg.display.set_mode(self.settings.window_size, flags=flags)
-        pg.display.set_caption(title)
-
+        self.window = pg.Window(title=title, size=window_size, fullscreen=fullscreen)
+        self.settings: Settings = Settings(window_size=self.window.size, logical_size=logical_size if logical_size else self.window.size)
+ 
         # internal variables
         self.running: bool
         self.events: list
@@ -33,10 +32,10 @@ class Engine(Element):
 
         self.master_panel = MasterControlPanel()
 
-        self.renderer = Renderer()
+        self.window_renderer = sdl2.Renderer(self.window)
+        self.window_renderer.logical_size = self.settings.logical_size
 
-        # I just put the self.screen_size since we need the full resolution anyways :\
-        self.display = Display(self.window, *self.settings.display_size, flags=pg.SRCALPHA)
+        self.asset_renderer = Renderer()
 
         self.stages = {}
         self.current_stage: Stage
@@ -75,10 +74,10 @@ class Engine(Element):
 
     def draw(self):
         self.current_stage.draw()
-        self.display.update()
-        self.display.queue_draw()
-        self.renderer.draw({"window": self.window})
-        pg.display.update()
+        self.asset_renderer.draw({"window": self.window_renderer})
+        
+        self.window_renderer.present()
+        self.window_renderer.clear()
 
     async def run(self):
         self.running = True
