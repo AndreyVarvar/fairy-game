@@ -2,10 +2,11 @@ from prismane import Entity
 from prismane.settings import Settings
 
 import pygame as pg
+import pygame._sdl2.video as sdl2
 
 # FIXME: make compatible with Display class
 class Background(Entity):
-    def __init__(self, image: pg.Surface, mode: str = "stretch", offset: pg.Vector2 = pg.Vector2(0, 0)):
+    def __init__(self, image: sdl2.Texture, mode: str = "stretch", offset: pg.Vector2 = pg.Vector2(0, 0)):
         """
         image: pygame.Surface. Image that will be used for the background.
         mode: str. Default='stretch'. Is used to determine how the image will be handled.
@@ -28,7 +29,7 @@ class Background(Entity):
         #     self.image = pg.transform.scale(self.reference, settings.window_size)
         
         self.image = image
-        self.size = settings.window_size
+        self.size = settings.logical_size
 
         # self.prev_offset = offset
 

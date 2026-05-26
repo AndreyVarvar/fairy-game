@@ -21,8 +21,8 @@ class MainMenuStage(Stage):
         settings: Settings = self.element_tree["Settings"]
         asset_loader: AssetLoader = self.element_tree["AssetLoader"]
 
-        start_button = FButton(pos=(settings.window_width//2, 200), image=asset_loader.get_image(Path("assets/ui/start_button.png")), z=1)
-        rules_button = FButton(pos=(settings.window_width//2, 500), image=asset_loader.get_image(Path("assets/ui/rules_button.png")), z=1)
+        start_button = FButton(pos=(settings.logical_width//2, 200), image=asset_loader.get_image(Path("assets/ui/start_button.png")), z=1)
+        rules_button = FButton(pos=(settings.logical_width//2, 500), image=asset_loader.get_image(Path("assets/ui/rules_button.png")), z=1)
 
         self.populate_group("ui", 
                             start_button,
@@ -42,7 +42,9 @@ class MainMenuStage(Stage):
     def transition(self):
         fadeout_image = pg.Surface(self.element_tree["Settings"].window_size, pg.SRCALPHA)
         fadeout_image.fill((0, 0, 0))
+        print(f"fadeout size: {fadeout_image.get_rect()}")
         fadeout_image = self.element_tree["AssetLoader"].texture_from_surface(fadeout_image)
+        print(f"fadeout texure size: {fadeout_image.get_rect()}")
 
         fadeout = Fade(2, fadeout_image, f=lambda x: 1 - (1-x)**2)
         fadeout.z = 2

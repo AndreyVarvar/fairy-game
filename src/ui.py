@@ -2,6 +2,7 @@ from prismane.ui import Button
 from prismane.entity import Entity
 
 import pygame as pg
+import pygame._sdl2.video as sdl2
 
 class HeartUI(Entity):
     def __init__(self, pos: pg.Vector2, idx: int) -> None:
@@ -15,13 +16,13 @@ class HeartUI(Entity):
         super().update()
         
         if self.element_tree["CurrentStage"].singletons["level"].singletons["player"].health <= self.idx:
-            self.image.set_alpha(100)
+            self.image.alpha = 100
         else:
-            self.image.set_alpha(255)
+            self.image.alpha = 255
 
 
 class FButton(Button):
-    def __init__(self, pos: tuple[int, int], image: pg.Surface, z=1, pos_anchor: str = "center"):
+    def __init__(self, pos: tuple[int, int], image: sdl2.Texture, z=1, pos_anchor: str = "center"):
         """
         pos: tuple[int, int]. Position of the image.
         image: pygame.Surface. Static image that will be drawn.
@@ -31,5 +32,6 @@ class FButton(Button):
         rect.__setattr__(pos_anchor, pos)
         super().__init__(rect, z)
         self.image = image
+        self.size = pg.Vector2(rect.size)
 
 

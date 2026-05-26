@@ -17,7 +17,7 @@ class Fade(Entity):  # can be fadein, fadeout, or whatever else you want. That d
         self.image = image
         self.image.alpha = 0
  
-        self.size = self.element_tree["Settings"].window_size
+        self.size = self.element_tree["Settings"].logical_size
 
         self.duration = duration
 

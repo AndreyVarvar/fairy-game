@@ -31,7 +31,7 @@ class AssetLoader(Element):
             self.assets["spritesheets"][str(path)] = Spritesheet(path)
 
     # TODO: somehow make this incorporate the "from dir" thing
-    def get_image(self, path: pathlib.Path, renderer: Renderer | None = None, transparent: bool = True) -> pg.Surface:
+    def get_image(self, path: pathlib.Path, renderer: Renderer | None = None, transparent: bool = True) -> Texture:
         renderer = renderer if renderer else self.element_tree["Engine"].window_renderer  # default renderer is the window renderer
         self.load_image(path, renderer, transparent)
 
