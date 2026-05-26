@@ -2,6 +2,7 @@ from .element import Element
 
 import pygame as pg
 
+# TODO: dynamic access of window and logical size
 class Settings(Element):
     def __init__(self, window_size, logical_size) -> None:
         super().__init__(singleton=True)

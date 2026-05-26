@@ -6,7 +6,6 @@ from .panels import MasterControlPanel
 from .stage import Stage
 from .renderer import Renderer
 from .element import Element
-from .display import Display
 from .settings import Settings
 
 import asyncio
