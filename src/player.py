@@ -130,7 +130,7 @@ class Player(LevelEntity):
         self.acceleration += self.gravity
 
         self.has_control = "dialogue" not in self.element_tree["CurrentStage"].singletons["level"].singletons
-        
+
         if self.has_control:
             self.process_input()
         else:
