@@ -28,6 +28,7 @@ class Engine(Element):
 
         self.clock = pg.time.Clock()
         self.FPS = fps
+        self.max_dt = 1/self.FPS
 
         self.master_panel = MasterControlPanel()
 
@@ -44,7 +45,7 @@ class Engine(Element):
         self.current_stage = self.stages[initial_stage_name]()
 
     def update(self):
-        dt = self.clock.tick(self.FPS) / 1000  # divide by 1000 to get seconds since last call
+        dt = min(self.clock.tick(self.FPS) / 1000, self.max_dt)  # divide by 1000 to get seconds since last call
         self.master_panel.update(dt, self.events)
 
         self.current_stage.update()

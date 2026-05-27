@@ -16,6 +16,8 @@ class Camera(Element):
         self.bound_rect: pg.FRect = pg.FRect(left, top, settings.logical_width - left - right, settings.logical_height - top - bottom)
         self.view_rect: pg.FRect = pg.FRect(0, 0, settings.logical_width, settings.logical_height)
 
+        self.bounds: pg.FRect
+
         self.follow_coefficient = 1/10
 
         self.target_sprite = None
@@ -48,7 +50,6 @@ class Camera(Element):
         self.bound_rect.center = self.view_rect.center
         self.scroll.x += (self.bound_rect.x - self.scroll.x) * self.follow_coefficient
         self.scroll.y += (self.bound_rect.y - self.scroll.y) * self.follow_coefficient
-
 
     @property
     def mouse_pos_in_world(self) -> tuple[float, float]:
