@@ -24,7 +24,7 @@ class HeartUI(Entity):
 
 
 class FButton(Button):
-    def __init__(self, pos: tuple[int, int], image: sdl2.Texture, z=1, pos_anchor: str = "center"):
+    def __init__(self, pos: pg.Vector2, image: sdl2.Texture, z=1, pos_anchor: str = "center"):
         """
         pos: tuple[int, int]. Position of the image.
         image: pygame.Surface. Static image that will be drawn.

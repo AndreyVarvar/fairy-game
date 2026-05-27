@@ -9,7 +9,7 @@ import pygame._sdl2.video as sdl2
 
 class Mushroom(LevelEntity):
     def __init__(self, pos: pg.Vector2) -> None:
-        super().__init__("MainCamura", pg.FRect(0, 0, 166, 114), "mushroom")
+        super().__init__("MainCamura", pg.FRect(0, 0, 166, 114))
         hazards = self.element_tree["AssetLoader"].get_spritesheet(Path("./assets/tiles/hazards.json"))
         self.image = hazards["mushroom"]["texture"]
         self.source = hazards["mushroom"]["source"]
@@ -20,7 +20,7 @@ class Mushroom(LevelEntity):
 
 class Spike(LevelEntity):
     def __init__(self, pos: pg.Vector2) -> None:
-        super().__init__("MainCamura", pg.FRect(0, 0, 57, 74), "spike")
+        super().__init__("MainCamura", pg.FRect(0, 0, 57, 74))
         hazards = self.element_tree["AssetLoader"].get_spritesheet(Path("./assets/tiles/hazards.json"))
         self.image = hazards["spike"]["texture"]
         self.source = hazards["spike"]["source"]
@@ -138,27 +138,25 @@ class Oleni(LevelEntity):
         self.pos.x += self.velocity.x * dt
         entity: LevelEntity = level.get_collision_with(self, "tiles")
         if entity is not None:
-            if entity.collision_type == "static":
-                if self.velocity.x > 0:
-                    self.pos.x = entity.collision_box.left - self.hitbox.right
-                else:
-                    self.pos.x = entity.collision_box.right - self.hitbox.left
-                self.velocity.x = 0
-                self.acceleration.x = 0
+            if self.velocity.x > 0:
+                self.pos.x = entity.collision_box.left - self.hitbox.right
+            else:
+                self.pos.x = entity.collision_box.right - self.hitbox.left
+            self.velocity.x = 0
+            self.acceleration.x = 0
 
 
         self.pos.y += self.velocity.y * dt
         self.on_ground = False
         entity: LevelEntity = level.get_collision_with(self, "tiles")
         if entity is not None:
-            if entity.collision_type == "static":
-                if self.velocity.y >= 0:
-                    self.on_ground = True
-                    self.pos.y = entity.collision_box.top - self.rect.height
-                else:
-                    self.pos.y = entity.collision_box.bottom
-                self.velocity.y = 0
-                self.acceleration.y = 0
+            if self.velocity.y >= 0:
+                self.on_ground = True
+                self.pos.y = entity.collision_box.top - self.rect.height
+            else:
+                self.pos.y = entity.collision_box.bottom
+            self.velocity.y = 0
+            self.acceleration.y = 0
 
         if self.velocity.x != 0:
             if self.velocity.x > 0:
@@ -200,7 +198,7 @@ class Tile(LevelEntity):
 
 class Butterfly(LevelEntity):
     def __init__(self, pos: pg.Vector2, orientation: str) -> None:
-        super().__init__("MainCamura", pg.FRect(0,0, 170, 179), "butterfly")
+        super().__init__("MainCamura", pg.FRect(0,0, 170, 179))
         self.image = self.element_tree["AssetLoader"].get_image(Path("./assets/entities/butterfly.png"))
         self.pos = pos
         self.size = pg.Vector2(self.image.get_rect().size)
@@ -220,7 +218,7 @@ class Butterfly(LevelEntity):
 
 class Gnome(LevelEntity):
     def __init__(self, pos: pg.Vector2) -> None:
-        super().__init__("MainCamura", pg.FRect(0, 0, 151, 165), "gnome")
+        super().__init__("MainCamura", pg.FRect(0, 0, 151, 165))
         self.pos = pos
         self.image = self.element_tree["AssetLoader"].get_image(Path("./assets/entities/gnome.png"))
         self.size = pg.Vector2(self.image.get_rect().size)
@@ -230,7 +228,7 @@ class Gnome(LevelEntity):
 
 class LightPole(LevelEntity):
     def __init__(self, pos: pg.Vector2) -> None:
-        super().__init__("MainCamura", pg.FRect(), "light pole")
+        super().__init__("MainCamura", pg.FRect(0, 0, 292, 346))
         self.image = self.element_tree["AssetLoader"].get_image(Path("./assets/objects/lantern.png"))
         self.pos = pos
         self.size = pg.Vector2(self.image.get_rect().size)

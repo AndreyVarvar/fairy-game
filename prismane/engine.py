@@ -18,9 +18,9 @@ class Engine(Element):
         pg.init()
 
         self.asset_loader: AssetLoader = AssetLoader()
+        self.settings: Settings = Settings()
 
         self.window = pg.Window(title=title, size=window_size, fullscreen=fullscreen)
-        self.settings: Settings = Settings(window_size=self.window.size, logical_size=logical_size if logical_size else self.window.size)
  
         # internal variables
         self.running: bool
@@ -32,7 +32,7 @@ class Engine(Element):
         self.master_panel = MasterControlPanel()
 
         self.window_renderer = sdl2.Renderer(self.window)
-        self.window_renderer.logical_size = self.settings.logical_size
+        self.window_renderer.logical_size = logical_size if logical_size else window_size
 
         self.asset_renderer = Renderer()
 

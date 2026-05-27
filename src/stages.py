@@ -3,11 +3,10 @@ from prismane.assets import AssetLoader
 from pathlib import Path
 from prismane import Event
 from prismane.effects import Fade
-from prismane.camera import Camera
 from prismane.settings import Settings
 
 from .ui import FButton, HeartUI
-from .levels import Level1
+from .levels import Level1, Level2
 from .background import Background
 
 import pygame as pg
@@ -21,8 +20,8 @@ class MainMenuStage(Stage):
         settings: Settings = self.element_tree["Settings"]
         asset_loader: AssetLoader = self.element_tree["AssetLoader"]
 
-        start_button = FButton(pos=(settings.logical_width//2, 200), image=asset_loader.get_image(Path("assets/ui/start_button.png")), z=1)
-        rules_button = FButton(pos=(settings.logical_width//2, 500), image=asset_loader.get_image(Path("assets/ui/rules_button.png")), z=1)
+        start_button = FButton(pos=pg.Vector2(settings.logical_width//2, 200), image=asset_loader.get_image(Path("assets/ui/start_button.png")), z=1)
+        rules_button = FButton(pos=pg.Vector2(settings.logical_width//2, 500), image=asset_loader.get_image(Path("assets/ui/rules_button.png")), z=1)
 
         self.populate_group("ui", 
                             start_button,

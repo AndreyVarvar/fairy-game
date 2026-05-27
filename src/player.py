@@ -5,7 +5,7 @@ from prismane.assets import AssetLoader
 from prismane.panels import TimeControlPanel
 
 from .level import LevelEntity, Level
-from .level_entities import Tile, Spike, Mushroom, Butterfly, Gnome
+from .level_entities import Tile, Spike, Mushroom, Butterfly, Gnome, LightPole
 
 from pathlib import Path
 
@@ -29,7 +29,7 @@ class Player(LevelEntity):
         self.damage_cooldown_timer_id = 0
 
         self.max_speed_from_input = 300
-        self.jump_velocity = -600
+        self.jump_velocity = -700
 
         self.butterflies_collected = 0
 
@@ -124,36 +124,12 @@ class Player(LevelEntity):
             self.health -= 1
             self.damage_cooldown_timer_id = time_panel.queue_timer(self.damage_cooldown)
 
-    def update(self):
-        # movement
-        self.acceleration = pg.Vector2(0, 0)
-        self.acceleration += self.gravity
-
-        self.has_control = "dialogue" not in self.element_tree["CurrentStage"].singletons["level"].singletons
-        
-        if self.has_control:
-            self.process_input()
-        else:
-            self.velocity.x = 0
-            self.acceleration.x = 0
-
+    def collision(self):
         dt = self.element_tree["TimeControlPanel"].dt
-        self.velocity += self.acceleration * dt  # acceleration
-        if self.on_ground:
-            self.velocity.x /= 10**dt  # friction
-
-        self.velocity.x = max(-self.max_velocity, min(self.max_velocity, self.velocity.x)) # blud forgot to cap velocity :skull:
-
-        if abs(self.velocity.x) < 50:
-            self.velocity.x = 0
-        self.velocity.clamp_magnitude_ip(10_000)
-
-        # collision
-        level: Level = self.element_tree["CurrentStage"].singletons["level"]
-
+        level = self.element_tree["CurrentStage"].singletons["level"]
         # collision with tiles
         self.pos.x += self.velocity.x * dt
-        tile: LevelEntity = level.get_collision_with(self, "tiles")
+        tile: Tile = level.get_collision_with(self, "tiles")
         if tile is not None:
             if self.velocity.x > 0:
                 self.pos.x = tile.collision_box.left - self.hitbox.right
@@ -201,7 +177,42 @@ class Player(LevelEntity):
                 gnome.talked_to = True
                 self.element_tree["CurrentStage"].singletons["level"].start_dialogue(Path("./assets/dialogues/gnome.json"))
 
-        # states
+        # collision with the lantern
+        lantern: LightPole | None = level.get_collision_with(self, "light poles")
+        if lantern is not None:
+            if self.butterflies_collected == 3:
+                pass
+
+    def update(self):
+        # movement
+        self.acceleration = pg.Vector2(0, 0)
+        self.acceleration += self.gravity
+
+        self.has_control = "dialogue" not in self.element_tree["CurrentStage"].singletons["level"].singletons
+        
+        if self.has_control:
+            self.process_input()
+        else:
+            self.velocity.x = 0
+            self.acceleration.x = 0
+
+        dt = self.element_tree["TimeControlPanel"].dt
+        self.velocity += self.acceleration * dt  # acceleration
+        if self.on_ground:
+            self.velocity.x /= 10**dt  # friction
+
+        self.velocity.x = max(-self.max_velocity, min(self.max_velocity, self.velocity.x)) # blud forgot to cap velocity :skull:
+
+        if abs(self.velocity.x) < 50:
+            self.velocity.x = 0
+        self.velocity.clamp_magnitude_ip(10_000)
+
+        # just before the collision
+        # collision
+        self.collision() # collision stuff
+        # done with collisions
+        
+        # states (remember that this is AFTER the collision stuff)
         if self.velocity.x != 0:
             if self.velocity.x > 0:
                 self.facing = "right"
