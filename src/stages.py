@@ -50,27 +50,14 @@ class MainMenuStage(Stage):
         self.add_to_group("ui", fadeout)
         self.add_event(Event(action=lambda: self.queue_next_stage("game"), condition=lambda: fadeout.done))
 
-    def draw(self):
-        super().draw()
-        self.element_tree["Renderer"].draw()
 
 
 class GameStage(Stage):
     def __init__(self):
         super().__init__()
 
-        self.camera = Camera("MainCamura", 0, 0, 0, 0)
         self.add_singleton("level", Level1())
-
-        self.camera.target = self.singletons["level"].singletons["player"]
 
         self.populate_group("hearts", *[HeartUI(pg.Vector2(20 + 200*i, 20), idx=i) for i in range(self.singletons["level"].singletons["player"].max_health)])
 
-    def draw(self):
-        super().draw()
-        self.element_tree["Renderer"].draw()
-
-    def update(self):
-        super().update()
-        self.camera.follow_target()
 

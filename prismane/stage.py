@@ -64,6 +64,8 @@ class Stage(Element):
         for group in self.groups.values():
             group.draw()
 
+        self.element_tree["Renderer"].draw()
+
     def clear(self):
         window = self.element_tree["Engine"].window
         display = self.element_tree["Engine"].display

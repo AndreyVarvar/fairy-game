@@ -1,4 +1,5 @@
 from prismane import Spritesheet, EntityGroup, Event
+from prismane.camera import Camera
 
 from .level import Level
 from .background import Background
@@ -13,6 +14,7 @@ import pygame as pg
 class Level1(Level):
     def __init__(self) -> None:
         super().__init__(pg.Vector2(144, 1169))
+        self.camera = Camera("MainCamura", 0, 0, 0, 0)
         
         w, h = 115, 75  # tile width and tile height, shortened for conveniece in the monstrocity you see below (yes, it was manually written. Every single entry. Every single tile. You could say it woul've been better to write a script to do that for me, but I am too lazy to write the autotiler, and even though it would've taken me 30 minutes I'd rather spend the next 2 hours manually writing everyghing down)
         tileset = Spritesheet(Path("./assets/tiles/pink.json"))
@@ -149,10 +151,19 @@ class Level1(Level):
             "background": Background(asset_loader.get_image(Path("./assets/backgrounds/pink.png"))),
             "player": Player(self.player_start_pos)
         }
+        
+        self.camera.target = self.singletons["player"]
+        
         self.dialogue_termination_event = None
 
     def reset(self):
         self.__init__()
+
+    def update(self):
+        super().update()
+        self.camera.follow_target()
+        if self.singletons["player"].health <= 0:
+            self.reset()
 
     def start_dialogue(self, dialogue_json_path: Path):
         self.singletons["dialogue"] = DialogueBox(dialogue_json_path)

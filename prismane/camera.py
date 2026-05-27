@@ -48,7 +48,7 @@ class Camera(Element):
         self.bound_rect.center = self.view_rect.center
         self.scroll.x += (self.bound_rect.x - self.scroll.x) * self.follow_coefficient
         self.scroll.y += (self.bound_rect.y - self.scroll.y) * self.follow_coefficient
-        
+
 
     @property
     def mouse_pos_in_world(self) -> tuple[float, float]:

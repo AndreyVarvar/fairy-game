@@ -11,14 +11,16 @@ class HeartUI(Entity):
         self.image = self.element_tree["AssetLoader"].get_image("./assets/ui/heart.png")
         self.pos = pos
         self.idx = idx
+        self.size = pg.Vector2(self.image.get_rect().size)
+        self.scale = 2
 
-    def update(self):
-        super().update()
-        
+    def draw(self):
         if self.element_tree["CurrentStage"].singletons["level"].singletons["player"].health <= self.idx:
-            self.image.alpha = 100
+            self.alpha = 100
         else:
-            self.image.alpha = 255
+            self.alpha = 255
+        
+        super().draw()
 
 
 class FButton(Button):

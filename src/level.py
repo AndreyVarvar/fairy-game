@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from prismane import Entity, EntityGroup
+from prismane import Entity, EntityGroup, Renderer
 
 import pygame as pg
 
@@ -8,8 +8,9 @@ import pygame as pg
 class LevelEntity(Entity):
     def __init__(self, camera_name, hitbox, collision_type: str = "static", singleton: bool = False) -> None:
         super().__init__(singleton)
+        self.scale = 2
         self.camera = self.element_tree[camera_name]
-        self.hitbox: pg.FRect = hitbox  # NOTE: hitbox is measured in relation to the top-left corner of the entity (its position)
+        self.hitbox: pg.FRect = hitbox # NOTE: hitbox is measured in relation to the top-left corner of the entity (its position)
         self.collision_type = collision_type
 
     @property
@@ -23,12 +24,25 @@ class LevelEntity(Entity):
         return self.collision_box.collidepoint(point)
 
     def draw(self):
-        self.draw_offset -= pg.Vector2(self.camera.scroll)
-        super().draw()
-        self.draw_offset += pg.Vector2(self.camera.scroll)
+        renderer: Renderer = self.element_tree["Renderer"]
 
+        dst = self.frect.move(self.draw_offset)
+        dst = pg.FRect(dst.x * self.scale, dst.y * self.scale, dst.w * self.scale, dst.h * self.scale)
+        dst.move_ip(-self.camera.scroll)
 
-
+        renderer.queue_draw(
+            texture=self.image, 
+            z=self.z, 
+            source=self.source, 
+            destination=dst, 
+            flip_x=self.flip_x, 
+            flip_y=self.flip_y, 
+            angle=self.angle, 
+            pivot=self.pivot,
+            color=self.color,
+            alpha=self.alpha,
+            blend_mode=self.blend_mode
+        )
 
 
 class Level(Entity):

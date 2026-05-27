@@ -22,9 +22,13 @@ class Entity(Element):
         self.flip_y: bool = False
         self.angle: float = 0.0
         self.pivot: tuple[int, int] | pg.Vector2 = None
+        self.scale: float = 1.0
+        self.color: pg.Color = pg.Color(255, 255, 255)
+        self.alpha: int = 255
+        self.blend_mode: int = pg.BLENDMODE_BLEND
 
     @property
-    def center(self) -> tuple[float, float]:
+    def center(self) -> tuple[float, float] | pg.Vector2:
         return self.frect.center
 
     @property
@@ -41,15 +45,22 @@ class Entity(Element):
 
     def draw(self):
         renderer: Renderer = self.element_tree["Renderer"]
+
+        dst = self.frect.move(self.draw_offset)
+        dst = pg.FRect(dst.x, dst.y, dst.w * self.scale, dst.h * self.scale)
+
         renderer.queue_draw(
             texture=self.image, 
             z=self.z, 
             source=self.source, 
-            destination=self.frect.move(self.draw_offset), 
+            destination=dst, 
             flip_x=self.flip_x, 
             flip_y=self.flip_y, 
             angle=self.angle, 
-            pivot=self.pivot
+            pivot=self.pivot,
+            color=self.color,
+            alpha=self.alpha,
+            blend_mode=self.blend_mode
         )
 
 

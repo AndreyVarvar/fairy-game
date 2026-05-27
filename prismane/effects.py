@@ -38,4 +38,4 @@ class Fade(Entity):  # can be fadein, fadeout, or whatever else you want. That d
         self.done = (percentage == 1.0)
         
         if not self.done:
-            self.image.alpha = int(255 * self.f(percentage))
+            self.alpha = int(255 * self.f(percentage))

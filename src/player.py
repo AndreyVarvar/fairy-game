@@ -89,6 +89,12 @@ class Player(LevelEntity):
 
         self.current_state = state
 
+    @property
+    def center(self) -> tuple[float, float] | pg.Vector2:
+        r = self.frect
+        r.move_ip(self.draw_offset)
+        r = pg.FRect(r.x * self.scale, r.y * self.scale, r.w * self.scale, r.h * self.scale)
+        return r.center
 
     @property
     def dead(self):
@@ -222,14 +228,14 @@ class Player(LevelEntity):
         flicker_cd = 0.5
         flicker = (time_panel.check_timer(self.damage_cooldown_timer_id) % flicker_cd) > (flicker_cd/2)
         
-        if flicker:
-            self.image = self.states[self.current_state].get_frame()["texture"]
-            self.size = pg.Vector2(self.image.get_rect().size)
-
-        else:
-            self.image = self.states[self.current_state].get_frame()["texture"]
-            self.size = pg.Vector2(self.image.get_rect().size)
+        self.image = self.states[self.current_state].get_frame()["texture"]
+        self.size = pg.Vector2(self.image.get_rect().size)
         
+        if flicker:
+            self.color = pg.Color(255, 0, 0)
+        else:
+            self.color = pg.Color(255, 255, 255)
+
         # self.image = self.states[self.current_state].get_frame().copy()
         # pg.draw.rect(self.image, (255, 0, 0), self.hitbox.move(-self.draw_offset), 5)
 
