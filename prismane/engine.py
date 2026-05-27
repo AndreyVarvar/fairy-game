@@ -73,7 +73,7 @@ class Engine(Element):
 
     def draw(self):
         self.current_stage.draw()
-        self.asset_renderer.draw({"window": self.window_renderer})
+        self.asset_renderer.draw()
         
         self.window_renderer.present()
         self.window_renderer.clear()

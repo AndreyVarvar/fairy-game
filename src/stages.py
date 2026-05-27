@@ -42,9 +42,7 @@ class MainMenuStage(Stage):
     def transition(self):
         fadeout_image = pg.Surface(self.element_tree["Settings"].window_size, pg.SRCALPHA)
         fadeout_image.fill((0, 0, 0))
-        print(f"fadeout size: {fadeout_image.get_rect()}")
         fadeout_image = self.element_tree["AssetLoader"].texture_from_surface(fadeout_image)
-        print(f"fadeout texure size: {fadeout_image.get_rect()}")
 
         fadeout = Fade(2, fadeout_image, f=lambda x: 1 - (1-x)**2)
         fadeout.z = 2
@@ -54,8 +52,7 @@ class MainMenuStage(Stage):
 
     def draw(self):
         super().draw()
-        windor_renderer = self.element_tree["Engine"].window_renderer
-        self.element_tree["Renderer"].draw({"window": windor_renderer})
+        self.element_tree["Renderer"].draw()
 
 
 class GameStage(Stage):
@@ -71,8 +68,7 @@ class GameStage(Stage):
 
     def draw(self):
         super().draw()
-        windor_renderer = self.element_tree["Engine"].window_renderer
-        self.element_tree["Renderer"].draw({"window": windor_renderer})
+        self.element_tree["Renderer"].draw()
 
     def update(self):
         super().update()

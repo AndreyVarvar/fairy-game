@@ -4,22 +4,28 @@ from .level import LevelEntity, Level
 
 from pathlib import Path
 import pygame as pg 
+import pygame._sdl2.video as sdl2
 
 
 class Mushroom(LevelEntity):
     def __init__(self, pos: pg.Vector2) -> None:
         super().__init__("MainCamura", pg.FRect(0, 0, 166, 114), "mushroom")
         hazards = self.element_tree["AssetLoader"].get_spritesheet(Path("./assets/tiles/hazards.json"))
-        self.image = hazards["mushroom"]
+        self.image = hazards["mushroom"]["texture"]
+        self.source = hazards["mushroom"]["source"]
         self.pos = pos
+
+        self.size = pg.Vector2(self.source.size)
 
 
 class Spike(LevelEntity):
     def __init__(self, pos: pg.Vector2) -> None:
         super().__init__("MainCamura", pg.FRect(0, 0, 57, 74), "spike")
         hazards = self.element_tree["AssetLoader"].get_spritesheet(Path("./assets/tiles/hazards.json"))
-        self.image = hazards["spike"]
+        self.image = hazards["spike"]["texture"]
+        self.source = hazards["spike"]["source"]
         self.pos = pos
+        self.size = pg.Vector2(self.source.size)
 
 class Oleni(LevelEntity):
     def __init__(self, pos: pg.Vector2) -> None:
@@ -63,8 +69,8 @@ class Oleni(LevelEntity):
             Event(action=lambda: self.set_state("attack right"), condition=lambda: self.current_state == "idle right" and self.on_ground and not self.attacking and self.element_tree["CurrentStage"].singletons["level"].singletons["player"].rect.colliderect(self.right)),
         ]
 
-        self.image = self.states[self.current_state].get_frame()
-        self.size = pg.Vector2(self.image.get_size())
+        self.image = self.states[self.current_state].get_frame()["texture"]
+        self.size = pg.Vector2(self.image.get_rect().size)
         self.z = 1
 
     @property
@@ -174,19 +180,22 @@ class Oleni(LevelEntity):
 
         # animations
         self.states[self.current_state].update()
-        self.image = self.states[self.current_state].get_frame().copy()
+        self.image = self.states[self.current_state].get_frame()["texture"]
+        self.size = pg.Vector2(self.image.get_rect().size)
 
 
 class Tile(LevelEntity):
-    def __init__(self, pos: pg.Vector2, image: pg.Surface, hitbox: pg.FRect = pg.FRect(0, 0, 0, 0)) -> None:
+    def __init__(self, pos: pg.Vector2, texture: dict, hitbox: pg.FRect = pg.FRect(0, 0, 0, 0)) -> None:
         super().__init__("MainCamura", hitbox)
         self.size = pg.Vector2(200, 200)
-        self.image = image
+        self.image = texture["texture"]
+        self.source = texture["source"]
+        self.size = pg.Vector2(self.source.size)
 
         self.pos = pos
         self.z = 2
 
-        self.hitbox = hitbox if hitbox else pg.FRect(0, 0, *self.image.get_size())
+        self.hitbox = hitbox if hitbox else pg.FRect(0, 0, *self.source.size)
 
 
 class Butterfly(LevelEntity):
@@ -194,11 +203,12 @@ class Butterfly(LevelEntity):
         super().__init__("MainCamura", pg.FRect(0,0, 170, 179), "butterfly")
         self.image = self.element_tree["AssetLoader"].get_image(Path("./assets/entities/butterfly.png"))
         self.pos = pos
+        self.size = pg.Vector2(self.image.get_rect().size)
 
         self.is_being_talked_to = False
 
         if orientation == "right":
-            self.image = pg.transform.flip(self.image, flip_x=True, flip_y=False)
+            self.flip_x = True
 
     def update(self):
         super().update()
@@ -208,12 +218,12 @@ class Butterfly(LevelEntity):
                 self.destroy()
                 self.element_tree["CurrentStage"].singletons["level"].groups["butterflies"].remove(self)
 
-
 class Gnome(LevelEntity):
     def __init__(self, pos: pg.Vector2) -> None:
         super().__init__("MainCamura", pg.FRect(0, 0, 151, 165), "gnome")
         self.pos = pos
         self.image = self.element_tree["AssetLoader"].get_image(Path("./assets/entities/gnome.png"))
+        self.size = pg.Vector2(self.image.get_rect().size)
 
         self.talked_to = False
 
@@ -223,4 +233,5 @@ class LightPole(LevelEntity):
         super().__init__("MainCamura", pg.FRect(), "light pole")
         self.image = self.element_tree["AssetLoader"].get_image(Path("./assets/objects/lantern.png"))
         self.pos = pos
+        self.size = pg.Vector2(self.image.get_rect().size)
 

@@ -72,10 +72,10 @@ class Player(LevelEntity):
             Event(action=lambda: self.set_state("attack right"), condition=lambda: self.current_state == "idle right" and self.on_ground and pg.K_p in input_panel.keys_just_pressed and not self.attacking and self.has_control),
         ]
 
-        self.image = self.states[self.current_state].get_frame()  # TODO: currenly player hitbox is tied to image
+        self.image = self.states[self.current_state].get_frame()["texture"]  # TODO: currenly player hitbox is tied to image
 
         self.z = 1
-        self.size = pg.Vector2(self.image.get_size())
+        self.size = pg.Vector2(self.image.get_rect().size)
 
         self.has_control = True
 
@@ -163,7 +163,7 @@ class Player(LevelEntity):
         if tile is not None:
             if self.velocity.y >= 0:
                 self.on_ground = True
-                self.pos.y = tile.collision_box.top - self.rect.height
+                self.pos.y = tile.collision_box.top - self.hitbox.height
             else:
                 self.pos.y = tile.collision_box.bottom
             self.velocity.y = 0
@@ -223,10 +223,12 @@ class Player(LevelEntity):
         flicker = (time_panel.check_timer(self.damage_cooldown_timer_id) % flicker_cd) > (flicker_cd/2)
         
         if flicker:
-            self.image = self.states[self.current_state].get_frame().copy()
-            self.image.fill((255, 0, 0), special_flags=pg.BLENDMODE_MUL)
+            self.image = self.states[self.current_state].get_frame()["texture"]
+            self.size = pg.Vector2(self.image.get_rect().size)
+
         else:
-            self.image = self.states[self.current_state].get_frame()
+            self.image = self.states[self.current_state].get_frame()["texture"]
+            self.size = pg.Vector2(self.image.get_rect().size)
         
         # self.image = self.states[self.current_state].get_frame().copy()
         # pg.draw.rect(self.image, (255, 0, 0), self.hitbox.move(-self.draw_offset), 5)

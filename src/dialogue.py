@@ -3,6 +3,7 @@ from prismane import Entity
 from pathlib import Path
 import json
 import pygame as pg
+import pygame._sdl2.video as sdl2
 
 from prismane.assets import AssetLoader
 from prismane.panels import InputControlPanel
@@ -26,7 +27,7 @@ class DialogueBox(Entity):
         self.font = pg.font.SysFont("comic sans", 30)
 
         settings: Settings = self.element_tree["Settings"]
-        rect = self.dialogue_box.get_rect(midbottom=pg.Vector2(settings.window_width//2, settings.window_height-100))
+        rect = self.dialogue_box.get_rect(midbottom=pg.Vector2(settings.logical_width//2, settings.logical_height-100))
         self.pos = pg.Vector2(rect.topleft)
 
         self.end = False
@@ -36,6 +37,7 @@ class DialogueBox(Entity):
         self.selected_option = 0
 
         self.text_color = pg.Color(107, 67, 130)
+        self.size = pg.Vector2(self.dialogue_box.get_rect().size)
 
     def update(self):
         super().update()
@@ -66,12 +68,17 @@ class DialogueBox(Entity):
             
 
     def draw(self):
+        scale = 2
+
         renderer: Renderer = self.element_tree["Renderer"]
 
-        renderer.queue_draw(self.dialogue_box, self.z, self.target, self.pos + self.draw_offset)
+        renderer.queue_draw(self.dialogue_box, self.z, destination=self.rect.move(self.draw_offset).scale_by(scale))
 
         text = self.dialogue[self.current_dialogue]["author"] + ": " + self.dialogue[self.current_dialogue]["text"]
-        renderer.queue_draw(self.font.render(text, True, self.text_color), self.z+1, self.target, self.pos + self.draw_offset + pg.Vector2(50, 100))
+        text_texture = self.element_tree["AssetLoader"].texture_from_surface(self.font.render(text, True, self.text_color))
+        text_texture_rect = text_texture.get_rect().scale_by(scale).move(self.pos + self.draw_offset + pg.Vector2(50, 100))
+        text_texture_rect.left = self.rect.move(self.draw_offset).scale_by(scale).left + scale*50
+        renderer.queue_draw(text_texture, self.z+1, destination=text_texture_rect)
 
         if self.dialogue[self.current_dialogue]["type"] == "option":
             option_count = len(self.dialogue[self.current_dialogue]["options"])
@@ -83,8 +90,9 @@ class DialogueBox(Entity):
                 if i == self.selected_option:
                     pg.draw.rect(text, self.text_color, text_rect, 5, 10)
                 
-                text_rect.center = self.pos + self.draw_offset + pg.Vector2((i+1)*(1302/(option_count+1)), 200)
-                renderer.queue_draw(text, self.z+1, self.target, text_rect)
+                text_rect.scale_by_ip(scale)
+                text_rect.center = pg.Vector2(self.rect.scale_by(scale).move(self.draw_offset).topleft) + scale*pg.Vector2((i+1)*(self.size.x/(option_count+1)), 200)
+                renderer.queue_draw(self.element_tree["AssetLoader"].texture_from_surface(text), self.z+1, text_rect)
         
 
 

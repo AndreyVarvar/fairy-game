@@ -8,7 +8,7 @@ class HeartUI(Entity):
     def __init__(self, pos: pg.Vector2, idx: int) -> None:
         super().__init__()
         self.z = 10
-        self.image = pg.transform.scale_by(self.element_tree["AssetLoader"].get_image("./assets/ui/heart.png"), 2)
+        self.image = self.element_tree["AssetLoader"].get_image("./assets/ui/heart.png")
         self.pos = pos
         self.idx = idx
 

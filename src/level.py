@@ -14,7 +14,7 @@ class LevelEntity(Entity):
 
     @property
     def collision_box(self) -> pg.FRect:
-        return self.hitbox.move(*self.pos)
+        return self.hitbox.move(self.pos)
 
     def collides_with(self, entity: LevelEntity):
         return self.collision_box.colliderect(entity.collision_box)
@@ -23,7 +23,11 @@ class LevelEntity(Entity):
         return self.collision_box.collidepoint(point)
 
     def draw(self):
-        self.element_tree["Renderer"].queue_draw(self.image, self.z, self.target, pg.Vector2(self.pos[0] - self.camera.scroll[0], self.pos[1] - self.camera.scroll[1]) + self.draw_offset)
+        self.draw_offset -= pg.Vector2(self.camera.scroll)
+        super().draw()
+        self.draw_offset += pg.Vector2(self.camera.scroll)
+
+
 
 
 

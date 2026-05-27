@@ -4,6 +4,8 @@ from .assets import AssetLoader
 from pathlib import Path
 import json
 
+import pygame as pg
+
 
 class Spritesheet(Element):
     def __init__(self, spritesheet_json_path: Path):
@@ -30,7 +32,11 @@ class Spritesheet(Element):
         sprites = {}
         for name in spritesheet_json["images"]: 
             rect = spritesheet_json["images"][name]
-            sprites[name] = image.subsurface(rect)
+
+            sprites[name] = {
+                "texture": image,
+                "source": pg.Rect(rect)
+            }
         return sprites
 
 
@@ -43,11 +49,18 @@ class Spritesheet(Element):
             format = spritesheet_json["format"]
             sprite_count = spritesheet_json["count"]
             for i in range(sprite_count):
-                sprites[format.format(i)] = self.element_tree["AssetLoader"].get_image(directory_path / format.format(i))
+                sprites[format.format(i)] = {
+                    "texture": self.element_tree["AssetLoader"].get_image(directory_path / format.format(i)),
+                    "source": None
+                }
+
         elif format_type == "file-names":
             sprite_names = spritesheet_json["images"]
             for name in sprite_names:
-                sprites[name] = self.element_tree["AssetLoader"].get_image(directory_path / name)
+                sprites[name] = {
+                    "texture": self.element_tree["AssetLoader"].get_image(directory_path / name),
+                    "source": None  # entire thing
+                }
         else:
             raise Exception(f"Unknown directory spritesheet type formatting: {format_type}")
 

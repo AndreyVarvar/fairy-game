@@ -15,23 +15,27 @@ class Renderer(Element):
         self.order = 0
         self.queue = []
 
-    def queue_draw(self, surface: pg.Surface, z: int, destination: pg.Rect):
+    def queue_draw(self, texture: sdl2.Texture, z: int, destination: pg.Rect | pg.FRect, source: pg.Rect | None = None, flip_x: bool = False, flip_y: bool = False, angle: float = 0.0, pivot: pg.Vector2 | tuple[int, int] | None = None):
         """
         surface: pygame.Surface. The image to be drawn.
         z: int. z-index of the object. Lower values increase the draw priority
+        destination: pygame.Rect. Defines an area where the source image will be drawn into. The image wil be stretched to fit it.
+        flip_x: bool. Determines whether the image will be horizontally flipped when drawn.
+        flip_y: bool. Duh.
+        angle: float. Angle of rotation. Determines by how much the destination rect will be rotated around the `pivot` parameter.
+        pivot: pointLike. Determines the pivot for rotation of the destination rect.
         Used by objects to "queue" themselves into the drawing queue, after which they will be drawn alongside every other element
         """
-
-        self.queue.append([z, self.order, surface, destination])
+        self.queue.append([z, self.order, texture, destination, flip_x, flip_y, angle, pivot, source])
         self.order += 1
 
-    def draw(self, targets: dict[str, sdl2.Renderer]):
+    def draw(self):
         """
         targets: dict[str, pygame.Surface]. A dictonary with keys being the target name and the surface (target meaning where to draw)
         Draws everything queued so far. Should be called once per frame.
         """
-        self.order = 0
+        self.order = 0  # reset it so that it doesn't grow inifinitely
         self.queue.sort(key = lambda x:x[0])
         for sprite in self.queue:
-            sprite[2].draw(dstrect=sprite[3])
-            # target.blit(sprite[2], sprite[3])
+            _, _, texture, dest, flip_x, flip_y, angle, pivot, source = sprite
+            texture.draw(srcrect=source, dstrect=dest, angle=angle, origin=pivot, flip_x=flip_x, flip_y=flip_y)
