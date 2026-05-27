@@ -3,7 +3,6 @@ from prismane.assets import AssetLoader
 from pathlib import Path
 from prismane import Event
 from prismane.effects import Fade
-from prismane.camera import Camera
 from prismane.settings import Settings
 
 from .ui import FButton, HeartUI
