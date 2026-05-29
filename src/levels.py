@@ -3,7 +3,7 @@ from prismane.camera import Camera
 
 from .level import Level
 from .background import Background
-from .level_entities import LightPole, Tile, Mushroom, Spike, Gnome, Oleni, Butterfly
+from .level_entities import LightPole, Tile, Mushroom, Spike, Gnome, Oleni, Butterfly, Heart
 from .player import Player
 
 from pathlib import Path
@@ -276,10 +276,20 @@ class Level2(Level):
             ),
             "spikes": EntityGroup(
                 # Spikes
+                Spike(pg.Vector2(3*w+40, 9*h+60)),
+                Spike(pg.Vector2(17*w+40, 6*h+60)),
+                Spike(pg.Vector2(21*w+40, 14*h+60)),
+                Spike(pg.Vector2(27*w+40, 8*h+60)),
             ),
             "olenis": EntityGroup(
                 # Oleni
-                Oleni(pg.Vector2(18*w, 14*h)),
+                Oleni(pg.Vector2(7*w, 6*h)),
+                Oleni(pg.Vector2(16*w, 13*h)),
+            ),
+            "hearts": EntityGroup(
+                # Hearts
+                Heart(pg.Vector2(11*w, 14*h+20)),
+                Heart(pg.Vector2(21*w, 4*h+20)),
             )
         }
 

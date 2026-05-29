@@ -127,6 +127,7 @@ class Oleni(LevelEntity):
         self.velocity += self.acceleration * dt  # acceleration
         if self.on_ground:
             #NOTE: why do you put 10 to the power dt? - Aiden
+            #NOTE: imagine it like you slow down by 10 times each second. This is just what I usually do, not that much thought went into this - Andrey
             self.velocity.x /= 10**dt  # friction
 
         self.velocity.x = max(-self.max_velocity, min(self.max_velocity, self.velocity.x))
@@ -241,3 +242,13 @@ class LightPole(LevelEntity):
         self.pos = pos
         self.size = pg.Vector2(self.image.get_rect().size)
 
+class Heart(LevelEntity):
+    def __init__(self, pos: pg.Vector2) -> None:
+        super().__init__("MainCamura", pg.FRect(0, 0, 292, 346))
+        self.image = self.element_tree["AssetLoader"].get_image(Path("./assets/ui/heart.png"))
+        self.pos = pos
+        self.size = pg.Vector2(self.image.get_rect().size)
+
+    def kill(self):
+        self.destroy()
+        self.element_tree["CurrentStage"].singletons["level"].groups["hearts"].remove(self)

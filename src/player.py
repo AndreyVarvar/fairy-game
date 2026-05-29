@@ -4,8 +4,8 @@ from prismane import Event
 from prismane.assets import AssetLoader
 from prismane.panels import TimeControlPanel
 
-from .level import LevelEntity, Level
-from .level_entities import Tile, Spike, Mushroom, Butterfly, Gnome, LightPole
+from .level import LevelEntity
+from .level_entities import Tile, Spike, Mushroom, Butterfly, Gnome, LightPole, Heart
 
 from pathlib import Path
 
@@ -197,6 +197,13 @@ class Player(LevelEntity):
             if self.butterflies_collected == 3:
                 self.element_tree["CurrentStage"].next_level(2)
 
+        # collision with the lantern
+        heart: Heart | None = level.get_collision_with(self, "hearts")
+        if heart is not None:
+            self.health = min(self.health+1, self.max_health)
+            heart.kill()
+
+        # collision with Oleni attack
         time_panel = self.element_tree["TimeControlPanel"]
         olenis = self.element_tree["CurrentStage"].singletons["level"].groups["olenis"]
         for oleni in olenis:
@@ -254,6 +261,7 @@ class Player(LevelEntity):
             self.draw_offset = pg.Vector2(0, 0)
         
         # animations
+        time_panel: TimeControlPanel = self.element_tree["TimeControlPanel"]
         self.states[self.current_state].update()
         flicker_cd = 0.5
         flicker = (time_panel.check_timer(self.damage_cooldown_timer_id) % flicker_cd) > (flicker_cd/2)
