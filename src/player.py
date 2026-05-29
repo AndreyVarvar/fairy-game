@@ -51,6 +51,7 @@ class Player(LevelEntity):
 
         self.facing = "left"
         self.attacking = False
+        self.attack_timer = -1
         self.offsets = {
             "attack left": pg.Vector2(-110, 0),
             "attack right": pg.Vector2(15, 0)
@@ -59,6 +60,7 @@ class Player(LevelEntity):
         input_panel: InputControlPanel = self.element_tree["InputControlPanel"]
 
         # conditions for switching from state A to state B
+        time_panel = self.element_tree["TimeControlPanel"]
         self.switch_conditions = [
             Event(action=lambda: self.set_state("walk left"),    condition=lambda: self.on_ground and self.velocity.x < 0),
             Event(action=lambda: self.set_state("walk right"),   condition=lambda: self.on_ground and self.velocity.x > 0),
@@ -68,8 +70,8 @@ class Player(LevelEntity):
             Event(action=lambda: self.set_state("jump right"),   condition=lambda: self.velocity.y < 0 and not self.on_ground and self.facing == "right"),
             Event(action=lambda: self.set_state("fall left"),    condition=lambda: self.velocity.y > 0 and not self.on_ground and self.facing == "left"),
             Event(action=lambda: self.set_state("fall right"),   condition=lambda: self.velocity.y > 0 and not self.on_ground and self.facing == "right"),
-            Event(action=lambda: self.set_state("attack left"),  condition=lambda: self.current_state == "idle left" and self.on_ground and pg.K_p in input_panel.keys_just_pressed and not self.attacking and self.has_control),
-            Event(action=lambda: self.set_state("attack right"), condition=lambda: self.current_state == "idle right" and self.on_ground and pg.K_p in input_panel.keys_just_pressed and not self.attacking and self.has_control),
+            Event(action=lambda: (self.set_state("attack left"), setattr(self, "attack_timer", time_panel.queue_timer(17/10))),  condition=lambda: self.current_state == "idle left" and self.on_ground and pg.K_p in input_panel.keys_just_pressed and not self.attacking and self.has_control),
+            Event(action=lambda: (self.set_state("attack right"), setattr(self, "attack_timer", time_panel.queue_timer(17/10))), condition=lambda: self.current_state == "idle right" and self.on_ground and pg.K_p in input_panel.keys_just_pressed and not self.attacking and self.has_control),
         ]
 
         self.image = self.states[self.current_state].get_frame()["texture"]  # TODO: currenly player hitbox is tied to image
@@ -78,6 +80,14 @@ class Player(LevelEntity):
         self.size = pg.Vector2(self.image.get_rect().size)
 
         self.has_control = True
+
+    @property
+    def left(self) -> pg.FRect:
+        return pg.FRect(self.collision_box.x - 136, self.collision_box.y, 136, 225)
+
+    @property
+    def right(self) -> pg.FRect:
+        return pg.FRect(self.collision_box.right, self.collision_box.y, 136, 225)
 
     def set_state(self, state: str):
         jump_states = ["jump left", "jump right"]
@@ -106,6 +116,10 @@ class Player(LevelEntity):
         input_acceleration = pg.Vector2(0, 0)
 
         accel = 5000
+
+        time_panel = self.element_tree["TimeControlPanel"]
+        if time_panel.check_timer(self.attack_timer) > 0:
+            return
 
         if input_panel.keys_pressed[pg.K_d]:
             input_acceleration.x = accel
@@ -183,6 +197,13 @@ class Player(LevelEntity):
             if self.butterflies_collected == 3:
                 self.element_tree["CurrentStage"].next_level(2)
 
+        time_panel = self.element_tree["TimeControlPanel"]
+        olenis = self.element_tree["CurrentStage"].singletons["level"].groups["olenis"]
+        for oleni in olenis:
+            if self.current_state == "attack left" and oleni.rect.colliderect(self.left) and time_panel.check_timer(self.attack_timer) < 7/10 or self.current_state == "attack right" and oleni.rect.colliderect(self.right) and time_panel.check_timer(self.attack_timer) < 7/10:
+                oleni.destroy()
+                self.element_tree["CurrentStage"].singletons["level"].groups["olenis"].remove(oleni)
+
     def update(self):
         # movement
         self.acceleration = pg.Vector2(0, 0)
@@ -211,19 +232,19 @@ class Player(LevelEntity):
         # collision
         self.collision() # collision stuff
         # done with collisions
-        
+
         # states (remember that this is AFTER the collision stuff)
         if self.velocity.x != 0:
             if self.velocity.x > 0:
                 self.facing = "right"
             else:
                 self.facing = "left"
-        
+
         self.attacking = self.current_state in ["attack left", "attack right"] and not self.states[self.current_state].end
-        
+
         for event in self.switch_conditions:
             event.update()
-        
+
         # DO NOT USE self.attacking HERE!!!!
         # it will cause a visual jitter the moment states switch
         # it's related to the animation.end condition
@@ -233,8 +254,6 @@ class Player(LevelEntity):
             self.draw_offset = pg.Vector2(0, 0)
         
         # animations
-        time_panel: TimeControlPanel = self.element_tree["TimeControlPanel"]
-
         self.states[self.current_state].update()
         flicker_cd = 0.5
         flicker = (time_panel.check_timer(self.damage_cooldown_timer_id) % flicker_cd) > (flicker_cd/2)
