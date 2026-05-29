@@ -5,7 +5,7 @@ from prismane.assets import AssetLoader
 from prismane.panels import TimeControlPanel
 
 from .level import LevelEntity
-from .level_entities import Tile, Spike, Mushroom, Butterfly, Gnome, LightPole, Heart
+from .level_entities import MushroomGuy, Tile, Spike, Mushroom, Butterfly, Gnome, LightPole, Heart
 
 from pathlib import Path
 
@@ -202,6 +202,13 @@ class Player(LevelEntity):
         if heart is not None:
             self.health = min(self.health+1, self.max_health)
             heart.kill()
+
+        # collision with mushroom guy
+        mushroom_guy: MushroomGuy | None = level.get_collision_with(self, "mushroom npc")
+        if mushroom_guy is not None:
+            if mushroom_guy.talked_to is False:
+                mushroom_guy.talked_to = True
+                self.element_tree["CurrentStage"].singletons["level"].start_dialogue(Path("./assets/dialogues/mushroom.json"))
 
         # collision with Oleni attack
         time_panel = self.element_tree["TimeControlPanel"]

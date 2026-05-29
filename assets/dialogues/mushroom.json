@@ -1,0 +1,206 @@
+{
+  "1": {
+    "type": "text",
+    "author": "Happy Shroom",
+    "text": "Yay! Footsteps again.",
+    "link": "2"
+  },
+  "2": {
+    "type": "option",
+    "author": "Happy Shroom",
+    "text": "I was beginning to miss those.",
+    "options": [
+      {
+        "text": "Sorry...",
+        "link": "3"
+      },
+      {
+        "text": "Talking mushroom...",
+        "link": "7"
+      }
+    ]
+  },
+  "3": {
+    "type": "text",
+    "author": "Fairy",
+    "text": "Apologies for disturbing you.",
+    "link": "4"
+  },
+  "4": {
+    "type": "text",
+    "author": "Happy Shroom",
+    "text": "No need for an apology.",
+    "link": "5"
+  },
+  "5": {
+    "type": "text",
+    "author": "Happy Shroom",
+    "text": "I yearn for some real talk.",
+    "link": "6"
+  },
+  "6": {
+    "type": "text",
+    "author": "Happy Shroom",
+    "text": "The fawns aren't a lot of fun.",
+    "link": "10"
+  },
+  "7": {
+    "type": "text",
+    "author": "Fairy",
+    "text": "You are a talking mushroom?",
+    "link": "8"
+  },
+  "8": {
+    "type": "text",
+    "author": "Happy Shroom",
+    "text": "And you are a walking fairy.",
+    "link": "9"
+  },
+  "9": {
+    "type": "text",
+    "author": "Happy Shroom",
+    "text": "We would make an awesome couple!",
+    "link": "10"
+  },
+
+  "10": {
+    "type": "text",
+    "author": "Happy Shroom",
+    "text": "Oh!",
+    "link": "11"
+  },
+  "11": {
+    "type": "text",
+    "author": "Happy Shroom",
+    "text": "What a serious look in your eyes you have.",
+    "link": "12"
+  },
+  "12": {
+    "type": "option",
+    "author": "Happy Shroom",
+    "text": "You’re heading toward the waterfall, aren’t you?",
+    "options": [
+      {
+        "text": "Maybe...",
+        "link": "13"
+      },
+      {
+        "text": "My eyes...",
+        "link": "17"
+      }
+    ]
+  },
+  "13": {
+    "type": "text",
+    "author": "Fairy",
+    "text": "Maybe I am. So what?",
+    "link": "14"
+  },
+  "14": {
+    "type": "text",
+    "author": "Happy Shroom",
+    "text": "Mhm! I knew it.",
+    "link": "15"
+  },
+  "15": {
+    "type": "text",
+    "author": "Happy Shroom",
+    "text": "You look like a brave fairy.",
+    "link": "16"
+  },
+  "16": {
+    "type": "text",
+    "author": "Happy Shroom",
+    "text": "And a gorgeous one too!",
+    "link": "22"
+  },
+  "17": {
+    "type": "text",
+    "author": "Fairy",
+    "text": "You think so because of my eyes?",
+    "link": "18"
+  },
+  "18": {
+    "type": "text",
+    "author": "Happy Shroom",
+    "text": "Everyone who wants to find the waterfall have these eyes.",
+    "link": "19"
+  },
+  "19": {
+    "type": "text",
+    "author": "Happy Shroom",
+    "text": "Desperate eyes.",
+    "link": "20"
+  },
+  "20": {
+    "type": "text",
+    "author": "Happy Shroom",
+    "text": "It's not a funny look!",
+    "link": "21"
+  },
+  "21": {
+    "type": "text",
+    "author": "Happy Shroom",
+    "text": "But yours are still pretty.",
+    "link": "22"
+  },
+
+  "22": {
+    "type": "text",
+    "author": "Happy Shroom",
+    "text": "I must warn you so you can think about saving your beauty.",
+    "link": "23"
+  },
+  "23": {
+    "type": "option",
+    "author": "Happy Shroom",
+    "text": "The waterfall changes people.",
+    "options": [
+      {
+        "text": "Good...",
+        "link": "24"
+      },
+      {
+        "text": "Danger...",
+        "link": "26"
+      }
+    ]
+  },
+  "24": {
+    "type": "text",
+    "author": "Fairy",
+    "text": "A change is what I need.",
+    "link": "25"
+  },
+  "25": {
+    "type": "text",
+    "author": "Happy Shroom",
+    "text": "You say that now.",
+    "link": "28"
+  },
+  "26": {
+    "type": "text",
+    "author": "Fairy",
+    "text": "I am not afraid of the danger of change.",
+    "link": "27"
+  },
+  "27": {
+    "type": "text",
+    "author": "Happy Shroom",
+    "text": "... You will.",
+    "link": "28"
+  },
+
+  "28": {
+    "type": "text",
+    "author": "Happy Shroom",
+    "text": "If you'll change your mind, come back to me!",
+    "link": "29"
+  },
+  "29": {
+    "type": "text",
+    "author": "Happy Shroom",
+    "text": "Stay safe, pretty lady.",
+    "link": null
+  }
+}
