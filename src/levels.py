@@ -13,11 +13,12 @@ import pygame as pg
 class Level1(Level):
     def __init__(self) -> None:
         super().__init__(pg.Vector2(144, 1169))
-        self.camera = Camera("MainCamura", 0, 0, 0, 0)
-        
         w, h = 115, 75  # tile width and tile height, shortened for conveniece in the monstrocity you see below (yes, it was manually written. Every single entry. Every single tile. You could say it woul've been better to write a script to do that for me, but I am too lazy to write the autotiler, and even though it would've taken me 30 minutes I'd rather spend the next 2 hours manually writing everyghing down)
         tileset = Spritesheet(Path("./assets/tiles/pink.json"))
         tile_hitbox = pg.FRect(0, 51, 115, 75)
+
+        self.camera = Camera("MainCamura", 0, 0, 0, 0)
+        self.camera.bounds = pg.FRect(-2*w - 40, 0, w * 57, h * 60 + 40)
 
         self.events = []
 

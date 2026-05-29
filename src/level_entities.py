@@ -54,19 +54,21 @@ class Oleni(LevelEntity):
 
         self.facing = "right"
         self.attacking = False
+        self.attack_timer = -1
         self.offsets = {
             "attack left": pg.Vector2(-205, 0),
             "attack right": pg.Vector2(-52, 0)
         }
 
         # conditions for switching from state A to state B
+        time_panel = self.element_tree["TimeControlPanel"]
         self.switch_conditions = [
             Event(action=lambda: self.set_state("walk left"), condition=lambda: self.on_ground and self.velocity.x < 0),
             Event(action=lambda: self.set_state("walk right"), condition=lambda: self.on_ground and self.velocity.x > 0),
             Event(action=lambda: self.set_state("idle left"), condition=lambda: self.velocity.x == 0 and self.facing == "left" and self.on_ground and not self.attacking),
             Event(action=lambda: self.set_state("idle right"), condition=lambda: self.velocity.x == 0 and self.facing == "right" and self.on_ground and not self.attacking),
-            Event(action=lambda: self.set_state("attack left"), condition=lambda: self.current_state == "idle left" and self.on_ground and not self.attacking and self.element_tree["CurrentStage"].singletons["level"].singletons["player"].rect.colliderect(self.left)),
-            Event(action=lambda: self.set_state("attack right"), condition=lambda: self.current_state == "idle right" and self.on_ground and not self.attacking and self.element_tree["CurrentStage"].singletons["level"].singletons["player"].rect.colliderect(self.right)),
+            Event(action=lambda: (self.set_state("attack left"), setattr(self, "attack_timer", time_panel.queue_timer(17/10))), condition=lambda: self.current_state == "idle left" and self.on_ground and not self.attacking and self.element_tree["CurrentStage"].singletons["level"].singletons["player"].rect.colliderect(self.left)),
+            Event(action=lambda: (self.set_state("attack right"), setattr(self, "attack_timer", time_panel.queue_timer(17/10))), condition=lambda: self.current_state == "idle right" and self.on_ground and not self.attacking and self.element_tree["CurrentStage"].singletons["level"].singletons["player"].rect.colliderect(self.right)),
         ]
 
         self.image = self.states[self.current_state].get_frame()["texture"]
@@ -92,7 +94,8 @@ class Oleni(LevelEntity):
         self.current_state = state
 
     def roam(self):
-        if not self.on_ground or (self.facing == "left" and self.element_tree["CurrentStage"].singletons["level"].singletons["player"].rect.colliderect(self.left)) or (self.element_tree["CurrentStage"].singletons["level"].singletons["player"].rect.colliderect(self.right) and self.facing == "right"):
+        time_panel = self.element_tree["TimeControlPanel"]
+        if not self.on_ground or (self.facing == "left" and self.element_tree["CurrentStage"].singletons["level"].singletons["player"].rect.colliderect(self.left)) or (self.element_tree["CurrentStage"].singletons["level"].singletons["player"].rect.colliderect(self.right) and self.facing == "right") or time_panel.check_timer(self.attack_timer) > 0:
             return
 
         acceleration = 3000
@@ -175,6 +178,11 @@ class Oleni(LevelEntity):
             self.draw_offset = self.offsets[self.current_state]
         else:
             self.draw_offset = pg.Vector2(0, 0)
+
+        time_panel = self.element_tree["TimeControlPanel"]
+        player = self.element_tree["CurrentStage"].singletons["level"].singletons["player"]
+        if self.current_state == "attack left" and player.rect.colliderect(self.left) and time_panel.check_timer(self.attack_timer) < 7/10 or self.current_state == "attack right" and player.rect.colliderect(self.right) and time_panel.check_timer(self.attack_timer) < 7/10:
+            player.damage()
 
         # animations
         self.states[self.current_state].update()
