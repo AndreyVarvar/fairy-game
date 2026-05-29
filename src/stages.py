@@ -55,8 +55,19 @@ class GameStage(Stage):
     def __init__(self):
         super().__init__()
 
-        self.add_singleton("level", Level1())
+        self.add_singleton("level", Level2())
 
         self.populate_group("hearts", *[HeartUI(pg.Vector2(20 + 200*i, 20), idx=i) for i in range(self.singletons["level"].singletons["player"].max_health)])
 
+    def next_level(self, n):
+        self.singletons["level"].destroy()
+        
+        if n == 1:
+            self.singletons["level"] = Level1()
+        elif n == 2:
+            self.singletons["level"] = Level2()
+        elif n == 3:
+            raise NotImplementedError
+        else:
+            raise Exception("THERE ARE ONLY 3 LEVELS")
 

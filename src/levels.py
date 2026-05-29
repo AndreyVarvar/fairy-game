@@ -291,7 +291,7 @@ class Level2(Level):
         }
         
         self.camera.target = self.singletons["player"]
-
+        self.camera.bounds = pg.FRect(0*w - 40, -10*h, w * 57, h * 45 + 40)
 
     def update(self):
         super().update()

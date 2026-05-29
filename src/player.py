@@ -181,7 +181,7 @@ class Player(LevelEntity):
         lantern: LightPole | None = level.get_collision_with(self, "light poles")
         if lantern is not None:
             if self.butterflies_collected == 3:
-                pass
+                self.element_tree["CurrentStage"].next_level(2)
 
     def update(self):
         # movement
