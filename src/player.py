@@ -254,6 +254,7 @@ class Player(LevelEntity):
             self.draw_offset = pg.Vector2(0, 0)
         
         # animations
+        time_panel = self.element_tree["TimeControlPanel"]
         self.states[self.current_state].update()
         flicker_cd = 0.5
         flicker = (time_panel.check_timer(self.damage_cooldown_timer_id) % flicker_cd) > (flicker_cd/2)
