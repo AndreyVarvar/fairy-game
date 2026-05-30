@@ -32,7 +32,7 @@ class InventoryUI(Entity):
         self.image = self.element_tree["AssetLoader"].get_image("./assets/ui/inventory.png")
         self.pos = pos
         self.size = pg.Vector2(self.image.get_rect().size)
-        self.scale = 2
+        self.scale = 1
         self.alpha = 0
 
     def draw(self):
@@ -93,7 +93,6 @@ class FButton(Button):
         super().update()
 
         if self.pressed:
-            print(self.image)
             self.element_tree["SoundControlPanel"].queue_sound(self.click_sound, 0)
 
 

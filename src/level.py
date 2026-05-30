@@ -11,7 +11,6 @@ from pathlib import Path
 class LevelEntity(Entity):
     def __init__(self, camera_name, hitbox, singleton: bool = False) -> None:
         super().__init__(singleton)
-        self.scale = 2
         self.camera = self.element_tree[camera_name]
         self.hitbox: pg.FRect = hitbox # NOTE: hitbox is measured in relation to the top-left corner of the entity (its position)
 
@@ -30,7 +29,7 @@ class LevelEntity(Entity):
 
         dst = self.frect.move(self.draw_offset)
         dst = pg.FRect(dst.x * self.scale, dst.y * self.scale, dst.w * self.scale, dst.h * self.scale)
-        dst.move_ip(-self.camera.scroll)
+        dst.move_ip((int(-self.camera.scroll.x), int(-self.camera.scroll.y)))
 
         renderer.queue_draw(
             texture=self.image, 

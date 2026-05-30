@@ -63,7 +63,7 @@ class GameStage(Stage):
         asset_loader: AssetLoader = self.element_tree["AssetLoader"]
 
 
-        self.add_singleton("inventory", InventoryUI(pg.Vector2(settings.logical_width//2 - 1302, 456)))
+        self.add_singleton("inventory", InventoryUI(pg.Vector2(settings.logical_width//2 - 516, 456)))
 
         # UI shinanigans
         inventory_button = FButton(pos=pg.Vector2(settings.logical_width - 186, 180), image=asset_loader.get_image(Path("assets/ui/inventory_icon.png")), z=100)

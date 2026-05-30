@@ -75,7 +75,7 @@ class DialogueBox(Entity):
             
 
     def draw(self):
-        scale = 2
+        scale = 1
 
         renderer: Renderer = self.element_tree["Renderer"]
 
