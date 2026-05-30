@@ -1,5 +1,6 @@
 from prismane.ui import Button
 from prismane.entity import Entity
+from prismane.renderer import Renderer
 
 import pygame as pg
 import pygame._sdl2.video as sdl2
@@ -19,7 +20,37 @@ class HeartUI(Entity):
             self.alpha = 100
         else:
             self.alpha = 255
-        
+
+        super().draw()
+
+class InventoryUI(Entity):
+    def __init__(self, pos: pg.Vector2) -> None:
+        super().__init__()
+        self.z = 10
+        self.image = self.element_tree["AssetLoader"].get_image("./assets/ui/inventory.png")
+        self.pos = pos
+        self.size = pg.Vector2(self.image.get_rect().size)
+        self.scale = 2
+        self.alpha = 0
+
+    def draw(self):
+        renderer: Renderer = self.element_tree["Renderer"]
+        for i in range(self.element_tree["CurrentStage"].singletons["level"].singletons["player"].butterflies_collected):
+            dst = pg.FRect(i * 170 + 100 * i + 300, self.pos.y + 130, 170 * 2, 179 * 2)
+            renderer.queue_draw(
+                texture=self.element_tree["AssetLoader"].get_image("./assets/entities/butterfly.png"),
+                z=11,
+                source=None,
+                destination=dst,
+                flip_x=False,
+                flip_y=False,
+                angle=0,
+                pivot=pg.Vector2(),
+                color=pg.Color(255, 255, 255),
+                alpha=self.alpha,
+                blend_mode=self.blend_mode
+            )
+
         super().draw()
 
 

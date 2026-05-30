@@ -49,14 +49,15 @@ class Entity(Element):
         dst = self.frect.move(self.draw_offset)
         dst = pg.FRect(dst.x, dst.y, dst.w * self.scale, dst.h * self.scale)
 
+        # WHY ARE YOU LEAVING SPACES AT THE END OF LINES ??!!??!!?!?!?!?!?!?!?!!??!?!?!?!?!?!?!?!?!??!??!
         renderer.queue_draw(
-            texture=self.image, 
-            z=self.z, 
-            source=self.source, 
-            destination=dst, 
-            flip_x=self.flip_x, 
-            flip_y=self.flip_y, 
-            angle=self.angle, 
+            texture=self.image,
+            z=self.z,
+            source=self.source,
+            destination=dst,
+            flip_x=self.flip_x,
+            flip_y=self.flip_y,
+            angle=self.angle,
             pivot=self.pivot,
             color=self.color,
             alpha=self.alpha,

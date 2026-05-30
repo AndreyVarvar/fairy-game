@@ -25,5 +25,5 @@ class Event(Element):
     def update(self):
         if self.condition() and self.activations_limit != 0:
             self.action()
-            self.activations_limit -= 1
+            self.activations_limit -= 1 if self.activations_limit > 0 else 0 # gotta make it work for -1
 
