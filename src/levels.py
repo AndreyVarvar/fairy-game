@@ -317,5 +317,8 @@ class Level2(Level):
         self.camera.follow_target()
         if self.singletons["player"].health <= 0 or self.singletons["player"].pos.y >= self.camera.bounds.bottom:
             self.reset()
+    
+    def reset(self):
+        self.__init__()
 
 

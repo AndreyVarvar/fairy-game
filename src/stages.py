@@ -1,3 +1,4 @@
+from os import pardir
 from prismane import Stage
 from prismane.assets import AssetLoader
 from pathlib import Path
@@ -76,15 +77,44 @@ class GameStage(Stage):
 
         self.populate_group("hearts", *[HeartUI(pg.Vector2(20 + 200*i, 20), idx=i) for i in range(self.singletons["level"].singletons["player"].max_health)])
 
+
+    def delete_fade_effect(self):
+        del self.singletons["fade"]
+
+    def transition(self, level):
+        self.singletons["level"] = level
+
+        pitch_black = pg.Surface(self.element_tree["Settings"].logical_size, pg.SRCALPHA)
+        pitch_black.fill("black")
+        pitch_black = self.element_tree["AssetLoader"].texture_from_surface(pitch_black)
+        transition_effect = Fade(1, pitch_black, lambda x: 1-x)
+
+        self.singletons["fade"] = transition_effect
+        self.events.append(
+            Event(action=lambda: self.delete_fade_effect(), condition=lambda: transition_effect.done, activations_limit=1)
+        )
+
+
     def next_level(self, n):
         self.singletons["level"].destroy()
 
         if n == 1:
-            self.singletons["level"] = Level1()
+            next_level = Level1()
         elif n == 2:
-            self.singletons["level"] = Level2()
+            next_level = Level2()
         elif n == 3:
             raise NotImplementedError
         else:
             raise Exception("THERE ARE ONLY 3 LEVELS")
+
+        pitch_black = pg.Surface(self.element_tree["Settings"].logical_size, pg.SRCALPHA)
+        pitch_black.fill("black")
+        pitch_black = self.element_tree["AssetLoader"].texture_from_surface(pitch_black)
+        transition_effect = Fade(1, pitch_black)
+
+        self.singletons["fade"] = transition_effect
+
+        self.events.append(
+            Event(action=lambda: self.transition(next_level), condition=lambda: transition_effect.done, activations_limit=1)
+        )
 

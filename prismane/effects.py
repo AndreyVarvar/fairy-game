@@ -15,7 +15,7 @@ class Fade(Entity):  # can be fadein, fadeout, or whatever else you want. That d
         """
         super().__init__()
         self.image = image
-        self.alpha = 0
+        self.alpha = f(0)*255
  
         self.size = self.element_tree["Settings"].logical_size
 
@@ -27,7 +27,7 @@ class Fade(Entity):  # can be fadein, fadeout, or whatever else you want. That d
         self.f = f
         self.done = False
 
-        self.z = 10
+        self.z = 10_000
 
     def reset(self):
         self.timer_id = self.time_panel.queue_timer(self.duration)
@@ -37,5 +37,4 @@ class Fade(Entity):  # can be fadein, fadeout, or whatever else you want. That d
         percentage = self.time_panel.check_timer_completion(self.timer_id)
         self.done = (percentage == 1.0)
         
-        if not self.done:
-            self.alpha = int(255 * self.f(percentage))
+        self.alpha = int(255 * self.f(percentage))

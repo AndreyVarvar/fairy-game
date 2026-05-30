@@ -50,11 +50,14 @@ class Stage(Element):
         for group in self.groups.values():
             group.update()
 
-        for singleton in self.singletons.values():
+        for singleton in list(self.singletons.values()):
             singleton.update()
 
-        for event in self.events:
+        for event in self.events[::-1]:
             event.update()
+            if event.inactive:
+                self.events.remove(event)
+
 
     def draw(self):
         self.element_tree["Renderer"].clear()

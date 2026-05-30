@@ -204,8 +204,9 @@ class Player(LevelEntity):
         # collision with the lantern
         lantern: LightPole | None = level.get_collision_with(self, "light poles")
         if lantern is not None:
-            if self.butterflies_collected == 3:
+            if self.butterflies_collected == 3 and not lantern.activated:
                 self.element_tree["CurrentStage"].next_level(2)
+                lantern.activated = True
 
         # collision with the hearts (someone can't tell the difference between lanterns and hearts apparently)
         heart: Heart | None = level.get_collision_with(self, "hearts")
