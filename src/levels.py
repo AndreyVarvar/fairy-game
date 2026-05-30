@@ -305,7 +305,7 @@ class Level2(Level):
         asset_loader = self.element_tree["AssetLoader"]
 
         self.singletons = {
-            "background": Background(asset_loader.get_image(Path("./assets/backgrounds/pink.png"))),
+            "background": Background(asset_loader.get_image(Path("./assets/backgrounds/roots.png"))),
             "player": Player(self.player_start_pos)
         }
         
