@@ -1,0 +1,225 @@
+{
+    "1": {
+        "type": "text",
+        "author": "Man Fairy",
+        "text": "By Fairy Goddess' mercy, you are so loud.",
+        "link": "2"
+    },
+
+    "2": {
+        "type": "text",
+        "author": "Man Fairy",
+        "text": "You are scaring the whole Forest.",
+        "link": "3"
+    },
+
+    "3": {
+        "type": "option",
+        "author": "Man Fairy",
+        "text": "What someone like you even does so far away from home?",
+        "options": [
+            {
+                "text": "And you...",
+                "link": "4"
+            },
+            {
+                "text": "Like me...",
+                "link": "7"
+            }
+        ]
+    },
+
+    "4": {
+        "type": "text",
+        "author": "Fairy",
+        "text": "And you? You are far from home too. ",
+        "link": "5"
+    },
+
+    "5": {
+        "type": "text",
+        "author": "Man Fairy",
+        "text": "Tch. Fair enough.",
+        "link": "9"
+    },
+
+    "7": {
+        "type": "text",
+        "author": "Fairy",
+        "text": "Someone like me? ",
+        "link": "8"
+    },
+
+    "8": {
+        "type": "text",
+        "author": "Man Fairy",
+        "text": "Yes. Someone reckless enough to go this far with a wing like yours.",
+        "link": "9"
+    },
+
+    "9": {
+        "type": "text",
+        "author": "Fairy",
+        "text": "You are underestimating me. You're lucky I'm too busy to argue.",
+        "link": "10"
+    },
+
+    "10": {
+        "type": "text",
+        "author": "Man Fairy",
+        "text": "and you are lucky I'm proud enough not to fight a girl with a broken wing. ",
+        "link": "11"
+    },
+
+    "11": {
+        "type": "text",
+        "author": "Man Fairy",
+        "text": "It's not that I care, but what are you doing here?",
+        "link": "12"
+    },
+
+    "12": {
+        "type": "text",
+        "author": "Man Fairy",
+        "text": "Our Goddess' tear can't magically fix everything, you know.",
+        "link": "13"
+    },
+
+    "13": {
+        "type": "option",
+        "author": "Man Fairy",
+        "text": "All things have a price",
+        "options": [
+            {
+                "text": "I know...",
+                "link": "14"
+            },
+            {
+                "text": "Move...",
+                "link": "17"
+            }
+        ]
+    },
+
+    "14": {
+        "type": "text",
+        "author": "Fairy",
+        "text": "I know. If you want to stop me - don't.",
+        "link": "15"
+    },
+
+    "15": {
+        "type": "text",
+        "author": "Man Fairy",
+        "text": "Tch. I don't care. Go.",
+        "link": "16"
+    },
+
+    "16": {
+        "type": "text",
+        "author": "Man Fairy",
+        "text": "... be careful in the Darkness.",
+        "link": "21"
+    },
+
+    "17": {
+        "type": "text",
+        "author": "Fairy",
+        "text": "Move.",
+        "link": "18"
+    },
+
+    "18": {
+        "type": "text",
+        "author": "Man Fairy",
+        "text": "...",
+        "link": "19"
+    },
+
+    "19": {
+        "type": "text",
+        "author": "Man Fairy",
+        "text": "Rude.",
+        "link": "20"
+    },
+
+    "20": {
+        "type": "text",
+        "author": "Man Fairy",
+        "text": "... you better not be so bold in the Darkness.",
+        "link": "21"
+    },
+
+    "21": {
+        "type": "option",
+        "author": "Man Fairy",
+        "text": "Tch. What?",
+        "options": [
+            {
+                "text": "Something...",
+                "link": "22"
+            },
+            {
+                "text": "... inspiring...",
+                "link": "22"
+            }
+        ]
+    },
+
+    "22": {
+        "type": "text",
+        "author": "Fairy",
+        "text": "Aren't you supposed to say something inspiring?",
+        "link": "23"
+    },
+
+    "23": {
+        "type": "text",
+        "author": "Man Fairy",
+        "text": "Alright. Try not killing yourself. ",
+        "link": "24"
+    },
+
+    "24": {
+        "type": "option",
+        "author": "Man Fairy",
+        "text": "Better broken than dead.",
+        "options": [
+            {
+                "text": "Sarcasm...",
+                "link": "25"
+            },
+            {
+                "text": "Pathetic...",
+                "link": "27"
+            }
+        ]
+    },
+
+    "25": {
+        "type": "text",
+        "author": "Fairy",
+        "text": "Wow. You are so kind.",
+        "link": "26"
+    },
+
+    "26": {
+        "type": "text",
+        "author": "Man Fairy",
+        "text": "I am as kind as you are cute.",
+        "link": null
+    },
+
+    "27": {
+        "type": "text",
+        "author": "Fairy",
+        "text": "You sound pathetic.",
+        "link": "27"
+    },
+    "27": {
+        "type": "text",
+        "author": "Man Fairy",
+        "text": "... And you are lucky you sound cute.",
+        "link": null
+    }
+}

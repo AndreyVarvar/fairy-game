@@ -16,15 +16,15 @@ class Renderer(Element):
         self.queue = []
 
     def queue_draw(
-            self, 
-            texture: sdl2.Texture, 
-            z: int, 
-            destination: pg.Rect | pg.FRect, 
-            source: pg.Rect | None = None, 
-            flip_x: bool = False, 
-            flip_y: bool = False, 
-            angle: float = 0.0, 
-            pivot: pg.Vector2 | tuple[int, int] | None = None, 
+            self,
+            texture: sdl2.Texture,
+            z: int,
+            destination: pg.Rect | pg.FRect,
+            source: pg.Rect | None = None,
+            flip_x: bool = False,
+            flip_y: bool = False,
+            angle: float = 0.0,
+            pivot: pg.Vector2 | tuple[int, int] | None = None,
             color: pg.Color = pg.Color(255, 255, 255),
             alpha: int = 255,
             blend_mode: int = pg.BLENDMODE_BLEND
@@ -34,7 +34,7 @@ class Renderer(Element):
         z: int. z-index of the object. Lower values increase the draw priority
         destination: pygame.Rect. Defines an area where the source image will be drawn into. The image wil be stretched to fit it.
         flip_x: bool. Determines whether the image will be horizontally flipped when drawn.
-        flip_y: bool. Duh.
+        flip_y: bool. Duh. You absolute buffoon! You nitwit! You confounded nincompoop! Numskull! Nimrod!
         angle: float. Angle of rotation. Determines by how much the destination rect will be rotated around the `pivot` parameter.
         pivot: pointLike. Determines the pivot for rotation of the destination rect.
         color: ColorLike. Determines how visible is each color channel of the texture. For example, (255, 0, 0) will makes it so that only the red values are visible.

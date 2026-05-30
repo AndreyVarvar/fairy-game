@@ -262,11 +262,32 @@ class Heart(LevelEntity):
         self.destroy()
         self.element_tree["CurrentStage"].singletons["level"].groups["hearts"].remove(self)
 
+class Book(LevelEntity):
+    def __init__(self, pos: pg.Vector2) -> None:
+        super().__init__("MainCamura", pg.FRect(0, 0, 292, 346))
+        self.image = self.element_tree["AssetLoader"].get_image(Path("./assets/objects/book.png"))
+        self.pos = pos
+        self.size = pg.Vector2(self.image.get_rect().size)
+
+    def kill(self):
+        self.destroy()
+        self.element_tree["CurrentStage"].singletons["level"].groups["books"].remove(self)
+
 
 class MushroomGuy(LevelEntity):
     def __init__(self, pos: pg.Vector2) -> None:
         super().__init__("MainCamura", pg.FRect(0, 0, 188, 185))
         self.image = self.element_tree["AssetLoader"].get_image(Path("./assets/entities/mushroom.png"))
+        self.pos = pos
+        self.size = pg.Vector2(self.image.get_rect().size)
+
+        self.talked_to = False
+
+
+class FairyBoi(LevelEntity):
+    def __init__(self, pos: pg.Vector2) -> None:
+        super().__init__("MainCamura", pg.FRect(0, 0, 186, 294))
+        self.image = self.element_tree["AssetLoader"].get_image(Path("./assets/entities/npc2.png"))
         self.pos = pos
         self.size = pg.Vector2(self.image.get_rect().size)
 

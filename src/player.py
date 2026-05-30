@@ -5,7 +5,7 @@ from prismane.assets import AssetLoader
 from prismane.panels import SoundControlPanel, TimeControlPanel
 
 from .level import LevelEntity
-from .level_entities import MushroomGuy, Tile, Spike, Mushroom, Butterfly, Gnome, LightPole, Heart
+from .level_entities import MushroomGuy, Tile, Spike, Mushroom, Butterfly, Gnome, LightPole, Heart, FairyBoi, Book
 
 from pathlib import Path
 
@@ -32,6 +32,7 @@ class Player(LevelEntity):
         self.jump_velocity = -700
 
         self.butterflies_collected = 0
+        self.books_collected = 0
 
         asset_loader: AssetLoader = self.element_tree["AssetLoader"]
 
@@ -206,11 +207,17 @@ class Player(LevelEntity):
             if self.butterflies_collected == 3:
                 self.element_tree["CurrentStage"].next_level(2)
 
-        # collision with the lantern
+        # collision with the hearts (someone can't tell the difference between lanterns and hearts apparently)
         heart: Heart | None = level.get_collision_with(self, "hearts")
         if heart is not None:
             self.health = min(self.health+1, self.max_health)
             heart.kill()
+
+        # collision with the lantern
+        book: Book | None = level.get_collision_with(self, "books")
+        if book is not None:
+            self.books_collected += 1
+            book.kill()
 
         # collision with mushroom guy
         mushroom_guy: MushroomGuy | None = level.get_collision_with(self, "mushroom npc")
@@ -218,6 +225,13 @@ class Player(LevelEntity):
             if mushroom_guy.talked_to is False:
                 mushroom_guy.talked_to = True
                 self.element_tree["CurrentStage"].singletons["level"].start_dialogue(Path("./assets/dialogues/mushroom.json"))
+
+        #collisoin with fairy dude
+        fairy_dude: FairyBoi | None = level.get_collision_with(self, "fairy boi npc")
+        if fairy_dude is not None:
+            if fairy_dude.talked_to is False:
+                fairy_dude.talked_to = True
+                self.element_tree["CurrentStage"].singletons["level"].start_dialogue(Path("./assets/dialogues/fairy_boi.json"))
 
         # collision with Oleni attack
         time_panel = self.element_tree["TimeControlPanel"]
