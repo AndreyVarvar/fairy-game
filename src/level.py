@@ -7,6 +7,8 @@ from .dialogue import DialogueBox
 import pygame as pg
 from pathlib import Path
 
+from math import floor, ceil
+
 
 class LevelEntity(Entity):
     def __init__(self, camera_name, hitbox, singleton: bool = False) -> None:
@@ -28,7 +30,7 @@ class LevelEntity(Entity):
         renderer: Renderer = self.element_tree["Renderer"]
 
         dst = self.frect.move(self.draw_offset)
-        dst = pg.FRect(dst.x * self.scale, dst.y * self.scale, dst.w * self.scale, dst.h * self.scale)
+        dst = pg.FRect(floor(dst.x * self.scale), floor(dst.y * self.scale), ceil(dst.w * self.scale) + 1, ceil(dst.h * self.scale) + 1)
         dst.move_ip((int(-self.camera.scroll.x), int(-self.camera.scroll.y)))
 
         renderer.queue_draw(
