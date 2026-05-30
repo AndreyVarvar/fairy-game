@@ -22,8 +22,13 @@ class Event(Element):
         self.action = action
         self.activations_limit = activations_limit
 
+
+    @property
+    def inactive(self):
+        return self.activations_limit == 0  # if negative, the event is permanent
+
     def update(self):
-        if self.condition() and self.activations_limit != 0:
+        if self.activations_limit != 0 and self.condition():
             self.action()
             self.activations_limit -= 1
 

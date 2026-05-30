@@ -2,7 +2,7 @@ from prismane import InputControlPanel
 from prismane import Animation
 from prismane import Event
 from prismane.assets import AssetLoader
-from prismane.panels import TimeControlPanel
+from prismane.panels import SoundControlPanel, TimeControlPanel
 
 from .level import LevelEntity
 from .level_entities import MushroomGuy, Tile, Spike, Mushroom, Butterfly, Gnome, LightPole, Heart
@@ -80,6 +80,8 @@ class Player(LevelEntity):
         self.size = pg.Vector2(self.image.get_rect().size)
 
         self.has_control = True
+        self.attack_sound = asset_loader.get_sound(Path("./assets/sfx/unikalnaya-vesch--volshebnyiy-kolokol.ogg"))
+        self.jump_sound = asset_loader.get_sound(Path("./assets/sfx/category-selection-sound.ogg"))
 
     @property
     def left(self) -> pg.FRect:
@@ -96,6 +98,9 @@ class Player(LevelEntity):
         for resetable_state in [jump_states, fall_states, attack_states]:
             if state in resetable_state and self.current_state not in resetable_state:
                 self.states[state].reset()
+
+        if state in attack_states:
+            self.element_tree["SoundControlPanel"].queue_sound(self.attack_sound, 3)
 
         self.current_state = state
 
@@ -131,6 +136,7 @@ class Player(LevelEntity):
 
         if pg.K_SPACE in input_panel.keys_just_pressed and self.on_ground:  # jump
             self.velocity.y = self.jump_velocity
+            self.element_tree["SoundControlPanel"].queue_sound(self.jump_sound, 2)
 
     def damage(self):
         time_panel: TimeControlPanel = self.element_tree["TimeControlPanel"]
@@ -139,6 +145,8 @@ class Player(LevelEntity):
             self.damage_cooldown_timer_id = time_panel.queue_timer(self.damage_cooldown)
 
     def collision(self):
+        sound_panel: SoundControlPanel = self.element_tree["SoundControlPanel"]
+
         dt = self.element_tree["TimeControlPanel"].dt
         level = self.element_tree["CurrentStage"].singletons["level"]
         # collision with tiles
@@ -175,6 +183,7 @@ class Player(LevelEntity):
         if mushroom is not None:
             if self.velocity.y > 0:
                 self.velocity.y = -1000
+                self.element_tree["SoundControlPanel"].queue_sound(self.jump_sound, 2)
 
         # collision with butterflies
         butterfly: Butterfly | None = level.get_collision_with(self, "butterflies")

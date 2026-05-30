@@ -3,7 +3,6 @@ from pygame._sdl2.video import Renderer, Texture
 import pathlib
 
 from .element import Element
-from .settings import Settings
 
 
 class AssetLoader(Element):
@@ -27,7 +26,7 @@ class AssetLoader(Element):
 
     def load_sound(self, path: pathlib.Path):
         if str(path) not in self.assets["sounds"]:
-            self.assets["sounds"][str(path)] = pg.Sound(path)
+            self.assets["sounds"][str(path)] = pg.mixer.Sound(path)
 
     def get_spritesheet(self, path: pathlib.Path):
         self.load_spritesheet(path)

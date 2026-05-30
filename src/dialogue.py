@@ -40,7 +40,6 @@ class DialogueBox(Entity):
 
         self.choice_sound = asset_loader.get_sound(Path("./assets/sfx/category-selection-sound.ogg"))
         self.selection_sound = asset_loader.get_sound(Path("./assets/sfx/podtverjdenie--myagkiy-schelchok.ogg"))
-        self.continue_sound = asset_loader.get_sound(Path("./assets/sfx/novoe-soobschenie--myagkiy-ping.ogg"))
 
     def update(self):
         super().update()
@@ -52,20 +51,20 @@ class DialogueBox(Entity):
             # switching 
             if pg.K_LEFT in input_panel.keys_just_pressed:
                 self.selected_option -= 1
-                sound_panel.queue_sound(self.choice_sound, 0)
+                sound_panel.queue_sound(self.choice_sound, 1)
             elif pg.K_RIGHT in input_panel.keys_just_pressed:
                 self.selected_option += 1
-                sound_panel.queue_sound(self.choice_sound, 0)
+                sound_panel.queue_sound(self.choice_sound, 1)
             self.selected_option = self.selected_option % len(self.dialogue[self.current_dialogue]["options"])
     
             # selecting
             if any([key in input_panel.keys_just_pressed for key in [pg.K_SPACE, pg.K_RETURN]]):
                 self.current_dialogue = self.dialogue[self.current_dialogue]["options"][self.selected_option]["link"]
-                sound_panel.queue_sound(self.selection_sound, 0)
+                sound_panel.queue_sound(self.selection_sound, 1)
 
         elif self.dialogue[self.current_dialogue]["type"] == "text":
             if any([key in input_panel.keys_just_pressed for key in [pg.K_SPACE, pg.K_RETURN]]):
-                sound_panel.queue_sound(self.continue_sound, 0)
+                sound_panel.queue_sound(self.selection_sound, 1)
                 if self.dialogue[self.current_dialogue]["link"] != None:
                     self.current_dialogue = self.dialogue[self.current_dialogue]["link"]
                 else:

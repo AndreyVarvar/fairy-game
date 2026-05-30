@@ -4,6 +4,8 @@ from prismane.entity import Entity
 import pygame as pg
 import pygame._sdl2.video as sdl2
 
+from pathlib import Path
+
 class HeartUI(Entity):
     def __init__(self, pos: pg.Vector2, idx: int) -> None:
         super().__init__()
@@ -35,5 +37,14 @@ class FButton(Button):
         super().__init__(rect, z)
         self.image = image
         self.size = pg.Vector2(rect.size)
+
+        self.click_sound = self.element_tree["AssetLoader"].get_sound(Path("./assets/sfx/novoe-soobschenie--myagkiy-ping.ogg"))
+
+    def update(self):
+        super().update()
+
+        if self.pressed:
+            print(self.image)
+            self.element_tree["SoundControlPanel"].queue_sound(self.click_sound, 0)
 
 

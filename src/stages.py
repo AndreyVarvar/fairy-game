@@ -21,7 +21,7 @@ class MainMenuStage(Stage):
         asset_loader: AssetLoader = self.element_tree["AssetLoader"]
 
         start_button = FButton(pos=pg.Vector2(settings.logical_width//2, 200), image=asset_loader.get_image(Path("assets/ui/start_button.png")), z=1)
-        rules_button = FButton(pos=pg.Vector2(settings.logical_width//2, 500), image=asset_loader.get_image(Path("assets/ui/rules_button.png")), z=1)
+        rules_button = FButton(pos=pg.Vector2(settings.logical_width//2, 600), image=asset_loader.get_image(Path("assets/ui/rules_button.png")), z=1)
 
         self.populate_group("ui", 
                             start_button,
@@ -55,7 +55,10 @@ class GameStage(Stage):
     def __init__(self):
         super().__init__()
 
-        self.add_singleton("level", Level2())
+        self.add_singleton("level", Level1())
+
+        music = "./assets/sfx/FAIRY_GAME.ogg"
+        self.element_tree["MusicControlPanel"].set_music(music)
 
         self.populate_group("hearts", *[HeartUI(pg.Vector2(20 + 200*i, 20), idx=i) for i in range(self.singletons["level"].singletons["player"].max_health)])
 

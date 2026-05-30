@@ -162,7 +162,7 @@ class Level1(Level):
     def update(self):
         super().update()
         self.camera.follow_target()
-        if self.singletons["player"].health <= 0:
+        if self.singletons["player"].health <= 0 or self.singletons["player"].pos.y >= self.camera.bounds.bottom:
             self.reset()
 
 class Level2(Level):
@@ -309,7 +309,7 @@ class Level2(Level):
     def update(self):
         super().update()
         self.camera.follow_target()
-        if self.singletons["player"].health <= 0:
+        if self.singletons["player"].health <= 0 or self.singletons["player"].pos.y >= self.camera.bounds.bottom:
             self.reset()
 
 

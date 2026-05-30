@@ -15,7 +15,7 @@ class MasterControlPanel(Element):  # used to update all the panels in one place
         self.time_panel.update(dt)
         self.input_panel.update(events)
         self.sound_panel.update()
-        self.music_panel.update(dt)
+        self.music_panel.update()
 
 
 class TimeControlPanel(Element):
@@ -97,6 +97,7 @@ class InputControlPanel(Element):
         # that means we get mouse coordinates in screen size
         # and have to translate it into logical_size since
         # that is where we operate with it
+        # TODO: make sure to account for offests
 
         mouse_pos.x *= settings.logical_width / settings.window_width
         mouse_pos.y *= settings.logical_height / settings.window_height
@@ -182,7 +183,7 @@ class SoundControlPanel(Element):
         Raises:
             TypeError: sound is not an instance of pygame.Sound.
         """
-        if not isinstance(sound, pg.Sound):
+        if not isinstance(sound, pg.mixer.Sound):
             raise TypeError(f"sound={sound} is not an instance of pygame.Sound")
         if not isinstance(polite, bool):
             raise TypeError(f"polite={polite} is not an instance of bool.")
@@ -220,51 +221,23 @@ class MusicControlPanel(Element):
         super().__init__(singleton=True)
         self.music_running = False
 
-        self.fadeout_volume = 1
-        self.fadeout_time = 0
-        self.fadeout_elapsed_time = 0
-        self.fadeout = False
-
         self.volume = 1
-        self.music_set_volume = 1  # volume of the music set when it was set
-        self.music_loop = None
+        self.music_volume = 1  # volume of the music when it was set
+        self.music = None
 
-    def update(self, dt: float):
-        pg.mixer.music.set_volume(self.volume * self.fadeout_volume * self.music_set_volume)
+    def update(self):
+        pg.mixer.music.set_volume(self.volume * self.music_volume)
 
-        if self.fadeout:
-            self.fadeout_elapsed_time += dt
-            self.fadeout_volume = max(0, 1 - self.fadeout_elapsed_time / self.fadeout_time)
-
-            if self.fadeout_elapsed_time >= self.fadeout_time:
-                self.fadeout = False
-        else:
-            self.fadeout_volume = 1
-
-        self.music_running = pg.mixer.music.get_busy()
-
-        if self.music_loop is not None and self.music_running is False:
-            self.set_music(self.music_loop, volume=self.music_set_volume)
-
-    def set_music(self, loop_music, intro_music=None, volume=1):
-        self.music_loop = loop_music
+    def set_music(self, music, volume=1):
+        self.music = music
         self.music_set_volume = volume
 
-        if intro_music is None:
-            pg.mixer.music.load(loop_music)
-            pg.mixer.music.play(loops=-1)
-        else:
-            pg.mixer.music.load(intro_music)
-            pg.mixer.music.play(loops=0)
+        pg.mixer.music.load(music)
+        pg.mixer.music.play(loops=-1)
 
     def stop_music(self):
         pg.mixer.music.stop()
-        self.music_loop = None
-
-    def fadeout_music(self, fadeout_time):
-        self.fadeout = True
-        self.fadeout_elapsed_time = 0
-        self.fadeout_time = fadeout_time
+        self.music = None
 
     def pause_music(self):
         self.volume = 0

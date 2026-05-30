@@ -56,28 +56,18 @@ class Level(Entity):
         self.singletons: dict[str, Entity]
  
         self.player_start_pos = player_start_pos
-        
-        self.dialogue_termination_event = None
     
     def reset(self):
         self.__init__(self.player_start_pos)
     
     def start_dialogue(self, dialogue_json_path: Path):
         self.singletons["dialogue"] = DialogueBox(dialogue_json_path)
-        self.dialogue_termination_event = Event(action=lambda: self.stop_dialogue(), condition=lambda: self.singletons["dialogue"].end)
-        
-        self.events.append(self.dialogue_termination_event)
+        self.events.append(Event(action=lambda: self.stop_dialogue(), condition=lambda: self.singletons["dialogue"].end, activations_limit=1))
 
     def stop_dialogue(self):
         if "dialogue" in self.singletons:
             self.singletons["dialogue"].destroy()
             del self.singletons["dialogue"]
-            self.dialogue = None
-
-        if self.dialogue_termination_event:
-            self.events.remove(self.dialogue_termination_event)
-            self.dialogue_termination_event.destroy()
-            self.dialogue_termination_event = None
 
     def get_collision_with(self, entity: LevelEntity, group: str):
         if group not in self.groups:
@@ -101,8 +91,14 @@ class Level(Entity):
         for singleton in list(self.singletons.values()):
             singleton.update()
         
+        events_to_clear = []
         for event in self.events:
             event.update()
+            if event.inactive:
+                events_to_clear.append(event)
+
+        for event in events_to_clear:
+            self.events.remove(event)
 
     def draw(self):
         for group in self.groups.values():

@@ -75,6 +75,8 @@ class Oleni(LevelEntity):
         self.size = pg.Vector2(self.image.get_rect().size)
         self.z = 1
 
+        self.attack_sound = asset_loader.get_sound(Path("./assets/sfx/zvuki-igrovyih-alertov.ogg"))
+
     @property
     def left(self) -> pg.FRect:
         return pg.FRect(self.collision_box.x - 136, self.collision_box.y, 136, 225)
@@ -90,6 +92,10 @@ class Oleni(LevelEntity):
         for resetable_state in [jump_states, fall_states, attack_states]:
             if state in resetable_state and self.current_state not in resetable_state:
                 self.states[state].reset()
+
+
+        if state in attack_states:
+            self.element_tree["SoundControlPanel"].queue_sound(self.attack_sound, 5)
 
         self.current_state = state
 
@@ -216,7 +222,9 @@ class Butterfly(LevelEntity):
 
         if orientation == "right":
             self.flip_x = True
-
+        
+        self.pickup_sound = self.element_tree["AssetLoader"].get_sound(Path("./assets/sfx/unikalnaya-vesch--volshebnyiy-kolokol.ogg"))
+    
     def update(self):
         super().update()
 
@@ -224,6 +232,7 @@ class Butterfly(LevelEntity):
             if "dialogue" not in self.element_tree["CurrentStage"].singletons["level"].singletons:
                 self.destroy()
                 self.element_tree["CurrentStage"].singletons["level"].groups["butterflies"].remove(self)
+                self.element_tree["SoundControlPanel"].queue_sound(self.pickup_sound, 0)
 
 class Gnome(LevelEntity):
     def __init__(self, pos: pg.Vector2) -> None:
