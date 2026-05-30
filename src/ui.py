@@ -40,7 +40,7 @@ class InventoryUI(Entity):
         maximum = 0
         for i in range(self.element_tree["CurrentStage"].singletons["level"].singletons["player"].butterflies_collected):
             maximum = i + 1
-            dst = pg.FRect(i * 170 + 100 * i + 300, self.pos.y + 130, 170 * 2, 179 * 2)
+            dst = pg.FRect(self.pos.x + 130 * i + 50, self.pos.y + 50, 170, 179)
             renderer.queue_draw(
                 texture=self.element_tree["AssetLoader"].get_image("./assets/entities/butterfly.png"),
                 z=11,
@@ -56,7 +56,7 @@ class InventoryUI(Entity):
             )
 
         for i in range(maximum, maximum + self.element_tree["CurrentStage"].singletons["level"].singletons["player"].books_collected):
-            dst = pg.FRect(i * 170 + 100 * i + 300, self.pos.y + 130, 170 * 2, 179 * 2)
+            dst = pg.FRect(self.pos.x + 130 * i + 50, self.pos.y + 130, 97, 70)
             renderer.queue_draw(
                 texture=self.element_tree["AssetLoader"].get_image("./assets/objects/book.png"),
                 z=11,

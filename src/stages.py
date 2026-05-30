@@ -58,12 +58,12 @@ class GameStage(Stage):
 
         music = "./assets/sfx/FAIRY_GAME.ogg"
         self.element_tree["MusicControlPanel"].set_music(music)
-        
+
         settings: Settings = self.element_tree["Settings"]
         asset_loader: AssetLoader = self.element_tree["AssetLoader"]
 
 
-        self.add_singleton("inventory", InventoryUI(pg.Vector2(settings.logical_width//2 - 516, 456)))
+        self.add_singleton("inventory", InventoryUI(pg.Vector2(settings.logical_width//2 - 656, 456)))
 
         # UI shinanigans
         inventory_button = FButton(pos=pg.Vector2(settings.logical_width - 186, 180), image=asset_loader.get_image(Path("assets/ui/inventory_icon.png")), z=100)
