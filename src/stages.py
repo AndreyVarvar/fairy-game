@@ -63,7 +63,8 @@ class GameStage(Stage):
 
         # UI shinanigans
         inventory_button = FButton(pos=pg.Vector2(settings.logical_width - 186, 180), image=asset_loader.get_image(Path("assets/ui/inventory_icon.png")), z=100)
-        self.populate_group("ui", inventory_button)
+        settings_button = FButton(pos=pg.Vector2(settings.logical_width - 186, 366), image=asset_loader.get_image(Path("assets/ui/settings_icon.png")), z=100)
+        self.populate_group("ui", *[inventory_button, settings_button])
 
         self.populate_events(
             Event(action=lambda: setattr(self.singletons["inventory"], "alpha", 255 if self.singletons["inventory"].alpha == 0 else 0), condition=lambda: inventory_button.pressed, activations_limit=-1) # -1 so that we have infinite activations
