@@ -3,7 +3,7 @@ from prismane.camera import Camera
 
 from .level import Level
 from .background import Background
-from .level_entities import LightPole, Tile, Mushroom, Spike, Gnome, Oleni, Butterfly, Heart, MushroomGuy
+from .level_entities import LightPole, Tile, Mushroom, Spike, Gnome, Oleni, Butterfly, Heart, MushroomGuy, FairyBoi, Book
 from .player import Player
 
 from pathlib import Path
@@ -186,10 +186,10 @@ class Level2(Level):
                 Tile(pg.Vector2(6*w, 0*h), tileset["top-left"], tile_hitbox),
                 Tile(pg.Vector2(7*w, 0*h), tileset["top-right"], tile_hitbox),
                 
-                Tile(pg.Vector2(9*w, 0*h), tileset["top-left"], tile_hitbox),
-                Tile(pg.Vector2(10*w, 0*h), tileset["top-middle 1"], tile_hitbox),
-                Tile(pg.Vector2(11*w, 0*h), tileset["top-middle 2"], tile_hitbox),
-                Tile(pg.Vector2(12*w, 0*h), tileset["top-right"], tile_hitbox),
+                Tile(pg.Vector2(9*w, -1*h), tileset["top-left"], tile_hitbox),
+                Tile(pg.Vector2(10*w, -1*h), tileset["top-middle 1"], tile_hitbox),
+                Tile(pg.Vector2(11*w, -1*h), tileset["top-middle 2"], tile_hitbox),
+                Tile(pg.Vector2(12*w, -1*h), tileset["top-right"], tile_hitbox),
                 
                 Tile(pg.Vector2(2*w, 4*h), tileset["top-left"], tile_hitbox),
                 Tile(pg.Vector2(3*w, 4*h), tileset["top-middle 2"], tile_hitbox),
@@ -291,8 +291,14 @@ class Level2(Level):
                 Heart(pg.Vector2(11*w, 14*h+20)),
                 Heart(pg.Vector2(21*w, 4*h+20)),
             ),
+            "books": EntityGroup(
+                Book(pg.Vector2(12*w, -2*h)),
+            ),
             "mushroom npc": EntityGroup(
                 MushroomGuy(pg.Vector2(24*w-20, 2*h-30)),
+            ),
+            "fairy boi npc": EntityGroup(
+                FairyBoi(pg.Vector2(1*w, 1*h-224)),
             )
         }
 

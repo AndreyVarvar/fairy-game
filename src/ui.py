@@ -35,10 +35,28 @@ class InventoryUI(Entity):
 
     def draw(self):
         renderer: Renderer = self.element_tree["Renderer"]
+        maximum = 0
         for i in range(self.element_tree["CurrentStage"].singletons["level"].singletons["player"].butterflies_collected):
+            maximum = i + 1
             dst = pg.FRect(i * 170 + 100 * i + 300, self.pos.y + 130, 170 * 2, 179 * 2)
             renderer.queue_draw(
                 texture=self.element_tree["AssetLoader"].get_image("./assets/entities/butterfly.png"),
+                z=11,
+                source=None,
+                destination=dst,
+                flip_x=False,
+                flip_y=False,
+                angle=0,
+                pivot=pg.Vector2(),
+                color=pg.Color(255, 255, 255),
+                alpha=self.alpha,
+                blend_mode=self.blend_mode
+            )
+
+        for i in range(maximum, maximum + self.element_tree["CurrentStage"].singletons["level"].singletons["player"].books_collected):
+            dst = pg.FRect(i * 170 + 100 * i + 300, self.pos.y + 130, 170 * 2, 179 * 2)
+            renderer.queue_draw(
+                texture=self.element_tree["AssetLoader"].get_image("./assets/objects/book.png"),
                 z=11,
                 source=None,
                 destination=dst,
