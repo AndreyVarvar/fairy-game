@@ -21,6 +21,14 @@ class AssetLoader(Element):
         
         return Texture.from_surface(renderer, surf)
 
+    def get_sound(self, path: pathlib.Path):
+        self.load_sound(path)
+        return self.assets["sounds"][str(path)]
+
+    def load_sound(self, path: pathlib.Path):
+        if str(path) not in self.assets["sounds"]:
+            self.assets["sounds"][str(path)] = pg.Sound(path)
+
     def get_spritesheet(self, path: pathlib.Path):
         self.load_spritesheet(path)
         return self.assets["spritesheets"][str(path)]
