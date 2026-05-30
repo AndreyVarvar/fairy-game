@@ -264,7 +264,7 @@ class Heart(LevelEntity):
 
 class Book(LevelEntity):
     def __init__(self, pos: pg.Vector2) -> None:
-        super().__init__("MainCamura", pg.FRect(0, 0, 292, 346))
+        super().__init__("MainCamura", pg.FRect(0, 0, 97, 70))
         self.image = self.element_tree["AssetLoader"].get_image(Path("./assets/objects/book.png"))
         self.pos = pos
         self.size = pg.Vector2(self.image.get_rect().size)
