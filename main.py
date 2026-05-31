@@ -1,3 +1,9 @@
+# /// script
+# dependencies = [
+#  "pygame-ce",
+# ]
+# ///
+
 from prismane import Engine
 from src.stages import MainMenuStage, GameStage
 
