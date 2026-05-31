@@ -1,11 +1,14 @@
 from prismane.ui import Button
 from prismane.entity import Entity
 from prismane.renderer import Renderer
+from prismane import AssetLoader
+from prismane import SoundControlPanel, InputControlPanel
 
 import pygame as pg
 import pygame._sdl2.video as sdl2
 
 from pathlib import Path
+import string
 
 class HeartUI(Entity):
     def __init__(self, pos: pg.Vector2, idx: int) -> None:
@@ -56,7 +59,7 @@ class InventoryUI(Entity):
             )
 
         for i in range(maximum, maximum + self.element_tree["CurrentStage"].singletons["level"].singletons["player"].books_collected):
-            dst = pg.FRect(self.pos.x + 130 * i + 50, self.pos.y + 130, 97, 70)
+            dst = pg.FRect(self.pos.x + 130 * i + 50, self.pos.y + 100, 97, 70)
             renderer.queue_draw(
                 texture=self.element_tree["AssetLoader"].get_image("./assets/objects/book.png"),
                 z=11,
@@ -96,3 +99,54 @@ class FButton(Button):
             self.element_tree["SoundControlPanel"].queue_sound(self.click_sound, 0)
 
 
+class SafeUI(Entity): # Because I decided so AHHAHAHAHAHAHAh
+    def __init__(self, pos: pg.Vector2) -> None:
+        super().__init__()
+        self.z = 10
+        self.image = self.element_tree["AssetLoader"].get_image("./assets/ui/inventory.png")
+        self.size = pg.Vector2(self.image.get_rect().size)
+        self.pos = pos
+        self.code = ""
+        self.correct = False
+
+        self.text_color = pg.Color(107, 67, 130)
+        self.end = False
+
+        asset_loader: AssetLoader = self.element_tree["AssetLoader"]
+        self.choice_sound = asset_loader.get_sound(Path("./assets/sfx/category-selection-sound.ogg"))
+        self.selection_sound = asset_loader.get_sound(Path("./assets/sfx/podtverjdenie--myagkiy-schelchok.ogg"))
+
+        self.font = pg.font.SysFont("comic sans", 30)
+
+    def update(self):
+        super().update()
+
+        input_panel: InputControlPanel = self.element_tree["InputControlPanel"]
+        sound_panel: SoundControlPanel = self.element_tree["SoundControlPanel"]
+
+        code = self.element_tree["CurrentStage"].singletons["level"].singletons["player"].code
+
+        if input_panel.text == "\x08":
+            self.code = self.code[:-1]
+            self.element_tree["SoundControlPanel"].queue_sound(self.choice_sound, 0)
+        elif input_panel.text == "\r":
+            self.end = True
+            self.correct = (code == self.code)
+            self.element_tree["SoundControlPanel"].queue_sound(self.selection_sound, 0)
+
+        # Please forgive me og crap this is so dangerous
+        #for some reason the input panel version doesnt work, don't really care why at the moment
+        keys_just_pressed = pg.key.get_just_pressed()
+        if len(self.code) < 4 and input_panel.text in "0123456789" and keys_just_pressed[eval(f"pg.K_{input_panel.text}")]:
+            self.code += input_panel.text
+            self.element_tree["SoundControlPanel"].queue_sound(self.choice_sound, 0)
+
+    def draw(self):
+        renderer: Renderer = self.element_tree["Renderer"]
+        renderer.queue_draw(self.image, self.z, destination=self.rect.move(self.draw_offset).scale_by(self.scale))
+
+        if len(self.code) > 0:
+            text_texture = self.element_tree["AssetLoader"].texture_from_surface(self.font.render(self.code, True, self.text_color))
+            text_texture_rect = text_texture.get_rect().scale_by(self.scale).move(self.pos + self.draw_offset + pg.Vector2(50, 100))
+            text_texture_rect.left = self.rect.move(self.draw_offset).scale_by(self.scale).left + self.scale*50
+            renderer.queue_draw(text_texture, self.z+1, destination=text_texture_rect)

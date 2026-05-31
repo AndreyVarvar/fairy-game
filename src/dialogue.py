@@ -10,12 +10,17 @@ from prismane.settings import Settings
 from prismane.renderer import Renderer
 
 
+example = {"1": { "type": "text", "author": "Someone", "text": "Hello World", "link": None }}
+
 class DialogueBox(Entity):
-    def __init__(self, dialogue_json_path: Path):
+    def __init__(self, dialogue_json_path: Path = None, text: dict = example):
         super().__init__()
-        
-        with open(dialogue_json_path, "r") as file:
-            self.dialogue = json.load(file)
+
+        if dialogue_json_path != None:
+            with open(dialogue_json_path, "r") as file:
+                self.dialogue = json.load(file)
+        else:
+            self.dialogue = text
 
         asset_loader: AssetLoader = self.element_tree["AssetLoader"]
 

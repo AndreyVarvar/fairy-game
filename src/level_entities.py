@@ -271,6 +271,8 @@ class Book(LevelEntity):
         self.pos = pos
         self.size = pg.Vector2(self.image.get_rect().size)
 
+        self.talked_to = False
+
     def kill(self):
         self.destroy()
         self.element_tree["CurrentStage"].singletons["level"].groups["books"].remove(self)
@@ -293,4 +295,4 @@ class FairyBoi(LevelEntity):
         self.pos = pos
         self.size = pg.Vector2(self.image.get_rect().size)
 
-        self.talked_to = False
+        self.talked_to = 0

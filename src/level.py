@@ -1,8 +1,10 @@
 from __future__ import annotations
 
-from prismane import Entity, EntityGroup, Renderer, Event
+from prismane import Entity, EntityGroup, Renderer, Event, TimeControlPanel
+from prismane.settings import Settings
 
 from .dialogue import DialogueBox
+from .ui import SafeUI
 
 import pygame as pg
 from pathlib import Path
@@ -51,18 +53,39 @@ class LevelEntity(Entity):
 class Level(Entity):
     def __init__(self, player_start_pos: pg.Vector2) -> None:
         super().__init__()
-    
+
         self.events: list
         self.groups: dict[str, EntityGroup]
         self.singletons: dict[str, Entity]
  
         self.player_start_pos = player_start_pos
-    
+
+        self.safe_timer = -1
+
     def reset(self):
         self.__init__(self.player_start_pos)
-    
-    def start_dialogue(self, dialogue_json_path: Path):
-        self.singletons["dialogue"] = DialogueBox(dialogue_json_path)
+
+    def start_safe(self):
+        time_panel: TimeControlPanel = self.element_tree["TimeControlPanel"]
+        if time_panel.check_timer(self.safe_timer) == 0 and self.singletons.get("safe") == None:
+            settings: Settings = self.element_tree["Settings"]
+            self.singletons["safe"] = SafeUI(pg.Vector2(settings.logical_width//2 - 656, 456))
+            self.events.append(Event(action=lambda: self.element_tree["CurrentStage"].next_level(1), condition=lambda: self.singletons["safe"].correct, activations_limit=1, termination_condition=lambda: self.singletons.get("safe") == None))
+            self.events.append(Event(action=lambda: self.stop_safe(), condition=lambda: self.singletons["safe"].end, activations_limit=1))
+
+    def stop_safe(self):
+        if "safe" in self.singletons:
+            time_panel: TimeControlPanel = self.element_tree["TimeControlPanel"]
+            self.safe_timer = time_panel.queue_timer(2)
+            self.singletons["safe"].destroy()
+            del self.singletons["safe"]
+
+    def start_dialogue(self, dialogue_json_path: Path = None, text: dict = None):
+        if text == None:
+            self.singletons["dialogue"] = DialogueBox(dialogue_json_path=dialogue_json_path)
+        else:
+            self.singletons["dialogue"] = DialogueBox(text=text)
+
         self.events.append(Event(action=lambda: self.stop_dialogue(), condition=lambda: self.singletons["dialogue"].end, activations_limit=1))
 
     def stop_dialogue(self):

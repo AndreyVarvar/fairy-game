@@ -4,7 +4,7 @@ from .element import Element
 from collections.abc import Callable
 
 class Event(Element):
-    def __init__(self, action: Callable, condition: Callable, activations_limit: int = -1):
+    def __init__(self, action: Callable, condition: Callable, activations_limit: int = -1, termination_condition: Callable = None):
         """
         action: Callable. The action to be done when the condition is satisfied.
         condition: Callable. The condition for the action to be executed.
@@ -21,6 +21,7 @@ class Event(Element):
         self.condition = condition
         self.action = action
         self.activations_limit = activations_limit
+        self.termination_condition = termination_condition
 
 
     @property
@@ -28,6 +29,8 @@ class Event(Element):
         return self.activations_limit == 0  # if negative, the event is permanent
 
     def update(self):
+        if self.termination_condition and self.termination_condition():
+            self.activations_limit = 0
         if self.activations_limit != 0 and self.condition():
             self.action()
             self.activations_limit -= 1 if self.activations_limit > 0 else 0 # gotta make it work for -1

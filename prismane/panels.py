@@ -87,6 +87,8 @@ class InputControlPanel(Element):
 
         self.cursor_queue = []
 
+        self.text = ""
+
 
     def get_scaled_mouse_pos(self) -> pg.Vector2:
         mouse_pos = pg.Vector2(pg.mouse.get_pos())
@@ -132,6 +134,7 @@ class InputControlPanel(Element):
                 case pg.KEYDOWN:
                     self.keys_just_pressed.append(event.key)
                     self.just_pressed_anything = True
+                    self.text = event.unicode
 
         if self.mouse_just_pressed[0]:
             self.mouse_click_pos = self.get_scaled_mouse_pos()

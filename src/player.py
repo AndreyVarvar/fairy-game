@@ -8,6 +8,7 @@ from .level import LevelEntity
 from .level_entities import MushroomGuy, Tile, Spike, Mushroom, Butterfly, Gnome, LightPole, Heart, FairyBoi, Book
 
 from pathlib import Path
+import random
 
 import pygame as pg
 
@@ -33,6 +34,7 @@ class Player(LevelEntity):
 
         self.butterflies_collected = 0
         self.books_collected = 0
+        self.code = f"{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}"
 
         asset_loader: AssetLoader = self.element_tree["AssetLoader"]
 
@@ -215,9 +217,16 @@ class Player(LevelEntity):
             heart.kill()
 
         # collision with the lantern
+        dialogue = {
+                "1": { "type": "text", "author": "A book", "text": "...", "link": "2" },
+                "2": { "type": "text", "author": "A book", "text": "Dang.", "link": "3" },
+                "3": { "type": "text", "author": "A book", "text": "I honestly didn't think you would find me...", "link": "4" },
+                "4": { "type": "text", "author": "A book", "text": f"Here is the secret code: {self.code}", "link": None },
+                    }
         book: Book | None = level.get_collision_with(self, "books")
         if book is not None:
             self.books_collected += 1
+            self.element_tree["CurrentStage"].singletons["level"].start_dialogue(text=dialogue)
             book.kill()
 
         # collision with mushroom guy
@@ -230,9 +239,15 @@ class Player(LevelEntity):
         #collisoin with fairy dude
         fairy_dude: FairyBoi | None = level.get_collision_with(self, "fairy boi npc")
         if fairy_dude is not None:
-            if fairy_dude.talked_to is False:
-                fairy_dude.talked_to = True
+            if fairy_dude.talked_to == 0:
+                fairy_dude.talked_to += 1
+                # I CAN'T SEE THE TEXT IT DOESN'T WRAP ON MY SCREEEEENNN
                 self.element_tree["CurrentStage"].singletons["level"].start_dialogue(Path("./assets/dialogues/fairy_boi.json"))
+                self.element_tree["CurrentStage"].singletons["level"].events.append(Event(action=lambda: setattr(fairy_dude, "talked_to", 2), condition=lambda: self.element_tree["CurrentStage"].singletons["level"].singletons.get("dialogue") == None, activations_limit=1))
+            elif fairy_dude.talked_to >= 2 and self.books_collected == 1:
+                self.element_tree["CurrentStage"].singletons["level"].start_safe()
+                fairy_dude.talked_to += 1
+
 
         # collision with Oleni attack
         time_panel = self.element_tree["TimeControlPanel"]
