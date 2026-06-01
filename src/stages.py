@@ -77,6 +77,11 @@ class GameStage(Stage):
 
         self.populate_group("hearts", *[HeartUI(pg.Vector2(20 + 200*i, 20), idx=i) for i in range(self.singletons["level"].singletons["player"].max_health)])
 
+    def update(self):
+        super().update()
+
+        if pg.K_n in self.element_tree["InputControlPanel"].keys_just_pressed:
+            self.next_level(2)
 
     def delete_fade_effect(self):
         del self.singletons["fade"]

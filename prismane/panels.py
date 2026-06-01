@@ -87,7 +87,7 @@ class InputControlPanel(Element):
 
         self.cursor_queue = []
 
-        self.text = ""
+        self.text = ""  # TODO: move this to InputBar UI element instead
 
 
     def get_scaled_mouse_pos(self) -> pg.Vector2:
