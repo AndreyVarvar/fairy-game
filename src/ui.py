@@ -136,7 +136,7 @@ class SafeUI(Entity): # Because I decided so AHHAHAHAHAHAHAh
 
         # Please forgive me og crap this is so dangerous
         #for some reason the input panel version doesnt work, don't really care why at the moment
-        if len(self.code) < 4 and input_panel.text in "0123456789" and eval(f"pg.K_{input_panel.text}") in input_panel.keys_just_pressed:
+        if len(self.code) < 4 and input_panel.text in "0123456789" and pg.K_0 + int(input_panel.text) in input_panel.keys_just_pressed:
             self.code += input_panel.text
             self.element_tree["SoundControlPanel"].queue_sound(self.choice_sound, 0)
 
